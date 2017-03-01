@@ -30,7 +30,7 @@ COPTS+=-I $(TOP)/include $(INCS)
 # Generate application names
 APPS:=$(addprefix $(APPDIR)/, $(APPLICATIONS:=.bin) )
 
-all: libs apps
+all: libs apps kdevelop_path
 	@echo "$(STDLIBS)"
 	@echo "all ok"
 
@@ -48,6 +48,13 @@ $(LIBDIR)/lib%.lib: $(LIBSRC)/lib%
 
 libs: .EXPORT_ALL_VARIABLES $(LIBS)
 	@echo -n
+
+kdevelop_path:
+	@echo -n > $(TOP)/.kdev_include_paths
+	@for i in $(addprefix $(LIBSRC)/, $(LIBRARY) ) $(addprefix $(APPDIR)/, $(APPLICATIONS) ) ; do \
+	echo $$i >> $(TOP)/.kdev_include_paths ; \
+	done
+
 
 clean:
 	rm -rf *.rel *.lst *.sym *.exp *.bin *.map *.mem *.lnk *.ihx *.rel *.rst *.asm *.bin *.rel *.hS *.\$$C *.lk *.noi *.tap $(APPDIR) $(LIBDIR)
