@@ -1,0 +1,13 @@
+*.asm
+*.rel
+*.lst
+*.tap
+*.bin
+*.ihx
+*.noi
+*.sym
+*.$C
+*.hS
+*.map
+*.lib
+*.wmf
