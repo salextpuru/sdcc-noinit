@@ -1,0 +1,78 @@
+#!/bin/bash
+
+MAP="$1"
+BIN="$2"
+
+TFILE="$BIN"~
+
+s__CODE=""
+s__INITIALIZER=""
+l__INITIALIZER=""
+s__INITIALIZED=""
+l__INITIALIZED=""
+
+function help(){
+	printf "\nThis utility is moved _INITIALIZER section to _INITIALIZED\nand removed _INITIALIZED section.\nUsage:\n\t$0 <prog.map> <prog.bin>\n"
+}
+
+par=""
+
+function get_p(){
+	par=`echo "$1" | sed 's/\([^,]0*\)\1//; s/^0//'`
+	if [[ -z "$par" ]] ; then
+		par=0x00
+	else
+		par=0x$par
+	fi
+}
+
+function get_par(){
+	v=`cat "$MAP" | grep $1`
+	get_p $v
+}
+
+if [[ -z $MAP ]] ; then
+	help
+	exit 1
+fi
+
+if [[ -z $BIN ]] ; then
+	help
+	exit 1
+fi
+
+get_par "s__CODE"
+s__CODE=$par
+
+get_par "s__INITIALIZER"
+s__INITIALIZER=$par
+get_par "s__INITIALIZED"
+s__INITIALIZED=$par
+
+get_par "l__INITIALIZER"
+l__INITIALIZER=$par
+get_par "l__INITIALIZED"
+l__INITIALIZED=$par
+
+echo "s__CODE=$s__CODE"
+echo "s__INITIALIZER=$s__INITIALIZER"
+echo "l__INITIALIZER=$l__INITIALIZER"
+echo "s__INITIALIZED=$s__INITIALIZED"
+echo "l__INITIALIZED=$l__INITIALIZED"
+
+sz=$(( $s__INITIALIZED - $s__CODE ))
+dd bs=1 count=$sz if="$BIN" > "$TFILE" 2>/dev/null
+# echo "1: $sz "
+
+offs=$(( $s__INITIALIZER - $s__CODE ))
+sz=$(( $l__INITIALIZER ))
+dd bs=1 skip=$offs count=$sz if="$BIN" >> "$TFILE" 2>/dev/null
+# echo "2: $sz $offs"
+
+offs=$(( $s__INITIALIZED - $s__CODE + $l__INITIALIZER  ))
+sz=$(( $s__INITIALIZER - $s__INITIALIZED - $l__INITIALIZER ))
+dd bs=1 skip=$offs count=$sz if="$BIN" >> "$TFILE" 2>/dev/null
+# echo "3: $sz $offs"
+
+rm -f "$BIN"
+mv -f "$TFILE" "$BIN"

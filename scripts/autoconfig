@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [[ $# -lt 2 ]]; then
+	echo "$0 error!"
+	exit 1
+fi
+
+printf ";; This file generated automatically. Do not change it.\n\n" > "$2"
+
+cat "$1" | sed '/ *#/d; /^ *$/d' | grep = | while read s ; do 
+	echo "$s  >> __$s"
+	echo "__$s" >> "$2"
+done
+
+printf "\n;; end of autoconfig\n\n" >> "$2"

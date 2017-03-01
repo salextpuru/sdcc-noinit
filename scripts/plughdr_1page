@@ -1,0 +1,75 @@
+#!/bin/bash
+# Usage:
+#	plughdr_16K <outfile.asm> <plugin name (not more 32 sym)> ext1 ext2 ...
+#	extN - not more than 3sym!
+
+
+VER=8
+
+HDR=$1
+NAME=$2
+shift
+shift
+EXTLIST="$*"
+# Plugin name
+PNAME=""
+for i in `seq 0 31`; do
+	if [[ -z "${NAME:$i:1}" ]]; then
+		PNAME="$PNAME "
+	else
+		PNAME=$PNAME"${NAME:$i:1}"
+	fi
+done
+
+
+# Extention list
+EXTC=96
+EXTN=""
+
+if [[ -z "$EXTLIST" ]]; then
+	echo -ne
+else
+	for ext in $EXTLIST; do
+		for i in `seq 0 2`; do
+			SYM=${ext:$i:1}
+			if [[ -z "${ext:$i:1}" ]]; then
+				EXTN="$EXTN "
+			else
+				EXTN="$EXTN$SYM"
+			fi
+			EXTC=$(( $EXTC - 1 ))
+		done
+	done
+fi
+
+function put {
+	echo "$*" >>$HDR
+}
+
+echo "; Automatic generate!" > $HDR
+put ".ds 16"				# +0	reserved
+
+put ".ascii \"WildCommanderMDL\""	# +16	"WildCommanderMDL" signature
+put ".db $VER"				# +32	version
+put ".db 0"				# +33	reserved
+put ".db 1"				# +34	Page numbers (16 = 1page)
+put ".db 0"				# +35	Page number (every ZERO for 1page-plugin)
+
+put ".db 0x00,0x20"			# +36	6 records per 2 bytes. +0-pagenum, +1-blocks per 512 bytes
+put ".ds 10"				#	0 page 32 blocks (16K)
+
+put ".ds 16"				# +48	reserved
+
+put ".ascii \"$EXTN\""			# +64	extentions
+put ".ds $EXTC"				# 	extentions
+put ".db 0"				# +160	every ZERO
+
+put ".dw #0000,#0000" 			# +161	MAX SIZE of file
+
+put ".ascii \"$PNAME\""			# +165	Name of plugin
+
+put ".db 3"				# +197	Event for calling (0-ext, 1-load plugin, 2-on-timer, 3-menu, 0x14-on F4)
+
+put ".ds 6"				# +198	F4-text
+put ".ds 307"				# +204	reserved
+put ".db 0"				#	reserved

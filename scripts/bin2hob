@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# $1 - name
+# $2 - start
+# $3 - binary
+
+if [[ "$#" -lt 3 ]]; then
+	printf "Usage:\n\t$0 <hobeta name> <start adress> <binary file>\n"
+	exit
+fi
+
+FILE="/tmp/$3-bin2hob-$2-$1"
+
+FNAME=""
+
+A="$1"
+for i in 0 1 2 3 4 5 6 7; do
+	if [[ -z "${A:$i:1}" ]]; then
+		# echo "."
+		FNAME="$FNAME "
+	else
+		# echo "${A:$i:1}"
+		FNAME=$FNAME"${A:$i:1}"
+	fi
+done 
+echo "HOBNAME:[$FNAME]"
+
+printf "
+org	$2 - 17
+
+hobeta:
+	defm \"$FNAME"C"\"	; 0-8 Имя 8 расшерение 1
+	defw p_begin		; 9,10
+	defw p_end-p_begin	; 11,12
+	defw (p_end-p_begin+255)/256 ; 13,14 размер в секторах
+	defw 0			; 15,16 crc заголовка
+p_begin:
+	BINARY	\"$3\"
+p_end:
+" > "$FILE".asm
+
+z80asm -a -o"$1" "$FILE".asm
+rm -f "$FILE".*
