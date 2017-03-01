@@ -1,6 +1,7 @@
 #ifndef WCPLUGINSP_H_INCLUDED
 #define WCPLUGINSP_H_INCLUDED
 
+#define	wcheaderstart	0x6000
 #define	wcentrypoint	0x6006
 
 inline static void wcpluginsp_globals()__naked{

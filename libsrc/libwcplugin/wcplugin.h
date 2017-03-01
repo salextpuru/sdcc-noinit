@@ -34,6 +34,26 @@ extern uint32_t	file_len;
 // Active panel window (read)
 extern void*	active_panel_adr;
 
+// Get page in win0
+uint16_t wcGetW0Page();
+
+// Get page in win1
+uint16_t wcGetW1Page();
+
+// Get page in win2
+uint16_t wcGetW2Page();
+
+// Get page in win3
+uint16_t wcGetW3Page();
+
+// Get ABT flag
+uint8_t wcGetAbortFlag();
+
+// Get Enter flag
+uint8_t wcGetEnterFlag();
+
+// Get timer (+1 every 20ms)
+uint16_t wcGetTimer();
 
 #define wcWinTypeSimple		0
 #define wcWinTypeHText		1
@@ -143,6 +163,29 @@ void	wcCURHIDE(wcWindow* wnd);
 #define	wcYN_OK		0x01
 uint8_t	wcYNMENU(uint8_t mode);
 
-// 9
+// 9 Input string (without indicators)
+// Init string edit type 2
+// x,y		- position into the window
+// curpos	- cursor's position in the string
+// wlen		- size of visible string part
+// buf		- adress of buffer for the string
+// bufsize 	- size of string
+void	wcISTRinit2(wcWindow* wnd, uint8_t x, uint8_t y, uint8_t curpos, uint8_t wlen, char* buf, uint16_t bufsize);
+
+// Call eyery frame after wcISTRinit2 (edit process, without indicators)
+void	wcISTREdit2(wcWindow* wnd);
+
+// 9 Input string (with indicators)
+// Init string edit type 2
+// x,y		- position into the window
+// curpos	- cursor's position in the string
+// wlen		- size of visible string part
+// buf		- adress of buffer for the string
+// bufsize 	- size of string
+void	wcISTRinit2IndTop(wcWindow* wnd, uint8_t x, uint8_t y, uint8_t curpos, uint8_t wlen, char* buf, uint16_t bufsize);
+void	wcISTRinit2IndBottom(wcWindow* wnd, uint8_t x, uint8_t y, uint8_t curpos, uint8_t wlen, char* buf, uint16_t bufsize);
+
+// Call eyery frame after wcISTRinit2Ind* (edit process, with indicators)
+void	wcISTREdit2Ind(wcWindow* wnd);
 
 #endif

@@ -11,3 +11,4 @@
 *.map
 *.lib
 *.wmf
+.kdev_include_paths
