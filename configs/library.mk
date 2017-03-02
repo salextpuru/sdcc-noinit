@@ -23,3 +23,6 @@ LIBRARY+=libps2
 
 # WC plugin lib
 LIBRARY+=libwcplugin
+
+# Class control library
+LIBRARY+=libclass

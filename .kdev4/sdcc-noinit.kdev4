@@ -195,7 +195,6 @@ pattern=.hg
 targets=2
 
 [MakeBuilder]
-Default Make Environment Profile=
 Number Of Jobs=1
 Override Number Of Jobs=true
 
