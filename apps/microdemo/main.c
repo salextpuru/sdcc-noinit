@@ -210,8 +210,16 @@ void main(){
 		// Music
 		checkMusic();
 		//
+
 		conio_at(0,0);
 		print(musics[musicNumber].name);
+
+		conio_at(0,20);
+		nprint("SfS nprint [15]-------",15);
+		
+		conio_at(0,20);
+		nprintspc("SfS nprintspc [22]",25);
+		print("after spaces");
 		// Speed of screen output
 		delay(2);
 	}

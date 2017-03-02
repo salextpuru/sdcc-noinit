@@ -1,16 +1,14 @@
 #include "conio.h"
 
 void print(const char* s)__naked{
-s;
+	s;
 __asm;
 	ld	hl,#2
 	add	hl,sp
 	ld	e,(hl)
 	inc	hl
 	ld	d,(hl)
-	inc	hl
-	
-	ex de,hl
+	ex de,hl	;// hl = s
 
 print_loop:
 	ld	a,(hl)
@@ -20,6 +18,64 @@ print_loop:
 	inc	hl
 	jr	print_loop
 	
+__endasm;
+}
+
+void nprint(const char* s, uint8_t strsize)__naked{
+	s;strsize;
+__asm;
+	ld	hl,#2
+	add	hl,sp
+	ld	e,(hl)
+	inc	hl
+	ld	d,(hl)
+	inc	hl	;// hl = s
+	ld	b,(hl)	;// b = strsize
+	ld	c,#0	;// char counter
+	ex de,hl
+
+nprint_loop:
+	ld	a,(hl)
+	or	a
+	ret	z	;// exit \0
+	push	bc
+	call	_putchar_a
+	pop	bc
+	inc	hl
+	inc	c
+	djnz	nprint_loop
+	ret		;// exit strsize
+__endasm;
+}
+
+void nprintspc(const char* s, uint8_t strsize)__naked{
+	s;strsize;
+__asm;
+	ld	hl,#2
+	add	hl,sp
+	ld	e,(hl)
+	inc	hl
+	ld	d,(hl)
+	inc	hl	;// hl = s
+	ld	b,(hl)	;// b = strsize
+	ld	c,#0	;// char counter
+	ex de,hl
+	;
+	push	bc
+	call	nprint_loop
+	ld	a,c
+	pop	bc
+	sub	b
+	neg
+	ld	b,a	;// b=strsize-strlen(s)
+	;// print b spaces
+nprintspc_loop:
+	push	bc
+	ld	a,#0x20
+	call	_putchar_a
+	pop	bc
+	djnz	nprintspc_loop
+	ret		;// exit strsize
 __endasm;
 }
 
