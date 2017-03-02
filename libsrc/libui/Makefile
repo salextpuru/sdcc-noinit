@@ -1,7 +1,7 @@
 # Library Name
 LIBNAME=libclass.lib
 
-OBJS=base_class.rel win_class.rel scrfunc.rel
+OBJS=win_class.rel scrfunc.rel
 
 
 $(LIBDIR)/$(LIBNAME): $(LIBNAME)

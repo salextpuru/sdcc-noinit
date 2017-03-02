@@ -6,7 +6,6 @@
 #ifndef win_class_h_E
 #define win_class_h_E
 /*----------------------------------------------------------------------------*/
-#include <base_class.h>
 #include <scrfunc.h>
 
 /**
@@ -15,14 +14,6 @@
  * 	выводить в него курсор
  */
 typedef struct {
-	// -- Предок --
-	tBaseClass	parent;
-	
-	// -- Виртуальные методы --
-	void	(*Draw)(void* this);
-	
-	// -- Данные класса --
-	
 	// Размеры окна
 	uint8_t	x;
 	uint8_t	y;
@@ -48,12 +39,10 @@ typedef struct {
 	 */
 	curTypes	ctype;
 	
-}tWinClass;
-
-// Конструктор
-void tWinClass_Init(tWinClass* this);
+}tWindow;
 
 // Отрисовка класса (использует screen driver)
-void tWinClass_Draw(void* this);
+void tWindowDraw(tWindow* this);
+
 /*----------------------------------------------------------------------------*/
 #endif /* win_class_h_E */

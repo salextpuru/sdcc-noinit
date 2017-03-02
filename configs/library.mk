@@ -25,4 +25,4 @@ LIBRARY+=libps2
 LIBRARY+=libwcplugin
 
 # Class control library
-LIBRARY+=libclass
+LIBRARY+=libui
