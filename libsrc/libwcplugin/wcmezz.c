@@ -2,8 +2,8 @@
 #include <wcpluginsp.h>
 
 
-uint8_t wxMEZZ(wcWindow* win, uint8_t nmsg, const char* text, uint8_t x, uint8_t y)__naked{
-	win;text;x;y;nmsg;
+uint8_t wcMEZZ(wcWindow* win, uint8_t nmsg, const char* msgtable, uint8_t x, uint8_t y)__naked{
+	win;msgtable;x;y;nmsg;
 __asm;
 	iy_init
 

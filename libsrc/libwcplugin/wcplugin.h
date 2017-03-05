@@ -192,11 +192,34 @@ void	wcISTREdit2Ind(wcWindow* wnd);
 uint8_t wcTXTPR(wcWindow* win, const char* text, uint8_t x, uint8_t y);
 
 // 12 MEZZ	вывод сообщения в окне
-uint8_t wxMEZZ(wcWindow* win, uint8_t nmsg, const char* text, uint8_t x, uint8_t y);
+uint8_t wcMEZZ(wcWindow* win, uint8_t nmsg, const char* msgtable, uint8_t x, uint8_t y);
 
 // 15 GEDPL	восстановление паллитры, всех оффсетов и txt режима
 //		обязательно вызывать при запуске плагина!
 //		(включает основной txt экран)
 void	wcGEDPL();
+
+// 84 SCRLWOW	сдвинуть содержимое области в окне
+// mode - режим сдвига
+
+// Направление
+#define wcSCRL_UP		0x01
+#define wcSCRL_DOWN		0x00
+#define wcSCRL_LEFT		0x03
+#define wcSCRL_RIGHT		0x02
+
+// Очистка прокрученной строки
+#define wcSCRL_CLEAR		0x40
+
+// Сдвигать атрибуты
+#define wcSCRL_ATTRS		0x80
+
+// Шаг сдвига (1-16)
+#define wcSCRL_STEP(step)	((step-1)<<2)
+
+// Example (scroll up, 2 lines with attrs, clear):
+// mode = wcSCRL_UP | wcSCRL_STEP(2) | wcSCRL_ATTRS | wcSCRL_CLEAR;
+
+void wcSCRLWOW(wcWindow* win, uint8_t scroll_mode,  uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 
 #endif
