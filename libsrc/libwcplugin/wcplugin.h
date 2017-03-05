@@ -194,4 +194,9 @@ uint8_t wcTXTPR(wcWindow* win, const char* text, uint8_t x, uint8_t y);
 // 12 MEZZ	вывод сообщения в окне
 uint8_t wxMEZZ(wcWindow* win, uint8_t nmsg, const char* text, uint8_t x, uint8_t y);
 
+// 15 GEDPL	восстановление паллитры, всех оффсетов и txt режима
+//		обязательно вызывать при запуске плагина!
+//		(включает основной txt экран)
+void	wcGEDPL();
+
 #endif
