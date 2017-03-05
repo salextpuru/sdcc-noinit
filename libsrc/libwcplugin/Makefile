@@ -7,7 +7,7 @@ OBJS=keyfunc.rel  wccurhide.rel  wccurshow.rel  wcgadrw.rel \
      wcwaitforframe.rel  wcynmenu.rel wcpluginsp.rel \
      wcget0page.rel wcget1page.rel wcget2page.rel wcget3page.rel \
      wcgetabortflag.rel wcgetenterflag.rel wcgettimer.rel \
-     wcistr2.rel wcistr2ind.rel
+     wcistr2.rel wcistr2ind.rel wctxtpr.rel wcmezz.rel
 
 $(LIBDIR)/$(LIBNAME): $(LIBNAME)
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)
@@ -19,7 +19,7 @@ main.rel:
 	$(CC) -c $(COPTS) main.rel
 
 %.rel:%.c
-	$(CC) -c $(COPTS) $<
+	$(CC) --disable-warning 221 -c $(COPTS) $<
 
 %.rel:%.s
 	$(AS) -l -s -o $@ $<

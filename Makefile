@@ -14,6 +14,9 @@ APPDIR:=$(TOP)/bin
 CONFIGS:=$(TOP)/configs
 include $(CONFIGS)/*.mk
 
+# Toolchain path
+PATH:=$(PATH):$(TCPATH)
+
 # CRT0
 CRT0PATH=$(TOP)/libsrc/crt0/$(CRT0)
 

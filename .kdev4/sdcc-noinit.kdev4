@@ -200,3 +200,6 @@ Override Number Of Jobs=true
 
 [Project]
 VersionControlSupport=kdevgit
+
+[SourceFileTemplates]
+LastUsedTemplate=/home/salex/.local/share/kdevfiletemplates/template_descriptions/cpp_basic.desktop

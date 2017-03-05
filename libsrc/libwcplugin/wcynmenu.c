@@ -2,6 +2,7 @@
 #include <wcpluginsp.h>
 
 uint8_t	wcYNMENU(uint8_t mode)__naked{
+	mode;
 __asm;
 	iy_init
 	get_a

@@ -4,7 +4,7 @@
 #define	wcheaderstart	0x6000
 #define	wcentrypoint	0x6006
 
-inline static void wcpluginsp_globals()__naked{
+inline static void wcpluginsp_globals()__naked {
 __asm;
 	.globl wcplsp_iy_init
 	.globl wcplsp_get_a
@@ -65,6 +65,5 @@ __asm;
 
 __endasm;
 }
-
 
 #endif /* WCPLUGINSP_H_INCLUDED */

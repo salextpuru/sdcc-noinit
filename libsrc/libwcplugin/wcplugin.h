@@ -188,4 +188,10 @@ void	wcISTRinit2IndBottom(wcWindow* wnd, uint8_t x, uint8_t y, uint8_t curpos, u
 // Call eyery frame after wcISTRinit2Ind* (edit process, with indicators)
 void	wcISTREdit2Ind(wcWindow* wnd);
 
+// 11 TXTPR     вывод текста в окне
+uint8_t wcTXTPR(wcWindow* win, const char* text, uint8_t x, uint8_t y);
+
+// 12 MEZZ	вывод сообщения в окне
+uint8_t wxMEZZ(wcWindow* win, uint8_t nmsg, const char* text, uint8_t x, uint8_t y);
+
 #endif
