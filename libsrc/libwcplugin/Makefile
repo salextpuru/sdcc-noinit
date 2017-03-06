@@ -8,8 +8,9 @@ OBJS=keyfunc.rel  wccurhide.rel  wccurshow.rel  wcgadrw.rel \
      wcget0page.rel wcget1page.rel wcget2page.rel wcget3page.rel \
      wcgetabortflag.rel wcgetenterflag.rel wcgettimer.rel \
      wcistr2.rel wcistr2ind.rel wctxtpr.rel wcmezz.rel wcgedpl.rel \
-     wcscrlwow.rel
-
+     wcscrlwow.rel wcloadsave512.rel wcgipagpl.rel wctentry.rel \
+     wcadir.rel
+     
 $(LIBDIR)/$(LIBNAME): $(LIBNAME)
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)
 

@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <wckeyfunc.h>
+#include <wcfatfunc.h>
 
 // Entry code
 #define	wcpEntryExt	0x00
@@ -61,28 +62,28 @@ uint16_t wcGetTimer();
 
 // Data window type 0
 typedef struct {
-	uint8_t curx;	//12
-	uint8_t cury;	//13
-	uint8_t cur_color;//14
-	uint8_t cur_wcolor;//15
+	uint8_t curx;	//12	позиция курсора в окне (от 1)
+	uint8_t cury;	//13	нижний ограничитель
+	uint8_t cur_color;//14	цвет курсора (накладывается по маске из +1(1))
+	uint8_t cur_wcolor;//15 цвет окна под курсором
 } wcwintype0data;
 
 // Data window type 1
 typedef struct {
-	char* topHeader;//12
-	char* botHeader;//14
-	char* text;//16
+	char* topHeader;//12	адрес строки для верхнего заголовка окна
+	char* botHeader;//14	адрес строки для нижнего заголовка окна
+	char* text;//16		адрес строки/абзаца для вывода в окно
 } wcwintype1data;
 
 // Data window type 2
 typedef struct {
-	uint8_t curx;//12
-	uint8_t cury;//13
-	uint8_t cur_color;//14
-	uint8_t cur_wcolor;//15
-	char* topHeader;//16
-	char* botHeader;//18
-	char* text;//20
+	uint8_t curx;//12	позиция курсора в окне (от 1)
+	uint8_t cury;//13	нижний ограничитель
+	uint8_t cur_color;//14	цвет курсора (накладывается по маске из +1(1))
+	uint8_t cur_wcolor;//15 цвет окна под курсором
+	char* topHeader;//16	адрес строки для верхнего заголовка окна
+	char* botHeader;//18	адрес строки для нижнего заголовка окна
+	char* text;//20		адрес строки/абзаца для вывода в окно
 } wcwintype2data;
 
 // Data window all types
@@ -94,18 +95,28 @@ typedef union{
 
 // Window descriptor
 typedef struct {
-	uint8_t		winType;	//+0
-	uint8_t		curColorMask;	//+1
-	uint8_t		winX;		//+2
-	uint8_t		winY;		//+3
-	uint8_t		winWidth;	//+4
-	uint8_t		winHeigh;	//+5
-	uint8_t		winColor;	//+6
-	uint8_t		winReserv0;	//+7
-	void*		winStoreBuf;	//+8
-	uint8_t		winLine1;	//+10
-	uint8_t		winLine2;	//+11
-	wcwindata	data;		//+12... (depend from winType)
+	uint8_t		winType;	//+0	0 - стандартное окно
+					//	1 - окно с заголовками и текстом (но без курсора)
+					//	2 - окно с заголовками, текстом с курсором
+	//
+	uint8_t		curColorMask;	//+1	маска цвета курсора
+	uint8_t		winX;		//+2	позиция окна X
+	uint8_t		winY;		//+3	позиция окна Y
+	uint8_t		winWidth;	//+4	ширина окна (Width)  0 = во весь экран
+	uint8_t		winHeigh;	//+5	высота окна (Height) 0 = во весь экран
+	uint8_t		winColor;	//+6	цвет окна (Paper+Ink)
+	uint8_t		winReserv0;	//+7	reserved (always=0!)
+	//
+	void*		winStoreBuf;	//+8	адрес буфера, где лежит информация из под окна
+					//	#0000=окно не выведено, система меняет эту переменную на актуальное значение!
+					//	#FFFF=при выводе окна буфер не используется!
+	//
+	uint8_t		winLine1;	//+10	линия разделитель 1 
+	uint8_t		winLine2;	//+11	линия разделитель 2
+					//	если !=0 то выводим оную.
+					//	Значение задает смещение по вертикали с низу!
+					
+	wcwindata	data;		//+12... (depend from winType, see wcwintype0data, wcwintype1data, wcwintype2data)
 } wcWindow;
 
 // wait for farme (function enabled Interrupts!)
