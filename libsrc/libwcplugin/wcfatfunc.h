@@ -31,7 +31,68 @@ void wcTENTRY(void* tentry);
 // 56	ADIR функции для работы с активным каталогом
 //	i: mode #00 - спозиционировать на начало активного каталога (как на файл)
 //	   mode #01 - сброс счётчиков для FindNext (вызывает GDIR, указатель становится на активном каталоге)
+#define wcAdirGoToActiveDir	0x00
+#define wcAdirResetFindNext	0x01
 void wcADIR(uint8_t mode);
+
+// 57	STREAM	работа с потоками
+//	mode:
+//		#FF: сделать активным root dir (более никаких параметров не учитывает)
+//		#FE: клонировать активный поток в потоки #00 и #01.
+//		     В момент запуска плагина активен поток из панели.
+//		     Автоматически делается активным поток #00(никаких других параметров не учитывает)
+//		#00/#01: номер потока, требует BC.
+//	
+//	part:
+//		раздел (пока не учитывается)
+//	
+//	dev: 
+//		0-SD(ZC)
+//		1-NemoMaster
+//		2-NemoSlave
+//		4-SmucMaster
+//		5-SmucSlave
+//		0xFF - включает поток из mode (код возврата не учитывается)
+//		0xFE - создает/пересоздает поток
+//
+//	return:	0  - 0k
+//		FF - Error
+//
+#define	wcSTRMOD_00		0x00
+#define	wcSTRMOD_01		0x01
+#define	wcSTRMOD_CLONEACTIVE	0xFE
+#define	wcSTRMOD_ACTIVEROOT	0xFF
+//
+#define	wcSTRDEV_SDZC	0x00
+#define	wcSTRDEV_NEMOM	0x01
+#define	wcSTRDEV_NEMOS	0x02
+#define	wcSTRDEV_SMUCM	0x04
+#define	wcSTRDEV_SMUCS	0x05
+#define wcSTRDEV_CREATE	0xFE
+#define wcSTRDEV_INCMOD	0xFF
+uint8_t wcSTREAM(uint8_t mode, uint8_t part, uint8_t dev);
+
+// File/Dir entry descriptor
+typedef struct {
+	uint32_t	size;
+	uint16_t	date;
+	uint16_t	time;
+	uint8_t		flag;
+	char		name[0x100];
+} wcENTRY;
+
+// 58	FindNext
+//	return:
+//		FF - end of directory, entry not found
+//		00 - entry found, it can find next
+
+// Mode defines:
+#define		wcFindNextEntry		0x00
+#define		wcFindNextFile		0x01
+#define		wcFindNextDir		0x02
+//
+uint8_t wcFINDNEXT(wcENTRY* buf, uint8_t mode);
+
 
 
 

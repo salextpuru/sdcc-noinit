@@ -1,5 +1,6 @@
 #include <string.h>
 #include <wcplugin.h>
+#include <stdio.h>
 
 const wcWindow w={
 	1,0xFF, // Header
@@ -50,6 +51,7 @@ void scroll_test(uint8_t mode){
 }
 
 void main(){
+/*
 	// Edited buffer
 	char buf[0x20];
 	memset(buf,' ', sizeof(buf));
@@ -140,6 +142,20 @@ void main(){
 	wcPrint(&w, "Test wcSCRLWOW down", 25, 0, 0xF1);
 	scroll_test(wcSCRL_DOWN | wcSCRL_STEP(1) | wcSCRL_ATTRS | wcSCRL_CLEAR);
 	wcPrint(&w, "Test wcSCRLWOW down done", 25, 0, 0xF1);
+	while(!wcKeyFunc(wcESC)){}
+*/
+	
+	clw();
+	wcADIR(wcAdirResetFindNext);
+	{
+		wcENTRY	entry;
+		char s[300];
+		uint8_t y=3;
+		while( !wcFINDNEXT(&entry, wcFindNextEntry) ){
+			sprintf(s,"%.2X %li %s",entry.flag, entry.size, entry.name );
+			wcPrint(&w, s, 1, y++, 0xC0);
+		}
+	}
 	while(!wcKeyFunc(wcESC)){}
 	
 	// Exit
