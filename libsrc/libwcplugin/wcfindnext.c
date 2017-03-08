@@ -1,7 +1,7 @@
 #include <wcplugin.h>
 #include <wcpluginsp.h>
 
-uint8_t wcFINDNEXT(wcENTRY* buf, uint8_t mode)__naked{
+uint8_t wcFINDNEXT(void* wcentry, uint8_t mode)__naked{
 	mode;
 __asm;
 	iy_init

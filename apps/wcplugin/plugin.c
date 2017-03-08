@@ -2,6 +2,10 @@
 #include <wcplugin.h>
 #include <stdio.h>
 
+// Enable tests
+#define UI_TEST		0
+#define FAT_TEST	1
+
 const wcWindow w={
 	1,0xFF, // Header
 	4,4,	// xy
@@ -51,7 +55,8 @@ void scroll_test(uint8_t mode){
 }
 
 void main(){
-/*
+//-------------------------------------------------------------------
+#if UI_TEST
 	// Edited buffer
 	char buf[0x20];
 	memset(buf,' ', sizeof(buf));
@@ -143,20 +148,51 @@ void main(){
 	scroll_test(wcSCRL_DOWN | wcSCRL_STEP(1) | wcSCRL_ATTRS | wcSCRL_CLEAR);
 	wcPrint(&w, "Test wcSCRLWOW down done", 25, 0, 0xF1);
 	while(!wcKeyFunc(wcESC)){}
-*/
-	
+#endif /* UI_TEST */
+
+
+//-------------------------------------------------------------------
+#if FAT_TEST
+	// FINDNEXT test
 	clw();
 	wcADIR(wcAdirResetFindNext);
 	{
-		wcENTRY	entry;
 		char s[300];
+		uint8_t		buf[0x109];
+		wcENTRY*	entry=(void*)buf;
+		
 		uint8_t y=3;
-		while( !wcFINDNEXT(&entry, wcFindNextEntry) ){
-			sprintf(s,"%.2X %li %s",entry.flag, entry.size, entry.name );
+		while( !wcFINDNEXT(entry, wcFindNextEntry) ){
+			sprintf(s,"%.2X %li %s",entry->flag, entry->size, entry->name );
 			wcPrint(&w, s, 1, y++, 0xC0);
 		}
 	}
 	while(!wcKeyFunc(wcESC)){}
+	
+	// FENTRY test
+	clw();
+	wcADIR(wcAdirResetFindNext);
+	{
+		char s[300];
+		uint8_t		buf[0x109];
+		wcENTRY*	entry=(void*)buf;
+		
+		strcpy(entry->name,"test.ini");
+		entry->flag = wcFENTRY_FILE;
+		
+		if( !wcFENTRY(entry) ){
+			// Found
+			sprintf(s,"File %s found. Size %li bytes.", entry->name, entry->size);
+		}
+		else{
+			// NOT Found
+			sprintf(s,"File %s NOT found.", entry->name);
+		}
+		wcPrint(&w, s, 1, 1, 0xC0);
+	}
+	while(!wcKeyFunc(wcESC)){}
+
+#endif /* FAT_TEST */
 	
 	// Exit
 	wcRRESB(&w);

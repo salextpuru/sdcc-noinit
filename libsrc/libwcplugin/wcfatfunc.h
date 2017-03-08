@@ -78,7 +78,7 @@ typedef struct {
 	uint16_t	date;
 	uint16_t	time;
 	uint8_t		flag;
-	char		name[0x100];
+	char		name[0];
 } wcENTRY;
 
 // 58	FindNext
@@ -90,10 +90,32 @@ typedef struct {
 #define		wcFindNextEntry		0x00
 #define		wcFindNextFile		0x01
 #define		wcFindNextDir		0x02
+// Example:
+//		uint8_t		buf[0x100+0x09];	// - Buffer (Maximum size)
+//		wcENTRY*	entry=(void*)buf;	// - entry
+//		// Find all file and dirs in current directory
+//		while( !wcFINDNEXT(entry, wcFindNextEntry) ){
+//			...... Enrty FOUND! DO SOMETHING
+//			entry->size; entry->date;
+//			entry->time; entry->flag; // (& 0x10=dir, else =file)
+//			entry->name; // Maximum size depend from buffer size
+//		}
 //
-uint8_t wcFINDNEXT(wcENTRY* buf, uint8_t mode);
+//
+uint8_t wcFINDNEXT(void* wcentry, uint8_t mode);
 
-
-
+// 59	FENTRY
+// i:
+//	wcentry - pointer to wcENTRY
+//	wcentry->flag = 0x00 for file
+//	wcentry->flag = 0x10 for directory
+//	wcentry->name - name or path
+// o:
+//	return 0	if file/dir found
+//	return FF	if file/dir NOT found
+//	if found, wcentry->size = size of found file
+#define wcFENTRY_FILE		0x00
+#define wcFENTRY_DIR		0x10
+uint8_t wcFENTRY(void* wcentry);
 
 #endif // WCFATFUNC_H
