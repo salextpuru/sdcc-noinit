@@ -85,7 +85,6 @@ typedef struct {
 //	return:
 //		FF - end of directory, entry not found
 //		00 - entry found, it can find next
-
 // Mode defines:
 #define		wcFindNextEntry		0x00
 #define		wcFindNextFile		0x01
@@ -116,6 +115,54 @@ uint8_t wcFINDNEXT(void* wcentry, uint8_t mode);
 //	if found, wcentry->size = size of found file
 #define wcFENTRY_FILE		0x00
 #define wcFENTRY_DIR		0x10
+//
 uint8_t wcFENTRY(void* wcentry);
+
+// 62	GFILE	выставить указатель на начало найденного файла
+//	вызывается после FENTRY
+void wcGFILE();
+
+// 63	GDIR	сделать найденный каталог активным
+//	(вызывается после FENTRY!)
+//	!!недопустимо вызывать в потоке активной панели!!
+//	(можно вызывать после создания/клонирования потока функцией STREAM)
+void wcGDIR();
+
+// 72	MKfile	создание файла в активном каталоге
+// 	File descriptor for make file function
+typedef struct {
+	uint8_t		flag;
+	uint32_t	size;
+	char		name[0];
+} wcMkFileEntry;
+// Example:
+//		uint8_t		buf[0x100+0x05];	// - Buffer (Maximum size)
+//		wcMkFileEntry*	entry=(void*)buf;	// - entry
+//		wcMKFILE(entry);
+//
+// Return 0 - Ok, file created.
+// Else - error code:
+//	1 - long name is not valid (mkfile, mkdir, rename, delete)
+//	2 - short name index fatality (mkfile, mkdir, rename)
+//	3 - long name already exists  (mkfile, mkdir, rename)
+//	4 - short name already exists (mkfile, mkdir, rename)
+//	8 - source file/dir not found (rename, delete)
+//	16 - not enough space (dir expanding, mkdir, mkfile)
+//	255 - unknown error (what is it ?!)
+uint8_t wcMKFILE(void* wcmkfileentry);
+
+// 73	MKdir	создание каталога в активной директории
+//	name - имя каталога
+//
+// Return 0 - Ok, directory created.
+// Else - error code:
+//	1 - long name is not valid (mkfile, mkdir, rename, delete)
+//	2 - short name index fatality (mkfile, mkdir, rename)
+//	3 - long name already exists  (mkfile, mkdir, rename)
+//	4 - short name already exists (mkfile, mkdir, rename)
+//	8 - source file/dir not found (rename, delete)
+//	16 - not enough space (dir expanding, mkdir, mkfile)
+//	255 - unknown error (what is it ?!)
+uint8_t wcMKDIR(const char* name);
 
 #endif // WCFATFUNC_H

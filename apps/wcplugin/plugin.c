@@ -6,7 +6,7 @@
 #define UI_TEST		0
 #define FAT_TEST	1
 
-const wcWindow w={
+wcWindow w={
 	1,0xFF, // Header
 	4,4,	// xy
 	70,18,	// wh
@@ -154,6 +154,7 @@ void main(){
 //-------------------------------------------------------------------
 #if FAT_TEST
 	// FINDNEXT test
+	w.data.type1.topHeader="FINDNEXT test";
 	clw();
 	wcADIR(wcAdirResetFindNext);
 	{
@@ -170,6 +171,7 @@ void main(){
 	while(!wcKeyFunc(wcESC)){}
 	
 	// FENTRY test
+	w.data.type1.topHeader="FENTRY test";
 	clw();
 	wcADIR(wcAdirResetFindNext);
 	{
@@ -183,15 +185,68 @@ void main(){
 		if( !wcFENTRY(entry) ){
 			// Found
 			sprintf(s,"File %s found. Size %li bytes.", entry->name, entry->size);
+			wcPrint(&w, s, 1, 1, 0xC0);
+			// GFILE
+			wcGFILE();
+			{
+				static char rbuf[0x200];
+				memset(rbuf,0,sizeof(buf));
+				if( wcLOAD512(rbuf,1) ){
+					wcPrint(&w, "File read.", 1, 2, 0xC0);
+					rbuf[entry->size] = 0; // End of text
+					wcTXTPR(&w,rbuf,1,3);
+				}
+				else{
+					wcPrint(&w, "File read error.", 1, 2, 0xC0);
+				}
+			}
 		}
 		else{
 			// NOT Found
 			sprintf(s,"File %s NOT found.", entry->name);
+			wcPrint(&w, s, 1, 1, 0xC0);
 		}
-		wcPrint(&w, s, 1, 1, 0xC0);
 	}
 	while(!wcKeyFunc(wcESC)){}
 
+	
+	// MKFILE test
+	w.data.type1.topHeader="MKFILE test";
+	clw();
+	wcADIR(wcAdirResetFindNext);
+	{
+		const char* str="This is text in file\r"
+				"Some lines :) 1\r"
+				"Some lines :) 2\r"
+				"Some lines :) 3\r"
+				"Some lines :) 4\r";
+		char s[300];
+		uint8_t	error;
+		//
+		uint8_t		buf[0x105];
+		wcMkFileEntry*	entry=(void*)buf;
+		//
+		strcpy(entry->name,"test.ini");
+		entry->flag = wcFENTRY_FILE;
+		entry->size = strlen(str);
+		//
+		error =  wcMKFILE(entry);
+		if(!error){
+			sprintf(s,"File %s created. Size %li bytes.", entry->name, entry->size);
+			wcPrint(&w, s, 1, 1, 0xC0);
+			if( wcSAVE512(str, 1 ) ){
+				wcPrint(&w, "Saved", 1, 2, 0xC0);
+			}else{
+				wcPrint(&w, "Not Saved", 1, 2, 0xC0);
+			}
+		}
+		else{
+			sprintf(s,"File %s creation error, code %i.", entry->name, (uint16_t)error);
+			wcPrint(&w, s, 1, 1, 0xC0);
+		}
+	}
+	while(!wcKeyFunc(wcESC)){}
+	
 #endif /* FAT_TEST */
 	
 	// Exit

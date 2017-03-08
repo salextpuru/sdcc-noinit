@@ -70,9 +70,9 @@ typedef struct {
 
 // Data window type 1
 typedef struct {
-	char* topHeader;//12	адрес строки для верхнего заголовка окна
-	char* botHeader;//14	адрес строки для нижнего заголовка окна
-	char* text;//16		адрес строки/абзаца для вывода в окно
+	const char* topHeader;//12	адрес строки для верхнего заголовка окна
+	const char* botHeader;//14	адрес строки для нижнего заголовка окна
+	const char* text;//16		адрес строки/абзаца для вывода в окно
 } wcwintype1data;
 
 // Data window type 2
@@ -81,9 +81,9 @@ typedef struct {
 	uint8_t cury;//13	нижний ограничитель
 	uint8_t cur_color;//14	цвет курсора (накладывается по маске из +1(1))
 	uint8_t cur_wcolor;//15 цвет окна под курсором
-	char* topHeader;//16	адрес строки для верхнего заголовка окна
-	char* botHeader;//18	адрес строки для нижнего заголовка окна
-	char* text;//20		адрес строки/абзаца для вывода в окно
+	const char* topHeader;//16	адрес строки для верхнего заголовка окна
+	const char* botHeader;//18	адрес строки для нижнего заголовка окна
+	const char* text;//20		адрес строки/абзаца для вывода в окно
 } wcwintype2data;
 
 // Data window all types
