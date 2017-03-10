@@ -26,3 +26,6 @@ LIBRARY+=libwcplugin
 
 # Class control library
 LIBRARY+=libui
+
+# RS232 Library
+LIBRARY+=libuart
