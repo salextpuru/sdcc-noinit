@@ -165,4 +165,35 @@ uint8_t wcMKFILE(void* wcmkfileentry);
 //	255 - unknown error (what is it ?!)
 uint8_t wcMKDIR(const char* name);
 
+// 74	REName	переименование файла/каталога
+// 	wcentry.flag - 0x00 - file, 0x10 - directory
+// 	wcentry.name - old name
+//	Other fields of wcentry not used.
+//
+// Return 0 - Ok, file or directory renamed,
+// else - error code, see wcMKDIR.
+//
+// Example:
+//		uint8_t		buf[0x100+0x09];	// - Buffer (Maximum size)
+//		wcENTRY*	entry=(void*)buf;	// - entry
+//		// Find all file and dirs in current directory
+//		entry->flag=wcFENTRY_FILE;
+//		entry->name="my_file_OLD_name.txt";
+//		if( wcRENAME(entry, "my_file_NEW_name.txt") ){
+//			// Error ! (non-zero return)
+//		}
+//		else{
+//			// All ok! File is renamed!
+//		}
+uint8_t wcRENAME(void* wcentry, const char* new_name);
+
+// 75	DelFl	удалдение файла/каталога
+// 	wcentry.flag - 0x00 - file, 0x10 - directory
+// 	wcentry.name - name of file or directory
+//	Other fields of wcentry not used.
+//
+// Return 0 - Ok, file or directory removed,
+// else - error code, see wcMKDIR.
+uint8_t wcDELENTRY(void* wcentry);
+
 #endif // WCFATFUNC_H
