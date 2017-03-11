@@ -56,6 +56,27 @@ uint8_t wcGetEnterFlag();
 // Get timer (+1 every 20ms)
 uint16_t wcGetTimer();
 
+// Colors
+enum wcColors{
+	wcBlue		= 1,
+	wcRed		= 2,
+	wcMagenta	= 3,
+	wcGreen		= 4,
+	wcCyan		= 5,
+	wcYellow	= 6,
+	wcGray		= 7,
+	wcBlack 	= 8,
+	wcLightBlue	= 1,
+	wcLightRed	= 2,
+	wcLightMagenta	= 3,
+	wcLightGreen	= 4,
+	wcLightCyan	= 5,
+	wcLightYellow	= 6,
+	wcWhite		= 7,
+};
+
+#define wcColorCode( ink, paper ) ((( paper & 0xFF ) << 4) |  (ink & 0xFF))
+
 #define wcWinTypeSimple		0
 #define wcWinTypeHText		1
 #define wcWinTypeHTextCur	2

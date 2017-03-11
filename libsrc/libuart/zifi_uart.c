@@ -70,6 +70,7 @@ zifi_uart_read_end:
 	sub	e
 	;//
 	pop	ix
+	ld 	l,a
 	ret
 __endasm;
 }
@@ -87,7 +88,7 @@ __asm;
 	ld	d,e ;// d=e=size
 	;// is bytes in fifo?
 zifi_uart_write_loop:
-	ld	bc,#zifi_input_fifo_status
+	ld	bc,#zifi_output_fifo_status
 	in	a,(c)
 	or	a
 	jr	z, zifi_uart_write_end
@@ -105,6 +106,7 @@ zifi_uart_write_end:
 	sub	e
 	;//
 	pop	ix
+	ld 	l,a
 	ret
 __endasm;
 }

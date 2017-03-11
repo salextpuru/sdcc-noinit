@@ -26,14 +26,14 @@ __asm;
 	out	(c),a
 	;// Set default speed 115200
 	ld	bc,#RG_DLM
-	ld	a,#0x01
+	ld	a,#0x00
 	out	(c),a
 	dec 	b
-	ld	a,#0x00
+	ld	a,#0x01
 	out	(c),a
 	;// for check
 	in	a,(c)
-	cp	#0x00
+	cp	#0x01
 	jr	nz, zxmc_uart_init_error
 	;//
 zxmc_uart_init_finalize:
@@ -127,6 +127,7 @@ zxmc_uart_read_end:
 	sub	e
 	;//
 	pop	ix
+	ld 	l,a
 	ret
 __endasm;
 }
@@ -147,7 +148,7 @@ zxmc_uart_write_loop:
 	ld	bc,#RG_LSR
 	in	a,(c)
 	and 	#0x20 ;// Very big question ??
-	jr	nz, zxmc_uart_write_end
+	jr	z, zxmc_uart_write_end
 	;// write byte
 	ld	bc,#RG_DAT
 	ld	a,(hl)
@@ -162,6 +163,7 @@ zxmc_uart_write_end:
 	sub	e
 	;//
 	pop	ix
+	ld 	l,a
 	ret
 __endasm;
 }

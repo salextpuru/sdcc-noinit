@@ -4,10 +4,13 @@
 # APPLICATIONS+=testapp
 
 # Simple demo
-APPLICATIONS+=microdemo
+# APPLICATIONS+=microdemo
 
 # Test if zx keyboard (no works yet)
 # APPLICATIONS+=zxkbdtest
 
-# WC plugin
+# WC plugin (some tests)
 APPLICATIONS+=wcplugin
+
+# WC plugin (terminal test)
+APPLICATIONS+=wcptermtst
