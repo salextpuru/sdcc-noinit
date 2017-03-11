@@ -92,11 +92,16 @@ static void tputc(char c){
 
 static void mainLoop(){
 	uint16_t oldt=wcGetTimer();
+	uint16_t pb=0;
+	uint16_t pe=0;
+	static uint8_t buf[0x1000];
 	
 	while(1){
-		uint8_t  c;
+		uint8_t  r;
+		uint16_t rdsz;
 		// Опрос клавиатуры
 		if(oldt != wcGetTimer()){
+			uint8_t  c;
 			oldt=wcGetTimer();
 			// ESC - выход
 			if( wcKeyFunc(wcESC) ){
@@ -110,8 +115,24 @@ static void mainLoop(){
 			}
 		}
 		
+		rdsz=1;
+		while( r = uart->read(buf+pe, rdsz) ){
+			pe+=r;
+			if(pe>=sizeof(buf)){
+				pe=0;
+			}
+			if( ( rdsz = sizeof(buf) - pe ) > 0xFF ){
+				rdsz=0xFF;
+			}
+		}
+		
 		// Вывод на экран принятого.
-		if( uart->read(&c, sizeof(c)) > 0 ){
+		if( pb!=pe ){
+			uint8_t  c=buf[pb++];
+			if(pb>=sizeof(buf)){
+				pb=0;
+			}
+			//
 			if(c>=0x20){
 				tputc(c);
 			}
@@ -122,7 +143,7 @@ static void mainLoop(){
 					break;
 				}
 				case '\n':{
-					tnewline(1);
+					// tnewline(1);
 					break;
 				}
 				default:
@@ -166,3 +187,5 @@ void main(){
 	// Exit
 	closew();
 }
+
+
