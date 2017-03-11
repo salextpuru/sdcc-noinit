@@ -1,3 +1,4 @@
+#include <zifi_uart.h>
 #include <stdint.h>
 
 static void helper()__naked{
@@ -14,8 +15,7 @@ __asm;
 __endasm;
 }
 
-
-uint8_t zifi_uart_init()__naked{
+static uint8_t zifi_uart_init()__naked{
 __asm;
 	ld	bc,#zifi_command_reg
 	ld      de,#0xfff1
@@ -39,7 +39,8 @@ zifi_uart_init_error:
 __endasm;
 }
 
-uint8_t zifi_uart_read(void* buf, uint8_t size)__naked{
+static uint8_t zifi_uart_read(void* buf, uint8_t size)__naked{
+	buf;size;
 __asm;
 	push	ix
 	ld	ix,#0004
@@ -73,7 +74,8 @@ zifi_uart_read_end:
 __endasm;
 }
 
-uint8_t zifi_uart_write(void* buf, uint8_t size)__naked{
+static uint8_t zifi_uart_write(void* buf, uint8_t size)__naked{
+	buf;size;
 __asm;
 	push	ix
 	ld	ix,#0004
@@ -103,6 +105,28 @@ zifi_uart_write_end:
 	sub	e
 	;//
 	pop	ix
+	ret
+__endasm;
+}
+
+static uint8_t	zifi_uart_setbauds(uint32_t bps)__naked{
+	bps;
+__asm;
+	ld	hl,#0000
+	ret
+__endasm;
+}
+
+static zxuart zifi_uart_dsc = {
+	.init = zifi_uart_init,
+	.setbauds = zifi_uart_setbauds,
+	.read = zifi_uart_read,
+	.write = zifi_uart_write
+};
+
+zxuart* zifi_uart()__naked{
+__asm;
+	ld	hl,#_zifi_uart_dsc
 	ret
 __endasm;
 }

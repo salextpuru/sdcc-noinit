@@ -1,7 +1,7 @@
 # Library Name
 LIBNAME=libuart.lib
 
-OBJS=zifi_uart.rel
+OBJS=zifi_uart.rel zxmc_uart.rel
 
 $(LIBDIR)/$(LIBNAME): $(LIBNAME)
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)
