@@ -10,7 +10,10 @@
 # APPLICATIONS+=zxkbdtest
 
 # WC plugin (some tests)
-APPLICATIONS+=wcplugin
+# APPLICATIONS+=wcplugin
 
 # WC plugin (terminal test)
-APPLICATIONS+=wcptermtst
+# APPLICATIONS+=wcptermtst
+
+# WC plugin ()
+APPLICATIONS+=wcpzxmczifi
