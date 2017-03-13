@@ -21,6 +21,9 @@ LIBRARY+=libps2
 # ZX keyboard (not work yet)
 # LIBRARY+=libzxkbd
 
+# Ring buffer
+LIBRARY+=libringbuf
+
 # WC plugin lib
 LIBRARY+=libwcplugin
 
