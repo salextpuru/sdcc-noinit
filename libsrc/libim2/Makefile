@@ -8,14 +8,14 @@ $(LIBDIR)/$(LIBNAME): $(LIBNAME)
 $(LIBNAME): $(OBJS)
 	$(CCLIB) a $(LIBNAME) *.rel
 
-main.rel:
-	$(CC) -c $(COPTS) main.c
-
-%.rel:%.c
+%.rel:%.c *.h
 	$(CC) -c $(COPTS) $<
 
 %.rel:%.s
 	$(AS) -l -s -o $@ $<
 
-clean: 
+%.hS:%.h
+	$(S2HS) $< $@
+
+clean:
 	rm -f *.lib *.lst *.sym *.exp *.bin *.map *.mem *.lnk *.ihx *.rel *.rst *.asm *.bin crt0.s *.rel *.hS *.\$$C

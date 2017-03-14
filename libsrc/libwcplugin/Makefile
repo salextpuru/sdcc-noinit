@@ -19,10 +19,7 @@ $(LIBDIR)/$(LIBNAME): $(LIBNAME)
 $(LIBNAME): $(OBJS)
 	$(CCLIB) a $(LIBNAME) *.rel
 
-main.rel:
-	$(CC) -c $(COPTS) main.rel
-
-%.rel:%.c
+%.rel:%.c *.h
 	$(CC) --disable-warning 221 -c $(COPTS) $<
 
 %.rel:%.s
@@ -31,5 +28,5 @@ main.rel:
 %.hS:%.h
 	$(S2HS) $< $@
 
-clean: 
+clean:
 	rm -f *.lib *.lst *.sym *.exp *.bin *.map *.mem *.lnk *.ihx *.rel *.rst *.asm *.bin crt0.s *.rel *.hS *.\$$C

@@ -19,10 +19,13 @@ LIBRARY+=libconio
 LIBRARY+=libps2
 
 # ZX keyboard (not work yet)
-# LIBRARY+=libzxkbd
+LIBRARY+=libzxkbd
 
 # Ring buffer
 LIBRARY+=libringbuf
+
+# Сокеты
+LIBRARY+=libsocket
 
 # WC plugin lib
 LIBRARY+=libwcplugin

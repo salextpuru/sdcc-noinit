@@ -1,10 +1,9 @@
 # Library Name
-LIBNAME=libay.lib
+LIBNAME=libsocket.lib
 
-OBJS=pt3xplayer_s.rel pt3xplayer.rel
-OBJS+=stc_player_s.rel stc_player.rel
+OBJS=socket.rel
 
-$(LIBDIR)/$(LIBNAME): $(LIBNAME)
+$(LIBDIR)/$(LIBNAME): $(LIBNAME) 
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)
 
 $(LIBNAME): $(OBJS)
