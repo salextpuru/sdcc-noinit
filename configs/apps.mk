@@ -9,6 +9,9 @@
 # Test if zx keyboard (no works yet)
 # APPLICATIONS+=zxkbdtest
 
+# Test libringbuf
+APPLICATIONS+=test-libringbuf
+
 # WC plugin (some tests)
 # APPLICATIONS+=wcplugin
 

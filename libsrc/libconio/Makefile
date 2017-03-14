@@ -1,6 +1,6 @@
 LIBNAME=libconio.lib
 
-HSFILES=conio_const.hS zxsysvar_const.hS
+HSFILES=conio_const.hS
 
 OBJS= conio_s.rel conio.rel conio_var.rel  koi8r-8x8.rel
 #printf.rel

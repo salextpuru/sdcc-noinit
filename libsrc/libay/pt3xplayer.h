@@ -4,19 +4,19 @@
 /**
  *	Init player
  */
-void pt3Init(void* mod_adress)__naked;
+void pt3Init(void* mod_adress);
 
 /**
  *	Play one quark (20 millisec).
  *	Its function must be called every 20ms
  *	for playing 
  */
-void pt3Play()__naked;
+void pt3Play();
 
 /**
  * 	Mute
  */
-void pt3Mute()__naked;
+void pt3Mute();
 
 /**
  * 	Disable loop if this bit set
@@ -43,11 +43,11 @@ void pt3Mute()__naked;
 /**
  * 	Set Mode
  */
-void pt3SetMode(char mode)__naked;
+void pt3SetMode(char mode);
 
 /**
  * 	Get Mode
  */
-char pt3GetMode()__naked;
+char pt3GetMode();
 
 #endif /* PT3XPLAYER */

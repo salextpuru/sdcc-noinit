@@ -4,31 +4,31 @@
 /**
  * 	Set handler for im2 irq
  */
-void im2SetHandler(void* handler)__naked;
+void im2SetHandler(void* handler);
 
 /*
  * 	Set IM2 mode
  */
-void im2Set()__naked;
+void im2Set();
 
 /*
  * 	Set IM2 mode
  */
-void im1Set()__naked;
+void im1Set();
 
 /*
  * 	Set IM0 mode
  */
-void im0Set()__naked;
+void im0Set();
 
 /*
  * 	Disable IRQ
  */
-void CLI()__naked;
+void CLI();
 
 /*
  * 	Enable IRQ
  */
-void SEI()__naked;
+void SEI();
 
 #endif /* IM2_DEFINED */

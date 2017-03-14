@@ -1,4 +1,3 @@
-	.include "zxsysvar_const.hS"
 	.include "conio_const.hS"
 
 .globl _screen_adr

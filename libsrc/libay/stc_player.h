@@ -4,14 +4,14 @@
 /**
  *	Init player
  */
-void stcInit(void* mod_adress)__naked;
+void stcInit(void* mod_adress);
 
 /**
  *	Play one quark (20 millisec).
  *	Its function must be called every 20ms
  *	for playing 
  */
-void stcPlay()__naked;
+void stcPlay();
 
 /**
  * 	Disable loop if this bit set
@@ -26,11 +26,11 @@ void stcPlay()__naked;
 /**
  * 	Set Mode
  */
-void stcSetMode(char mode)__naked;
+void stcSetMode(char mode);
 
 /**
  * 	Get Mode
  */
-char stcGetMode()__naked;
+char stcGetMode();
 
 #endif /* STC_PLAYER */

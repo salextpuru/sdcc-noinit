@@ -80,4 +80,17 @@ uint16_t ringBufferWrite(tRingBuffer* buf, void* data, uint16_t size);
  */
 uint16_t ringBufferRead(tRingBuffer* buf, void* data, uint16_t size);
 
+/**
+ * @brief Вычисление размера буфера для хранения многобайтовых элементов.
+ * 
+ * Example:
+ * 	
+ * 	// Ring buffer init 0x400 elements, uint16_t type.
+ * 	tRingBuffer	rb;
+ * 	uint8_t		data[rbSize(0x400,sizeof(uint16_t))];
+ * 	ringBufferInit(&rb, data, sizeof(data));
+ * 
+ */
+#define rbSize(n, size) (n*size+1)
+
 #endif // RINGBUF_H

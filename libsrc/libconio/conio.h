@@ -8,7 +8,7 @@
 /**
  * Печать строки (с управляющими символами - AT, TAB..)
  */
-void print(const char* s)__naked;
+void print(const char* s);
 
 /**
  * Печать строки (с управляющими символами - AT, TAB..)
@@ -25,22 +25,22 @@ void nprintspc(const char* s, uint8_t strsize);
 /**
  * Очистка экрана текущим цветом
  */
-void cls()__naked;
+void cls();
 
 /**
  * Очистка экрана заданным цветом
  */
-void ccls(BYTE c)__naked;
+void ccls(BYTE c);
 
 /**
  * Установить постоянные цвета
  */
-void color(BYTE c)__naked;
+void color(BYTE c);
 
-void conio_setopt_nop()__naked;
-void conio_setopt_and()__naked;
-void conio_setopt_or()__naked;
-void conio_setopt_xor()__naked;
+void conio_setopt_nop();
+void conio_setopt_and();
+void conio_setopt_or();
+void conio_setopt_xor();
 
 void conio_at(uint8_t x, uint8_t y);
 

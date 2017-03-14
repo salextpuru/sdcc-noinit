@@ -51,6 +51,7 @@ __asm;
 	ld 	(hl),c
 	inc	hl
 	ld 	(hl),b
+	inc	hl
 	
 	;// bc = bc + de = data + size
 	ld 	a,c
@@ -113,7 +114,7 @@ ringBufferWrite_loop:
 	;// 6(ix),7(ix) - end
 	ld	l,6(ix)
 	ld	h,7(ix)
-
+	
 	push	hl
 	
 	;// Try increment..
@@ -133,17 +134,20 @@ ringBufferWrite_loop:
 	ld	h,3(ix)
 	
 ringBufferWrite_noreset:
-	
+
 	;// compare end==begin ?
 	;// 4(ix),5(ix) - begin
 	ld 	a,l
-	sub 	4(ix)
+	cp 	4(ix)
+	jr 	nz, ringBufferWrite_noz
 	ld 	a,h
-	sbc 	5(ix)
-	
+	cp 	5(ix)
+
 	;// if hl == end then buffer is full
 	jr	z,ringBufferWrite_full
 	
+ringBufferWrite_noz:
+
 	;// end = hl
 	ld	6(ix),l
 	ld	7(ix),h
@@ -228,11 +232,13 @@ ringBufferRead_loop:
 	;// compare end==begin ?
 	// 6(ix),7(ix) - end
 	ld 	a,l
-	sub 	6(ix)
+	cp 	6(ix)
+	jr	nz, ringBufferRead_noz
 	ld 	a,h
-	sbc 	7(ix)
+	cp 	7(ix)
 	;// if hl == end then buffer is empty
 	jr	z,ringBufferRead_empty
+ringBufferRead_noz:
 	
 	;// Read one byte
 	ld	a,(hl)

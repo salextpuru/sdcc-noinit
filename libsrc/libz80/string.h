@@ -121,7 +121,7 @@ extern size_t strlen (const char *s);
 #endif
 
 #ifdef __SDCC_ds390
-extern void __xdata * memcpyx(void __xdata *, void __xdata *, int) __naked;
+extern void __xdata * memcpyx(void __xdata *, void __xdata *, int);
 #endif
 
 #if defined(__SDCC_z80) || defined(__SDCC_z180) || defined(__SDCC_r2k) || defined(__SDCC_r3ka)

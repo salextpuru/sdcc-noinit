@@ -127,7 +127,7 @@ void Serial1IrqHandler (void) __interrupt 7;
 
 #if !defined(__SDCC_ds400)
 void ClockInit();
-void ClockIrqHandler (void) __interrupt 1 __naked;
+void ClockIrqHandler (void) __interrupt 1 ;
 #endif
 
 #if defined(__SDCC_ds400)

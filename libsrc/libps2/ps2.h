@@ -7,13 +7,13 @@
 /**
 	Инициализация.
 */
-void InitPS2()__naked;
+void InitPS2();
 
 /**
 	Получить скан-код и флаги.
 	Служебная и не очень нужная
 */
-WORD GetPS2()__naked;
+WORD GetPS2();
 
 /**
 	Получение нажатой клавиши.
@@ -21,31 +21,31 @@ WORD GetPS2()__naked;
 	обычная клавиша или дополнительная. Младший байт - код символа
 	с учётом регистра и раскладки. KOI8-R
 */
-WORD InKey()__naked;
+WORD InKey();
 
 /**
 	Проверка - нажат ли CTRL (0-не нажат)
 */
-BYTE IsCTRL()__naked;
+BYTE IsCTRL();
 
 /**
 	Проверка - нажат ли ALT (0-не нажат)
 */
-BYTE IsALT()__naked;
+BYTE IsALT();
 
 /**
 	Проверка - нажат ли SHIFT (0-не нажат)
 */
-BYTE IsSHIFT()__naked;
+BYTE IsSHIFT();
 
 /**
 	Проверка - Регистра (0 - лат., иначе рус.)
 */
-BYTE IsRUS()__naked;
+BYTE IsRUS();
 
 /**
 	Проверка - Регистра (0 - строчные, иначе - заглавные)
 */
-BYTE IsUPPER()__naked;
+BYTE IsUPPER();
 
 #endif /* PS2_H_DEFINED */
