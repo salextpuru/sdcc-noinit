@@ -1,7 +1,7 @@
 # Library Name
 LIBNAME=libsocket.lib
 
-OBJS=socket.rel
+OBJS=device.rel file.rel
 
 $(LIBDIR)/$(LIBNAME): $(LIBNAME) 
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)

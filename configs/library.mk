@@ -24,8 +24,8 @@ LIBRARY+=libzxkbd
 # Ring buffer
 LIBRARY+=libringbuf
 
-# Сокеты
-LIBRARY+=libsocket
+# Файлы
+LIBRARY+=libfs
 
 # WC plugin lib
 LIBRARY+=libwcplugin
