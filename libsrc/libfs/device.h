@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+// Максимальное количество устройств
+#define DEVICES_MAX	0x10
+
 // Типы драйверов устройств
 #define	DRV_VFS		0x00	/* устройство виртуальная файловая система */
 //
@@ -27,7 +30,7 @@
 /**
  * @brief Описатель устройства.
  */
-typedef struct zDevice{
+typedef struct {
 	/**
 	 * @brief ID драйвера
 	 */
@@ -37,6 +40,11 @@ typedef struct zDevice{
 	 * @brief Номер устройства
 	 */
 	int16_t	minor;
+	
+	/**
+	 * @brief Тип (символьное, блочное)
+	 */
+	int16_t devtype;
 	
 	/**
 	 * @brief Имя устройства

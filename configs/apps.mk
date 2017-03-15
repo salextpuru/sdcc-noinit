@@ -12,11 +12,15 @@ APPLICATIONS+=zxkbdtest
 # Test libringbuf
 APPLICATIONS+=test-libringbuf
 
+# Test libfs
+APPLICATIONS+=test-libfs
+
 # WC plugin (some tests)
 APPLICATIONS+=wcplugin
 
 # WC plugin (terminal test)
 APPLICATIONS+=wcptermtst
 
-# WC plugin ()
+# WC plugin
 APPLICATIONS+=wcpzxmczifi
+

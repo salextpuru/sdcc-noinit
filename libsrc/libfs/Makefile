@@ -1,7 +1,7 @@
 # Library Name
-LIBNAME=libsocket.lib
+LIBNAME=libfs.lib
 
-OBJS=device.rel file.rel
+OBJS=device.rel file.rel vfs_devfs.rel vfs_rootfs.rel
 
 $(LIBDIR)/$(LIBNAME): $(LIBNAME) 
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)

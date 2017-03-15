@@ -19,6 +19,7 @@
 /**
  * @brief Описание точки монтирования
  */
+struct zFileSystem;
 typedef struct zMpoint {
 	/**
 	 * @brief Ссылка на драйвер устройства
@@ -36,9 +37,14 @@ typedef struct zMpoint {
 	const char*	mpath;
 	
 	/**
-	 * @brief Тип файловой системы
+	 * @brief Длина пути
 	 */
-	int16_t		fstype;
+	uint16_t	mpathlen;
+	
+	/**
+	 * @brief Файловая система
+	 */
+	struct zFileSystem*	fs;
 	
 	/**
 	 * @brief Флаги монтирования
@@ -63,7 +69,7 @@ typedef struct zDir {
 	zMpoint*	mpoint;	/* Точка монтирования */
 	//
 	uint32_t	d_ino;	/* узел начала каталога */
-	int32_t		d_off;	/* смещение (номер записи в каталоге) */
+	int16_t		d_off;	/* смещение (номер записи в каталоге) */
 	uint16_t	d_reclen; /* Длина записи в каталоге */
 	//
 	zDirent		dirent;	/* Запись в каталоге */
@@ -123,7 +129,7 @@ typedef struct zFileSystem {
 	 * @brief Считать очередную запись каталога, открытого opendir
 	 * 	return NULL - конец каталога или ошибка
 	 */
-	zDirent* (*readdir)(struct zFileSystem* fs, zDir *dirp, zDirent *entry);
+	zDirent* (*readdir)(struct zFileSystem* fs, zDir *dirp);
 	
 	/**
 	 * @brief Удалить каталог
@@ -175,5 +181,32 @@ typedef struct zFileSystem {
 	int (*stat)(struct zFileSystem* fs, const char *pathname, zFile* stat);
 	
 } zFileSystem;
+
+extern zMpoint	kmpoints[];
+
+/**
+ * @brief Поиск точки монтирования по полному пути
+ * 
+ * @param fullpath - полный путь
+ * @return zMpoint*
+ */
+zMpoint* kgetmpoint(const char* fullpath);
+
+/**
+ * @brief Получить текущий каталог
+ * 
+ * @param buf - буфер
+ * @param size - размер
+ * @return char* - имя каталога или NULL, если буфер слишком мал.
+ */
+char *getcwd(char *buf, uint16_t size);
+
+/**
+ * @brief Установить текущий каталог
+ * 
+ * @param path - путь
+ * @return int - 0, все хорошо, -1 - все плохо
+ */
+int8_t chdir(const char *path);
 
 #endif // FILE_H
