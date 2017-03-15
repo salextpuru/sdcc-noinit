@@ -42,3 +42,26 @@ static zFileSystem rootfs= {
 	.readdir = rootfs_readdir,
 	.closedir = rootfs_closedir
 };
+
+static zDir* devfs_opendir(struct zFileSystem* fs, const char *name, zDir* dir){
+	name; dir;
+	return 0;
+}
+
+static zDirent* devfs_readdir(struct zFileSystem* fs, zDir *dirp, zDirent *entry){
+	dirp; entry;
+	return 0;
+}
+
+static int devfs_closedir(struct zFileSystem* fs, zDir *dirp){
+	dirp;
+	return 0;
+}
+
+static zFileSystem devfs= {
+	.fstype=FS_ROOT,
+	.mpoint=&kmpoints[0],
+	.opendir = devfs_opendir,
+	.readdir = devfs_readdir,
+	.closedir = devfs_closedir
+};

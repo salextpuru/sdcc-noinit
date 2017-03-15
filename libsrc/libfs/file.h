@@ -7,15 +7,6 @@
 // Максимальное количество точек монтирования
 #define MPOINTS_MAX	0x08
 
-// Типы драйверов устройств
-#define	DRV_VFS		0x00	/* устройство виртуальная файловая система */
-//
-#define	DRV_ZSPI	0x10
-#define	DRV_NGSSPI	0x11
-//
-#define	DRV_NEMOIDE	0x12
-#define	DRV_ES8266	0x20
-
 // Типы файловых систем
 #define FS_ROOT		0x00
 #define FS_DEV		0x01
@@ -81,8 +72,9 @@ typedef struct zDir {
 typedef struct zFile {
 	zMpoint*	mpoint;	// Точка монтирования
 	//
-	int16_t		f_type;	// тип файла
-	uint16_t	f_mode;	// права доступа
+	int16_t		f_type;	 // тип файла
+	uint16_t	f_mode;	 // права доступа
+	int16_t		f_flags; // внутренние флаги (типа открыт-закрыт)
 	//
 	uint32_t	f_size;	// полный размер в байтах
 	uint32_t	f_pos;	// позиция указателя в файле
