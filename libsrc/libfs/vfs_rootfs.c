@@ -3,27 +3,6 @@
 #include <stat.h>
 #include "vfs_rootfs.h"
 
-zMpoint* kgetmpoint(const char* fullpath){
-	uint16_t lmax=0;
-	zMpoint* r=NULL;
-	zMpoint* b=kmpoints;
-	zMpoint* e=kmpoints+MPOINTS_MAX;
-	
-	while( e!=b){
-		//
-		if( !strncmp(b->mpath, fullpath, b->mpathlen) ){
-			if( lmax<b->mpathlen ){
-				lmax=b->mpathlen;
-				r=b;
-			}
-		}
-		//
-		b++;
-	}
-
-	return r;
-}
-
 static const char* rootfs_dirs[]={
 	"bin",
 	"etc",

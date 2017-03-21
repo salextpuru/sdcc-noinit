@@ -8,8 +8,7 @@ void ls(const char* path){
 	static zDir dir;
 	
 	zDirent* dentry;
-	
-	if( kgetmpoint(path)->fs->opendir(kgetmpoint(path)->fs, path, &dir ) ){
+	if( opendir(path, &dir ) ){
 		printf("[%s] opendir\n",path);
 	}
 	else{
@@ -17,7 +16,7 @@ void ls(const char* path){
 		return;
 	}
 	
-	while( dentry = kgetmpoint(path)->fs->readdir(kgetmpoint(path)->fs, &dir) ){
+	while( dentry = readdir(&dir) ){
 		printf("%s %O %O\n",dentry->d_name, dentry->d_type, dentry->d_mode);
 	}
 }

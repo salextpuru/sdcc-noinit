@@ -3,9 +3,13 @@
 
 #include <time.h>
 #include <device.h>
+#include <stdarg.h>
 
 // Максимальное количество точек монтирования
 #define MPOINTS_MAX	0x08
+
+// Максимальное число открытых файлов
+#define FILES_MAX	0x10
 
 // Типы файловых систем
 #define FS_ROOT		0x00
@@ -80,7 +84,7 @@ typedef struct zFile {
 	//
 	int16_t		f_type;	 // тип файла
 	uint16_t	f_mode;	 // права доступа
-	int16_t		f_flags; // внутренние флаги (типа открыт-закрыт)
+	int16_t		f_flags; // флаги
 	//
 	uint32_t	f_size;	// полный размер в байтах
 	uint32_t	f_pos;	// позиция указателя в файле
@@ -108,6 +112,11 @@ typedef struct zFileSystem {
 	 * @brief Точка монтирования
 	 */
 	zMpoint*	mpoint;
+	
+	/**
+	 * @brief Счетчик ссылок
+	 */
+	int16_t lcounter;
 	
 	/**
 	 * @brief Монтирует файловую систему.
@@ -158,12 +167,12 @@ typedef struct zFileSystem {
 	 * @brief Открыть файл
 	 * 	path - Полный путь к файлу
 	 */
-	zFile* (*open)(struct zFileSystem* fs, const char* path);
+	zFile* (*open)(struct zFile* fs, const char* path, uint16_t flags, va_list mode);
 	
 	/**
 	 * @brief Закрыть файл
 	 */
-	int (*close)(struct zFileSystem* fs, zFile* f );
+	int (*close)(zFile* f );
 	
 	/**
 	 * @brief Прочитать данные из заданного файла
@@ -173,7 +182,7 @@ typedef struct zFileSystem {
 	/**
 	 * @brief Записать данные в заданный файл
 	 */
-	int16_t	(*write)(struct zFileSystem* fs, zFile* f, int16_t fd, void* buf, int16_t size);
+	int16_t	(*write)(struct zFileSystem* fs, zFile* f, void* buf, int16_t size);
 	
 	/**
 	 * @brief Получить информацию о файле
@@ -208,5 +217,55 @@ char *getcwd(char *buf, uint16_t size);
  * @return int - 0, все хорошо, -1 - все плохо
  */
 int8_t chdir(const char *path);
+
+/**
+ * @brief Открыть каталог
+ * 
+ * @param path - путь к каталогу
+ * @param dir - данные для работы с каталогом
+ * @return zDir*
+ */
+zDir*	opendir(const char *path, zDir* dir);
+
+/**
+ * @brief Закрыть каталог
+ * 
+ * @param dirp - каталог
+ * @return int
+ */
+int closedir(zDir *dirp);
+
+/**
+* @brief Считать очередную запись каталога, открытого opendir
+* 	return NULL - конец каталога или ошибка
+*/
+zDirent* readdir(zDir *dirp);
+
+/**
+ * @brief Открыть файл
+ * 	path - путь к файлу
+ * 	flags - флаги
+ */
+int16_t open(const char* path, uint16_t flags, ...);
+	
+/**
+ * @brief Закрыть файл
+ */
+int16_t close(uint16_t fd);
+	
+/**
+ * @brief Прочитать данные из заданного файла
+ */
+// int16_t	read(uint16_t fd, zFile* f,  void* buf, int16_t size);
+	
+/**
+ * @brief Записать данные в заданный файл
+ */
+// int16_t	write(int16_t fd, void* buf, int16_t size);
+	
+/**
+ * @brief Получить информацию о файле
+ */
+// int16_t stat(const char *pathname, zFile* stat);
 
 #endif // FILE_H
