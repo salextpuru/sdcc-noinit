@@ -35,3 +35,6 @@ LIBRARY+=libui
 
 # RS232 Library
 LIBRARY+=libuart
+
+# ESP8266 WiFi-UART
+LIBRARY+=libesp8266

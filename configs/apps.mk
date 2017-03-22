@@ -1,25 +1,25 @@
 # Application list
 
 # Stuff.
-APPLICATIONS+=testapp
+# APPLICATIONS+=testapp
 
 # Simple demo
 APPLICATIONS+=microdemo
 
 # Test if zx keyboard (no works yet)
-APPLICATIONS+=zxkbdtest
+# APPLICATIONS+=zxkbdtest
 
 # Test libringbuf
-APPLICATIONS+=test-libringbuf
+# APPLICATIONS+=test-libringbuf
 
 # Test libfs
-APPLICATIONS+=test-libfs
+# APPLICATIONS+=test-libfs
 
 # WC plugin (some tests)
-APPLICATIONS+=wcplugin
+# APPLICATIONS+=wcplugin
 
 # WC plugin (terminal test)
-APPLICATIONS+=wcptermtst
+# APPLICATIONS+=wcptermtst
 
 # WC plugin
 APPLICATIONS+=wcpzxmczifi

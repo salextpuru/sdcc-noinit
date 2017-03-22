@@ -109,7 +109,7 @@ zDirent* readdir(zDir *dirp){
 }
 
 // Найти и зарезервировать место для файла
-static int16_t isSpaceForFile(zFile* f){
+static int16_t getSpaceForFile (zFile* f){
 	int8_t i;
 	for(i=0; i<FILES_MAX; i++){
 		if( !pkfiles[i] ){
@@ -139,7 +139,7 @@ int16_t open(const char* path, uint16_t flags, ...){
 	}
 	fs = mp->fs;
 	// Есть ли место?
-	fd=isSpaceForFile(f);
+	fd=getSpaceForFile (f);
 	if( fd<0){
 		// нету
 		return -1;
@@ -175,6 +175,7 @@ int16_t close(uint16_t fd){
 		return -1;
 	}
 	
+	pkfiles[fd]=NULL;
 	fs->lcounter--;
 	
 	return 0;
