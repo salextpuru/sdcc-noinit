@@ -1,93 +1,72 @@
 #include <esp8266.h>
+#include <zxmc_uart.h>
+#include <zifi_uart.h>
+
+#ifndef ESP8266_USER
+#define ESP8266_USER	"esp8266user"
+#endif
+
+#ifndef ESP8266_PASSWD
+#define ESP8266_PASSWD	"esp8266passwd"
+#endif
+
+/**
+ * @brief Транспортный UART
+ */
+static zxuart*		uart;
+
+/**
+ * @brief Авторизация
+ */
+static esp8266auth	auth={
+	.user=ESP8266_USER,
+	.passwd=ESP8266_PASSWD
+};
+
+static int8_t up(struct tIFNET* eth, uint32_t ip, uint8_t type, uint8_t flags, void* ifdata){
+	
+}
+
+static int8_t down(struct tIFNET* eth, uint16_t flags){
+	
+}
+
+static int8_t connect(struct tIFNET* eth, uint32_t ip, uint16_t port, uint16_t protocol){
+	
+}
+
+static int8_t close(struct tIFNET* eth, uint8_t fd ){
+	
+}
+
+static int16_t read(struct tIFNET* eth, uint8_t fd, void* buf, uint16_t size){
+	
+}
+
+static int16_t write(struct tIFNET* eth, uint8_t fd, void* buf, uint16_t size){
+	
+}
+
+static int8_t listen(struct tIFNET* eth, uint8_t port){
+	
+}
+
+static void poll(struct tIFNET* eth){
+	
+}
 
 tIFNET IFNET_ESP8266 = {
-	
-	/**
-	 * @brief Уникальный идентификатор интерфейса
-	 */
 	//uint16_t	id;
-	
-	/**
-	 * @brief Тип интерфейса
-	 */
-	//uint8_t		type;
-	
-	/**
-	 * @brief Адрес интерфейса
-	 */
+	//uint8_t	type;
+	//uint8_t	flags;
 	//uint32_t	ip;
 	
-	/**
-	 * @brief  Включить интерфейс
-	 * 
-	 * @param eth - указатель на описатель интерфейса
-	 * @param ip - адрес IP (0.0.0.0 = DHCP)
-	 * @param type - тип интерфейса (ifTypes)
-	 * @param flags - флаги (зависят от типа интерфейса)
-	 * 
-	 * @return int8_t - 0-ok или код ошибки
-	 */
-	//int8_t (*up)(struct tIFNET* eth, uint32_t ip, uint8_t type, uint8_t flags);
-	
-	/**
-	 * @brief Выключить интерфейс
-	 * @param eth - указатель на описатель интерфейса
-	 * @param flags - флаги
-	 * @return int8_t - 0-ok или код ошибки
-	 */
-	//int8_t (*down)(struct tIFNET* eth, uint16_t flags);
-	
-	/**
-	 * @brief  Соединиться
-	 * 
-	 * @param eth - указатель на описатель интерфейса
-	 * @param ip - адрес IP
-	 * @param port - порт
-	 * @param protocol - протокол
-	 * @return int8_t - -1 - ошибка, 0..127-номер соединения
-	 */
-	//int8_t (*connect)(struct tIFNET* eth, uint32_t ip, uint16_t port, uint16_t protocol);
-	
-	/**
-	 * @brief Закрыть соединение номер fd
-	 */
-	//int8_t (*close)(struct tIFNET* eth, uint8_t fd );
-	
-	/**
-	 * @brief Чтение данных из соединения номер fd
-	 * 	Считывает не более size байт данных
-	 * 	и помещает их в буффер buf.
-	 * 
-	 * @return
-	 * 	Количество реально считанных байт данных.
-	 * 	0 - данных не считано вообще, ждите.
-	 * 	-1 - ошибка
-	 */
-	//int16_t (*read)(struct tIFNET* eth, uint8_t fd, void* buf, uint16_t size);
-	
-	/**
-	 * @brief Запись данных в соединение номер fd
-	 * 	Записывает не более size байт данных из
-	 * 	буфера buf.
-	 * 
-	 * @return
-	 * 	Количество реально записанных байт данных.
-	 * 	0 - данных не записано вообще, ждите.
-	 * 	-1 - ошибка
-	 */
-	//int16_t (*write)(struct tIFNET* eth, uint8_t fd, void* buf, uint16_t size);
-	
-	/**
-	 * @brief Открыть на прослушивание порт port
-	 * 
-	 * @return int8_t - -1 - ошибка, 0..127-номер соединения
-	 */
-	//int8_t (*listen)(struct tIFNET* eth, uint8_t port);
-	
-	/**
-	 * @brief Функция опроса интерфейса. 
-	 * 	Вызывается периодически для вычитывания данных, если пришли.
-	 */
-	//void (*poll);
-	.poll=0
+	.up=up,
+	.down=down,
+	.connect=connect,
+	.close=close,
+	.read=read,
+	.write=write,
+	.listen=listen,
+	.poll=poll
 };

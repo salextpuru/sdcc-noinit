@@ -4,6 +4,9 @@ HSFILES=
 
 OBJS= esp8266.rel
 
+# Config files
+include *.mk
+
 $(LIBDIR)/$(LIBNAME): $(LIBNAME)
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)
 

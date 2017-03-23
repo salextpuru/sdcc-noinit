@@ -13,6 +13,14 @@ enum esp8266flags{
 	esp8266ZXMC = 0x01
 };
 
+/**
+ * @brief Авторизация для подключения к точке доступа (ifdata)
+ */
+typedef struct esp8266auth{
+	const char* user;
+	const char* passwd;
+}esp8266auth;
+
 extern tIFNET IFNET_ESP8266;
 
 #endif // LIBESP8266_H

@@ -22,5 +22,7 @@ APPLICATIONS+=microdemo
 # APPLICATIONS+=wcptermtst
 
 # WC plugin
-APPLICATIONS+=wcpzxmczifi
+# APPLICATIONS+=wcpzxmczifi
 
+# Test ESP8266 socket
+APPLICATIONS+=test-libesp8266

@@ -12,3 +12,4 @@
 *.lib
 *.wmf
 .kdev_include_paths
+auth.mk

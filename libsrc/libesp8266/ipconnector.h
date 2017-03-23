@@ -35,6 +35,11 @@ typedef struct tIFNET {
 	 * @brief Тип интерфейса
 	 */
 	uint8_t		type;
+	 
+	/**
+	 * @brief  Флаги (зависят от типа интерфейса)
+	 */
+	uint8_t		flags;
 	
 	/**
 	 * @brief Адрес интерфейса
@@ -48,10 +53,11 @@ typedef struct tIFNET {
 	 * @param ip - адрес IP (0.0.0.0 = DHCP)
 	 * @param type - тип интерфейса (ifTypes)
 	 * @param flags - флаги (зависят от типа интерфейса)
+	 * @param ifdata - данные, зависящие от типа интерфейса (например имя и пароль)
 	 * 
 	 * @return int8_t - 0-ok или код ошибки
 	 */
-	int8_t (*up)(struct tIFNET* eth, uint32_t ip, uint8_t type, uint8_t flags);
+	int8_t (*up)(struct tIFNET* eth, uint32_t ip, uint8_t type, uint8_t flags, void* ifdata);
 	
 	/**
 	 * @brief Выключить интерфейс
@@ -112,7 +118,7 @@ typedef struct tIFNET {
 	 * @brief Функция опроса интерфейса. 
 	 * 	Вызывается периодически для вычитывания данных, если пришли.
 	 */
-	void (*poll);
+	void (*poll)(struct tIFNET* eth);
 } tIFNET;
 
 #endif // IPCONNECTOR_H
