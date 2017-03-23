@@ -1,6 +1,6 @@
 # Данные авторизации
 # 1. Скопируйте этот файл в файл authlocal.mk
-# 2. Введите свои пользователя и пароль в authlocal.mk и раскомментируйте строку
+# 2. Введите свои имя сети и пароль в authlocal.mk и раскомментируйте строку
 # -- Файл authlocal.mk не коммитится в репозиторий во избежание уплывания данных. --
 
-# COPTS+= -DESP8266_USER=\"MyUserName\" -DESP8266_PASSWD=\"MyPassword\"
+# COPTS+= -DESP8266_NETNAME=\"MyNetName\" -DESP8266_PASSWD=\"MyPassword\"

@@ -7,17 +7,21 @@
  * @brief Флаги конфигурации интерфейса esp8266
  */
 enum esp8266flags{
+	/* --- БИТЫ 0 и 1 --- */
 	// Транспорт ZIFI-UART
 	esp8266ZIFI = 0x00,
 	// Транспорт ZXMC-UART
 	esp8266ZXMC = 0x01
+	
+	/* --- БИТЫ 2..7 --- */
+	// резерв
 };
 
 /**
  * @brief Авторизация для подключения к точке доступа (ifdata)
  */
 typedef struct esp8266auth{
-	const char* user;
+	const char* netname;
 	const char* passwd;
 }esp8266auth;
 
