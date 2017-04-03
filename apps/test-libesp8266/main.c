@@ -6,7 +6,8 @@
 void main(){
 	ccls(0016);
 	print("Test ESP8266 socket\n");
-
+	
 	//
-	while(1);
+	while(1){
+	}
 }

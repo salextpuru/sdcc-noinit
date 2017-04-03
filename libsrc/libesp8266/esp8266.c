@@ -3,6 +3,16 @@
 #include <zxmc_uart.h>
 #include <zifi_uart.h>
 
+// Состояние приемника
+enum rStatus{
+	// Ожидаем приема данных (+IPD)
+	rsWait=0,
+	// Идет прием данных (номер соед. ex8266_nsock)
+	rsData=1,
+	// Идет прием ответа на команду
+	rsAnswer=2
+};
+
 #ifndef ESP8266_NETNAME
 #define ESP8266_NETNAME	"esp8266net"
 #endif
@@ -10,9 +20,6 @@
 #ifndef ESP8266_PASSWD
 #define ESP8266_PASSWD	"esp8266passwd"
 #endif
-
-// 2K +32 байта - размер буфера приема
-#define REC_BUFSIZE	0x820
 
 /**
  * @brief Транспортный UART
@@ -24,6 +31,16 @@ static zxuart*		uart;
  */
 static const char netname[0x20]=ESP8266_NETNAME;
 static const char passwd[0x20]=ESP8266_PASSWD;
+
+/**
+ * @brief Номер соединения по которому принимаются данные
+ */
+static uint8_t	ex8266_nsock;
+
+/**
+ * @brief Размер данных, которые должны быть Приняты из сокета
+ */
+static uint16_t ex8266_rsize;
 
 /* КОМАНДЫ */
 
@@ -48,7 +65,7 @@ static const char passwd[0x20]=ESP8266_PASSWD;
 // IP:PORT-->ES	Принятые данные из сокета
 #define CMD_RECV	"+IPD="
 
-// Рестартовать и законнектится
+// Рестартовать
 static int8_t esp8266_reset(){
 	
 	return 0;
