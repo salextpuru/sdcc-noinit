@@ -2,6 +2,9 @@
 #include <esp8266.h>
 #include <zxmc_uart.h>
 #include <zifi_uart.h>
+#include <timers.h>
+
+#include <stdio.h>
 
 // Состояние приемника
 enum rStatus{
@@ -42,12 +45,18 @@ static uint8_t	ex8266_nsock;
  */
 static uint16_t ex8266_rsize;
 
+static timerid		tim0;
+
 /* КОМАНДЫ */
 
 // ES	Рестартует устройство
 #define CMD_RESET	"AT+RST"
 // ES	Команда пустышка 
 #define CMD_NONE	"AT"
+// ES	Выключить эхо
+#define CMD_ATE0	"ATE0"
+// ES	Включить эхо
+#define CMD_ATE1	"ATE1"
 // ES	Получить версию
 #define CMD_VERSION	"AT+GMR"
 // ES	Установить режим (CL, AP, CL+AP)
@@ -65,9 +74,51 @@ static uint16_t ex8266_rsize;
 // IP:PORT-->ES	Принятые данные из сокета
 #define CMD_RECV	"+IPD="
 
+// 1 sec
+#define TOUT_RST	100
+#define TOUT		20
+
+static void uwr_cmd(const char* cmd){
+	uart->write(cmd, strlen(cmd));
+	uart->write("\r\n", 2);
+}
+
+// clear read buffer
+static void uclear(){
+	char c;
+	while( uart->read(&c,1)){}
+}
+
 // Рестартовать
 static int8_t esp8266_reset(){
-	
+	char answer[0x10];
+	//
+	memset(answer,0,sizeof(answer));
+	//
+	uclear();
+	uwr_cmd(CMD_RESET);
+	set_timer(tim0, TOUT_RST);
+	while(get_timer(tim0)){uclear();}
+	//
+	uwr_cmd(CMD_ATE0);
+	set_timer(tim0, TOUT);
+	while(get_timer(tim0)){uclear();}
+	//
+	uwr_cmd(CMD_NONE);
+	set_timer(tim0, TOUT);
+	while(get_timer(tim0)){}
+	uart->read(answer,sizeof(answer));
+	uclear();
+	//
+	if( strncmp(answer,"\r\nOK\r\n",6) ){
+		return -1;
+	}
+	//
+	return 0;
+}
+
+static int8_t down(struct tIFNET* eth, uint16_t flags){
+	del_timer(tim0);
 	return 0;
 }
 
@@ -103,11 +154,36 @@ static int8_t up(struct tIFNET* eth, uint32_t ip, uint8_t type, uint8_t flags, v
 		return -1;
 	}
 	//
-	return esp8266_reset();
-}
-
-static int8_t down(struct tIFNET* eth, uint16_t flags){
+	if(! (tim0 = add_timer()) ){
+		return -1;
+	}
 	
+	if( esp8266_reset() ){
+		down(eth, 0);
+		return -1;
+	}
+	//
+	if( ip ){
+		// set static IP
+	}
+	//
+	switch( type ){
+		case ifWIFICL:{
+			
+			break;
+		}
+		case ifWIFIAP:{
+			break;
+		}
+		case ifWIFIAPCL:{
+			break;
+		}
+		default:
+			return -1;
+	}
+	
+	//
+	return(0);
 }
 
 static int8_t connect(struct tIFNET* eth, uint32_t ip, uint16_t port, uint16_t protocol){
@@ -135,11 +211,6 @@ static void poll(struct tIFNET* eth){
 }
 
 tIFNET IFNET_ESP8266 = {
-	//uint16_t	id;
-	//uint8_t	type;
-	//uint8_t	flags;
-	//uint32_t	ip;
-	
 	.up=up,
 	.down=down,
 	.connect=connect,
