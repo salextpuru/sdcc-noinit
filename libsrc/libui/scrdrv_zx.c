@@ -14,6 +14,8 @@ static void clear_window(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 
 static void putc(char c);
 
+static void curpos(uint8_t x, uint8_t y);
+
 scrDriverFunc	scrDriver_ZX={
 	/**
 	 * @brief размеры экрана
@@ -87,9 +89,7 @@ scrDriverFunc	scrDriver_ZX={
 	
 	/**
 	 * @brief Вывести строку в позицию курсора
-	 * 	Выводится не более maxsize символов,
-	 * 	остальное добивается пробелами,
-	 * 	если строка короче maxsize
+	 * 	Выводится не более maxsize символов
 	 */
 	//void	(*puts)(const char* s, uint8_t maxsize);
 	
@@ -97,6 +97,7 @@ scrDriverFunc	scrDriver_ZX={
 	 * @brief Установить позицию позицию курсора
 	 */
 	//void	(*curpos)(uint8_t x, uint8_t y);
+	.curpos = curpos,
 	
 	/**
 	 * @brief Установить тип курсора
@@ -124,6 +125,11 @@ static void setcolor(tColor ink, tColor paper){
 static uint32_t get_win_size(uint8_t w, uint8_t h){
 	// w*h*8 + w*h
 	return( w*h*9 );
+}
+
+static void curpos(uint8_t x, uint8_t y){
+	scrDriver_ZX.cur_x=x;
+	scrDriver_ZX.cur_y=y;
 }
 
 static void clear_window(uint8_t x, uint8_t y, uint8_t w, uint8_t h)__naked{
@@ -284,14 +290,17 @@ attrw:
 __endasm;
 }
 
-static void putc(char c)__naked{
+static void putc(char c){
+	volatile uint8_t x = scrDriver_ZX.cur_x;
+	volatile uint8_t y = scrDriver_ZX.cur_y;
+	volatile uint8_t i = scrDriver_ZX.ink;
+	volatile uint8_t p = scrDriver_ZX.paper;
 __asm;
-	push	ix
-	ld	ix,#4
-	add	ix,sp
+	ld 	a, 4(ix)
+	ld 	e,-4(ix)
+	ld 	d,-3(ix)
 	
-	ld 	a,(ix)
-
+;// DE - координаты (Dy Ex), A - код символа
 out_char:
 	; HL - symbol in font adr
 	LD L,A
@@ -340,14 +349,11 @@ out_char_mode: LD A,(HL)	; // XOR (HL) AND (HL) OR (HL)
         OR #0x58
         LD D,A
         ; Копируем атрибут
-        ld 	a,(_scrDriver_ZX+2)
+        ld 	a,-2(ix)
 	ld	l,a
-	ld 	a,(_scrDriver_ZX+4)
+	ld 	a,-1(ix)
 	or	a,l
         LD (DE),A
-        ;
-	
-	pop	ix
-        ret
 __endasm;
+	; // Return automatic
 }
