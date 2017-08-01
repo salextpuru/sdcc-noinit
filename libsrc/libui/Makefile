@@ -1,5 +1,5 @@
 # Library Name
-LIBNAME=libclass.lib
+LIBNAME=libui.lib
 
 OBJS=scrfunc.rel scrdrv_zx.rel
 

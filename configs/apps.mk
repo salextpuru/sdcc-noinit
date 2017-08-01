@@ -4,7 +4,7 @@
 # APPLICATIONS+=testapp
 
 # Simple demo
-APPLICATIONS+=microdemo
+# APPLICATIONS+=microdemo
 
 # Test if zx keyboard (no works yet)
 # APPLICATIONS+=zxkbdtest
@@ -25,4 +25,7 @@ APPLICATIONS+=microdemo
 # APPLICATIONS+=wcpzxmczifi
 
 # Test ESP8266 socket
-APPLICATIONS+=test-libesp8266
+# APPLICATIONS+=test-libesp8266
+
+# Test libui
+APPLICATIONS+=test-libui

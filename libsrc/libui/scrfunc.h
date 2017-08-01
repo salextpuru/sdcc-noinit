@@ -119,6 +119,16 @@ typedef struct {
 /**
  * @brief Драйвер экрана
  */
+
+// Стандартный ZX
+extern scrDriverFunc	scrDriver_ZX;
+
+// Текущий драйвер
 extern scrDriverFunc*	txt_screen_driver;
+
+/**
+ * @brief Адрес текущего шрифта
+ */
+extern uint8_t*		current_font;
 
 #endif /* scrfunc_h_E */

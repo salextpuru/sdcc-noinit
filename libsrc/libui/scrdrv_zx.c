@@ -4,7 +4,17 @@
 */
 #include <scrfunc.h>
 
-static scrDriverFunc	scrDriver_ZX={
+static void setcolor(tColor ink, tColor paper);
+
+static uint32_t get_win_size(uint8_t w, uint8_t h);
+
+static void asm_helper_zx();
+
+static void clear_window(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+
+static void putc(char c);
+
+scrDriverFunc	scrDriver_ZX={
 	/**
 	 * @brief размеры экрана
 	 */
@@ -16,13 +26,13 @@ static scrDriverFunc	scrDriver_ZX={
 	/**
 	 * @brief Текущий цвет экрана (фон)
 	 */
-	//uint32_t	paper;
+	//uint16_t	paper;
 	.paper=0,
 	
 	/**
 	 * @brief Текущий цвет экрана (тон)
 	 */
-	//uint32_t	ink;
+	//uint16_t	ink;
 	.ink=7,
 	
 	/**
@@ -50,6 +60,7 @@ static scrDriverFunc	scrDriver_ZX={
 	 *	Координаты режутся по краям экрана
 	 */
 	//void (*clear_window)(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+	.clear_window = clear_window,
 	
 	/**
 	 * @brief Вычисление размера памяти, потребного для сохранения окна,
@@ -72,6 +83,7 @@ static scrDriverFunc	scrDriver_ZX={
 	 * @brief Вывести символ в позицию курсора цветом ink
 	 */
 	//void	(*putc)(char c);
+	.putc = putc,
 	
 	/**
 	 * @brief Вывести строку в позицию курсора
@@ -102,19 +114,44 @@ static scrDriverFunc	scrDriver_ZX={
  */
 
 // Начало экрана (для экрана 0 - 0x4000, для экрана 7 - 0xC000)
-uint16_t	ScrBegin=0x4000;
-
+static uint16_t	ScrBegin=0x4000;
 
 static void setcolor(tColor ink, tColor paper){
 	scrDriver_ZX.ink = ink;
 	scrDriver_ZX.paper = paper;
 }
 
-uint32_t get_win_size(uint8_t w, uint8_t h){
+static uint32_t get_win_size(uint8_t w, uint8_t h){
 	// w*h*8 + w*h
 	return( w*h*9 );
 }
 
+static void clear_window(uint8_t x, uint8_t y, uint8_t w, uint8_t h)__naked{
+__asm;
+	push	ix
+	ld	ix,#4
+	add	ix,sp
+	;//
+	ld 	d,00(ix)
+	ld 	e,01(ix)
+	ld 	c,03(ix)
+	ld 	b,02(ix)
+	push	bc
+	push	de
+	call	wclear_asm
+	pop	de
+	pop	bc
+	;//
+	ld 	a,(_scrDriver_ZX+2)
+	ld	l,a
+	ld 	a,(_scrDriver_ZX+4)
+	or	a,l
+	call	attrset_asm
+	;//
+	pop	ix
+	ret
+__endasm;
+}
 
 // Тут всякие подпрограммы на ассемблере
 static void asm_helper_zx()__naked{
@@ -244,6 +281,73 @@ attrw:
 	;//--------------------------------------
 	RET
 ;//-----------------------------------------------------------------------------
+__endasm;
+}
 
+static void putc(char c)__naked{
+__asm;
+	push	ix
+	ld	ix,#4
+	add	ix,sp
+	
+	ld 	a,(ix)
+
+out_char:
+	; HL - symbol in font adr
+	LD L,A
+        LD H,#0
+        ADD HL,HL
+        ADD HL,HL
+        ADD HL,HL
+        LD BC,(_current_font)
+        ADD HL,BC
+        ; DE - screen adress
+        LD A,D
+        AND #7
+        RRCA
+        RRCA
+        RRCA
+        OR E
+        LD E,A
+        LD A,D
+        AND #24
+        LD D,A
+        ld A,(_ScrBegin+1)
+        OR D
+        LD D,A
+        ; Запоминаем для атрибутов
+        PUSH DE
+        ; Копируем символ
+        LD B,#8
+out_char_1:
+	LD A,(DE)
+
+out_char_mode: LD A,(HL)	; // XOR (HL) AND (HL) OR (HL)
+
+        LD (DE),A
+        INC HL
+        INC D
+        djnz out_char_1
+        ; Вспоминаем
+        POP DE
+        ;in: DE - screen adress
+	;out:DE - attr adress
+        LD A,D
+        RRCA
+        RRCA
+        RRCA
+        AND #3
+        OR #0x58
+        LD D,A
+        ; Копируем атрибут
+        ld 	a,(_scrDriver_ZX+2)
+	ld	l,a
+	ld 	a,(_scrDriver_ZX+4)
+	or	a,l
+        LD (DE),A
+        ;
+	
+	pop	ix
+        ret
 __endasm;
 }
