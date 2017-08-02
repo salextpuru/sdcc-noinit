@@ -197,3 +197,6 @@ const uint8_t koi8r_8x8[] = {
 };
 
 uint8_t*	current_font = koi8r_8x8;
+
+box_symbols	boxSingle;
+box_symbols	boxDouble;

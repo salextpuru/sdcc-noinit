@@ -18,6 +18,8 @@ static void curpos(uint8_t x, uint8_t y);
 
 static void puts(const char* s, uint8_t maxsize);
 
+static void border(borderTypes btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+
 scrDriverFunc	scrDriver_ZX={
 	/**
 	 * @brief размеры экрана
@@ -110,7 +112,8 @@ scrDriverFunc	scrDriver_ZX={
 	/**
 	 * @brief Вывести рамку заданного типа
 	 */
-	//void	(*border)(borderTypes btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+	// void	(*border)(borderTypes btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+	.border = border
 };
 
 /**
@@ -382,4 +385,53 @@ static void puts(const char* s, uint8_t maxsize){
 		}
 		
 	}
+}
+
+void setScrDriverZX(){
+	txt_screen_driver=&scrDriver_ZX;
+	boxSingle="\x80\x81\x82\x83\x84\x85";
+	boxDouble="\xA0\xA1\xA5\xA8\xAB\xAE";
+}
+
+static void border(borderTypes btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h){
+	box_symbols bs;
+	uint8_t	i;
+	switch( btype ){
+		case btNone:{
+			bs=0;
+			break;
+		}
+		case btSingl:{
+			bs=boxSingle;
+			break;
+		}
+		case btDoubl:{
+			bs=boxDouble;
+			break;
+		}
+	}
+	
+	if(!bs){
+		return;
+	}
+	
+	
+	for(i=1; i<(w-1); i++){
+		curpos( x+i,y );
+		putc(bs[0]);
+		curpos( x+i,y+h-1 );
+		putc(bs[0]);
+	}
+	
+	for(i=1; i<(h-1); i++){
+		curpos( x,y+i );
+		putc(bs[1]);
+		curpos( x+w-1, y+i );
+		putc(bs[1]);
+	}
+	
+	curpos( x,y );		putc(bs[2]);
+	curpos( x+w-1,y );	putc(bs[3]);
+	curpos( x,y+h-1 );	putc(bs[4]);
+	curpos( x+w-1,y+h-1 );	putc(bs[5]);
 }

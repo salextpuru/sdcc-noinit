@@ -25,6 +25,20 @@ typedef enum borderTypes{
 	btDoubl		// двойная
 } borderTypes;
 
+/**
+ * @brief 6 символов рамки:
+ * 	- горизонатльная линия
+ * 	- вертикальная линия
+ * 	- левый верхний угол
+ * 	- правый верхний угол
+ * 	- левый нижний угол
+ * 	- правый нижний угол
+ */
+typedef uint8_t*	box_symbols;
+
+/**
+ * @brief Цвет
+ */
 typedef uint16_t	tColor;
 
 /**
@@ -119,9 +133,6 @@ typedef struct {
  * @brief Драйвер экрана
  */
 
-// Стандартный ZX
-extern scrDriverFunc	scrDriver_ZX;
-
 // Текущий драйвер
 extern scrDriverFunc*	txt_screen_driver;
 
@@ -129,5 +140,20 @@ extern scrDriverFunc*	txt_screen_driver;
  * @brief Адрес текущего шрифта
  */
 extern uint8_t*		current_font;
+
+/**
+ * @brief рамка одинарная
+ */
+extern box_symbols	boxSingle;
+
+/**
+ * @brief рамка двойная
+ */
+extern box_symbols	boxDouble;
+
+/**
+ * @brief Установить драйвер экрана ZX
+ */
+void setScrDriverZX();
 
 #endif /* scrfunc_h_E */
