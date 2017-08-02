@@ -152,6 +152,12 @@ extern box_symbols	boxSingle;
 extern box_symbols	boxDouble;
 
 /**
+ * @brief Стандартная процедура рисования рамки
+ * 
+ */
+void borderUI(borderTypes btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+
+/**
  * @brief Установить драйвер экрана ZX
  */
 void setScrDriverZX();
