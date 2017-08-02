@@ -41,6 +41,34 @@ typedef uint8_t*	box_symbols;
  */
 typedef uint16_t	tColor;
 
+
+/**
+ * @brief Типы экранов
+ */
+typedef enum modeScreen{
+	modeZX=0,	// Стандартный ZX
+	modeText=1,	// Текстовый
+	
+} modeScreen;
+
+/**
+ * @brief Описатель куска сохраненного экрана
+ * 	По сути - спрайт для графики
+ * 
+ * ---	поля не менять! вызовы из ассемблера	---
+ */
+typedef struct {
+	// Режим экрана
+	uint8_t  mode;
+	// Координаты и размеры
+	uint8_t  x;
+	uint8_t  y;
+	uint8_t  w;
+	uint8_t  h;
+	// Данные спрайта. Графика и, если надо, доп. данные
+	uint8_t	 datap[];	// размер get_win_size(w, h);
+} scrDriverStored;
+
 /**
  * @brief Функции вывода на экран
  * 	Все функции привязаны к знакоместам 8x8 пикселей
@@ -55,18 +83,19 @@ typedef struct {
 	/**
 	 * @brief Текущий цвет экрана (фон)
 	 */
-	uint16_t	paper;
+	tColor		paper;
 	
 	/**
 	 * @brief Текущий цвет экрана (тон)
 	 */
-	uint16_t	ink;
+	tColor		ink;
 	
 	/**
 	 * @brief Позиция курсора
 	 */
 	uint8_t		cur_x;
 	uint8_t		cur_y;
+	tColor		cur_color;
 	
 	/**
 	 * @brief Тип курсора
@@ -93,12 +122,12 @@ typedef struct {
 	/**
 	 * @brief Сохранить окно заданного размера в буфере
 	 */
-	void	(*store_window)(void* buf, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+	void	(*store_window)(scrDriverStored* buf, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 	
 	/**
 	 * @brief Вывести окно из буфера на экран
 	 */
-	void	(*restore_window)(void* buf, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+	void	(*restore_window)(scrDriverStored* buf);
 	
 	/**
 	 * @brief Вывести символ в позицию курсора цветом ink

@@ -109,3 +109,12 @@ void SEI()__naked{
 	ret
 	__endasm;
 }
+
+void waitINTS(uint8_t tick){
+	while(tick){
+		__asm;
+			halt
+		__endasm;
+		tick--;
+	}
+}

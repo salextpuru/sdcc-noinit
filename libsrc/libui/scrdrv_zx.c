@@ -18,6 +18,12 @@ static void curpos(uint8_t x, uint8_t y);
 
 static void puts(const char* s, uint8_t maxsize);
 
+static void	curset(tColor color, curTypes t);
+
+static void	store_window(scrDriverStored* buf, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+
+static void	restore_window(scrDriverStored* buf);
+
 scrDriverFunc	scrDriver_ZX={
 	/**
 	 * @brief размеры экрана
@@ -30,13 +36,13 @@ scrDriverFunc	scrDriver_ZX={
 	/**
 	 * @brief Текущий цвет экрана (фон)
 	 */
-	//uint16_t	paper;
+	//tColor	paper;
 	.paper=0,
 	
 	/**
 	 * @brief Текущий цвет экрана (тон)
 	 */
-	//uint16_t	ink;
+	//tColor	ink;
 	.ink=7,
 	
 	/**
@@ -46,6 +52,8 @@ scrDriverFunc	scrDriver_ZX={
 	.cur_x=0,
 	//uint8_t		cur_y;
 	.cur_y=0,
+	// tColor	cur_color;
+	.cur_color=56,
 	
 	/**
 	 * @brief Тип курсора
@@ -76,12 +84,14 @@ scrDriverFunc	scrDriver_ZX={
 	/**
 	 * @brief Сохранить окно заданного размера в буфере
 	 */
-	//void	(*store_window)(void* buf, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+	//void	(*store_window)(scrDriverStored* buf, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+	.store_window=store_window,
 	
 	/**
 	 * @brief Вывести окно из буфера на экран
 	 */
-	//void	(*restore_window)(void* buf, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+	//void	(*restore_window)(scrDriverStored* buf);
+	.restore_window=restore_window,
 	
 	/**
 	 * @brief Вывести символ в позицию курсора цветом ink
@@ -121,6 +131,21 @@ scrDriverFunc	scrDriver_ZX={
 // Начало экрана (для экрана 0 - 0x4000, для экрана 7 - 0xC000)
 static uint16_t	ScrBegin=0x4000;
 
+static void	curset(tColor color, curTypes t){
+	if( scrDriver_ZX.cur_type != btNone){
+		// Убрать курсор
+		
+	}
+	
+	scrDriver_ZX.cur_color = color;
+	scrDriver_ZX.cur_type = t;
+	
+	if( scrDriver_ZX.cur_type != btNone){
+		// нарисовать курсор
+		
+	}
+}
+
 static uint8_t getColor(){
 	return *((uint8_t*)(&scrDriver_ZX.ink)) |  *((uint8_t*)(&scrDriver_ZX.paper));
 }
@@ -132,7 +157,7 @@ static void setcolor(tColor ink, tColor paper){
 
 static uint32_t get_win_size(uint8_t w, uint8_t h){
 	// w*h*8 + w*h
-	return( w*h*9 );
+	return( w*h*9 + sizeof(scrDriverStored) );
 }
 
 static void curpos(uint8_t x, uint8_t y){
@@ -391,3 +416,206 @@ void setScrDriverZX(){
 	boxDouble="\xA0\xA1\xA5\xA8\xAB\xAE";
 }
 
+static void	store_window(scrDriverStored* buf, uint8_t x, uint8_t y, uint8_t w, uint8_t h)__naked{
+__asm;
+	push	ix
+	ld	ix,#4
+	add	ix,sp
+	;//
+	ld	l,0(ix) ;// buf
+	ld	h,1(ix)
+	;// 
+	ld 	(hl),#0	;// modeZX
+	inc	hl
+	ld 	d,2(ix); // x
+	ld 	(hl),d
+	inc	hl
+	ld 	e,3(ix); // y (DE=xy)
+	ld 	(hl),e
+	inc	hl
+	ld 	a,4(ix); // w
+	ld 	(hl),a
+	inc	hl
+	ld 	a,5(ix); // h
+	ld 	(hl),a
+	inc 	hl
+	;
+	push	hl	;// hl = datap[];
+			;// DE=xy
+	call calc_sadr	;// HL=screen adr
+	pop	de	;// de = datap[];
+	;// copy form hl to de
+	;// Высота спрайта
+	ld	b,5(ix)
+	;// Начало цикла по строкам
+store_window_hline:
+	push	bc
+	;// высота знакоместа (строки)
+	ld	c,#8
+	push	hl
+	;// выводим 8 линий (одну строку)
+store_window_line8:
+	ld	b,4(ix)
+	;// выводим w байт (одну линию)
+	push	hl
+store_window_line:
+	ld	a,(hl)
+	ld	(de),a
+	inc	hl
+	inc	de
+	dec	b
+	jr nz,	store_window_line
+	pop	hl
+	;// следующая линия экрана
+	inc	h
+	dec	c
+	jr nz,	store_window_line8
+	pop	hl
+	;// Следующая строка
+	ld	a,#0x20
+	add	a,l
+	ld	l,a
+	;// Если был перенос - то переход к след. трети экрана
+	jr	nc, store_window_1_3
+	;// следующая треть экрана
+	ld	a,#0x08
+	add	a,h
+	ld	h,a		; hl = hl + 0x0800
+store_window_1_3:
+	; Вывод в ту же треть экрана
+	pop	bc
+	djnz	store_window_hline	; Конец цикла по строкам (та же треть)
+	
+	;// атрибуты
+	push de
+	ld 	d,2(ix);
+	ld 	e,3(ix);
+	call	calc_aadr
+	pop de
+	;//
+	;// Высота спрайта
+	ld	b,5(ix)
+	ld	c,4(ix)
+	;// Начало цикла по строкам
+store_windowa_hline:
+	;// линия
+	push	bc
+	push	hl
+
+store_windowa_line:
+	ld	a,(hl)
+	ld	(de),a
+	inc	de
+	inc	hl
+	dec	c
+	jr nz, store_windowa_line
+
+	pop	hl
+	ld	bc,#0x0020
+	add	hl,bc
+	pop	bc
+	djnz	store_windowa_hline
+	
+	;// Выход, если всё
+	pop	ix
+	ret
+__endasm;
+}
+
+static void	restore_window(scrDriverStored* buf)__naked{
+__asm;
+	push	ix
+	ld	ix,#4
+	add	ix,sp
+	;//
+	ld	l,0(ix) ;// HL=buf
+	ld	h,1(ix)
+	push	hl
+	pop	ix	;// IX=buf
+	;//
+	ld 	de,#5
+	add	hl,de
+	push	hl 	;// hl = datap[];
+	;//
+	ld	e,2(ix) ;
+	ld	d,1(ix)	;// DE=xy
+	;//
+	call calc_sadr	;// HL=screen adr
+	pop	de	;// de = datap[];
+	;// copy form hl to de
+	;// Высота спрайта
+	ld	b,4(ix)
+	;// Начало цикла по строкам
+restore_window_hline:
+	push	bc
+	;// высота знакоместа (строки)
+	ld	c,#8
+	push	hl
+	;// выводим 8 линий (одну строку)
+restore_window_line8:
+	ld	b,3(ix)
+	;// выводим w байт (одну линию)
+	push	hl
+restore_window_line:
+	ld	a,(de)
+	ld	(hl),a
+	inc	hl
+	inc	de
+	dec	b
+	jr nz,	restore_window_line
+	pop	hl
+	;// следующая линия экрана
+	inc	h
+	dec	c
+	jr nz,	restore_window_line8
+	pop	hl
+	;// Следующая строка
+	ld	a,#0x20
+	add	a,l
+	ld	l,a
+	;// Если был перенос - то переход к след. трети экрана
+	jr	nc, restore_window_1_3
+	;// следующая треть экрана
+	ld	a,#0x08
+	add	a,h
+	ld	h,a		;// hl = hl + 0x0800
+restore_window_1_3:
+	; Вывод в ту же треть экрана
+	pop	bc
+	djnz	restore_window_hline	; Конец цикла по строкам (та же треть)
+	
+	;// атрибуты
+	push de
+	ld 	d,1(ix);
+	ld 	e,2(ix);
+	call	calc_aadr
+	pop de
+	;//
+	;// Высота спрайта
+	ld	b,4(ix)
+	ld	c,3(ix)
+	;// Начало цикла по строкам
+restore_windowa_hline:
+	;// линия
+	push	bc
+	push	hl
+
+restore_windowa_line:
+	ld	a,(de)
+	ld	(hl),a
+	inc	de
+	inc	hl
+	dec	c
+	jr nz, restore_windowa_line
+
+	pop	hl
+	ld	bc,#0x0020
+	add	hl,bc
+	pop	bc
+	djnz	restore_windowa_hline
+	
+	;// Выход, если всё
+	pop	ix
+	ret
+__endasm;
+}

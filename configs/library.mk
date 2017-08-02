@@ -4,7 +4,7 @@
 LIBRARY+=libz80
 
 # Interrupt control
-# LIBRARY+=libim2
+LIBRARY+=libim2
 
 # AY-players
 # LIBRARY+=libay
