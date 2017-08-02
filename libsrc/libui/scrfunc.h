@@ -94,6 +94,7 @@ typedef struct {
 	/**
 	 * @brief Вывести строку в позицию курсора
 	 * 	Выводится не более maxsize символов
+	 * 	maxsize = 0 - вывод до конца строки или экрана
 	 */
 	void	(*puts)(const char* s, uint8_t maxsize);
 	

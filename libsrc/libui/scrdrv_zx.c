@@ -16,6 +16,8 @@ static void putc(char c);
 
 static void curpos(uint8_t x, uint8_t y);
 
+static void puts(const char* s, uint8_t maxsize);
+
 scrDriverFunc	scrDriver_ZX={
 	/**
 	 * @brief размеры экрана
@@ -92,6 +94,7 @@ scrDriverFunc	scrDriver_ZX={
 	 * 	Выводится не более maxsize символов
 	 */
 	//void	(*puts)(const char* s, uint8_t maxsize);
+	.puts = puts,
 	
 	/**
 	 * @brief Установить позицию позицию курсора
@@ -116,6 +119,10 @@ scrDriverFunc	scrDriver_ZX={
 
 // Начало экрана (для экрана 0 - 0x4000, для экрана 7 - 0xC000)
 static uint16_t	ScrBegin=0x4000;
+
+static uint8_t getColor(){
+	return *((uint8_t*)(&scrDriver_ZX.ink)) |  *((uint8_t*)(&scrDriver_ZX.paper));
+}
 
 static void setcolor(tColor ink, tColor paper){
 	scrDriver_ZX.ink = ink;
@@ -145,13 +152,10 @@ __asm;
 	push	bc
 	push	de
 	call	wclear_asm
+	call	_getColor
 	pop	de
 	pop	bc
 	;//
-	ld 	a,(_scrDriver_ZX+2)
-	ld	l,a
-	ld 	a,(_scrDriver_ZX+4)
-	or	a,l
 	call	attrset_asm
 	;//
 	pop	ix
@@ -290,15 +294,15 @@ attrw:
 __endasm;
 }
 
-static void putc(char c){
-	volatile uint8_t x = scrDriver_ZX.cur_x;
-	volatile uint8_t y = scrDriver_ZX.cur_y;
-	volatile uint8_t i = scrDriver_ZX.ink;
-	volatile uint8_t p = scrDriver_ZX.paper;
+static void _putc(char c, uint8_t x, uint8_t y)__naked{
+	c; x; y;
 __asm;
-	ld 	a, 4(ix)
-	ld 	e,-4(ix)
-	ld 	d,-3(ix)
+	push	ix
+	ld	ix,#4
+	add	ix,sp
+	ld 	a, 0(ix)
+	ld 	e,1(ix)
+	ld 	d,2(ix)
 	
 ;// DE - координаты (Dy Ex), A - код символа
 out_char:
@@ -338,6 +342,7 @@ out_char_mode: LD A,(HL)	; // XOR (HL) AND (HL) OR (HL)
         INC D
         djnz out_char_1
         ; Вспоминаем
+        call	_getColor ;// l= color
         POP DE
         ;in: DE - screen adress
 	;out:DE - attr adress
@@ -349,11 +354,32 @@ out_char_mode: LD A,(HL)	; // XOR (HL) AND (HL) OR (HL)
         OR #0x58
         LD D,A
         ; Копируем атрибут
-        ld 	a,-2(ix)
-	ld	l,a
-	ld 	a,-1(ix)
-	or	a,l
-        LD (DE),A
+        ld a,l
+        LD (de),a
+	; // Return
+	pop	ix
+	ret
 __endasm;
-	; // Return automatic
+}
+
+static void putc(char c){
+	_putc(c, scrDriver_ZX.cur_x, scrDriver_ZX.cur_y );
+}
+
+static void puts(const char* s, uint8_t maxsize){
+	uint8_t counter=0;
+	
+	while( (*s) && ( (counter<maxsize) || (maxsize==0) ) ){
+		if( scrDriver_ZX.cur_x < scrDriver_ZX.w ){
+			putc(*(s++));
+			counter++;
+			scrDriver_ZX.cur_x++;
+		}
+		else{
+			scrDriver_ZX.cur_x=0;
+			scrDriver_ZX.cur_y++;
+			break;
+		}
+		
+	}
 }
