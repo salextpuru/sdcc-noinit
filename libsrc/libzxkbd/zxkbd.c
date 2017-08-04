@@ -12,26 +12,26 @@
 //		Data in(port)
 // Port	 Adr   0  1  2  3  4
 //
-// #FEFE  A8   CS  Z  X  п║  V
+// #FEFE  A8   CS  Z  X  С  V
 // #FDFE  A9    A  S  D  F  G
-// #FBFE  A10   Q  W  E  R  п╒
+// #FBFE  A10   Q  W  E  R  Т
 // #F7FE  A11   1  2  3  4  5
-// #EFFE  п░12   0  9  8  7  6
+// #EFFE  А12   0  9  8  7  6
 // #DFFE  A13   P  O  I  U  Y
 // #BFFE  A14   En L  K  J  H  
 // #7FFE  A15   SP SS M  N  B
 //-------------------------------------------------------
-//		Data in(port) 		( п╙ п╔ п╜ п√ п╝ п▒ п│ )
+//		Data in(port) 		( Ъ Х Э Ж Ю Б Ё )
 // Port	 Adr   0  1  2  3  4
 //
-// #FEFE  A8   CS  п╞  п╖  п║  п°
-// #FDFE  A9    п╓  п╚  п▓  п░  п÷
-// #FBFE  A10   п≥  п╕  пё  п   п∙
+// #FEFE  A8   CS  Я  Ч  С  М
+// #FDFE  A9    Ф  Ы  В  А  П
+// #FBFE  A10   Й  Ц  У  К  Е
 // #F7FE  A11   1  2  3  4  5
-// #EFFE  п░12   0  9  8  7  6
-// #DFFE  A13   п≈  п╘  п╗  п⌠  п²
-// #BFFE  A14   En п■  п⌡  п·  п═
-// #7FFE  A15   SP SS п≤  п╒  п╛
+// #EFFE  А12   0  9  8  7  6
+// #DFFE  A13   З  Щ  Ш  Г  Н
+// #BFFE  A14   En Д  Л  О  Р
+// #7FFE  A15   SP SS И  Т  Ь
 //-------------------------------------------------------
 
 enum ctlCode{
@@ -42,9 +42,9 @@ enum ctlCode{
 
 // Lat Upper Case
 static const uint8_t lat_upper[40]={
-	 CS, 'Z', 'X', 'п║', 'V',	// #FEFE
+	 CS, 'Z', 'X', 'С', 'V',	// #FEFE
 	'A', 'S', 'D', 'F', 'G',	// #FDFE
-	'Q', 'W', 'E', 'R', 'п╒',	// #FBFE
+	'Q', 'W', 'E', 'R', 'Т',	// #FBFE
 	'1', '2', '3', '4', '5',	// #F7FE
 	'0', '9', '8', '7', '6',	// #EFFE
 	'P', 'O', 'I', 'U', 'Y',	// #DFFE
@@ -79,38 +79,106 @@ static const uint8_t lat_upper_SS[40]={
 // Lat Lower Case + Symbol Shift
 #define lat_lower_SS lat_upper_SS
 
+// RUS Upper Case ( Ъ Х Э Ж Ю Б Ё ) - только с SS
+static const uint8_t rus_upper[40]={
+	 CS, 'Я', 'Ч', 'С', 'М',	// #FEFE
+	'Ф', 'Ы', 'В', 'А', 'П',	// #FDFE
+	'Й', 'Ц', 'У', 'К', 'Е',	// #FBFE
+	'1', '2', '3', '4', '5',	// #F7FE
+	'0', '9', '8', '7', '6',	// #EFFE
+	'З', 'Щ', 'Ш', 'Г', 'Н',	// #DFFE
+	 En, 'Д', 'Л', 'О', 'Р',	// #BFFE
+	' ',  SS, 'Ь', 'Т', 'И'		// #7FFE
+};
+
+// Ъ - SS+ Ь
+// Х - SS+ К
+// Э - SS+ Ы
+// Ж - SS+ Г
+// Ю - SS+ У
+// Б - SS+ В
+// Ё - SS+ Е
+
+// RUS Upper Case ( Ъ Х Э Ж Ю Б Ё )
+static const uint8_t rus_upper_ss[40]={
+	 CS, 'Я', 'Ч', 'С', 'М',	// #FEFE
+	'Ф', 'Э', 'Б', 'А', 'П',	// #FDFE
+	'Й', 'Ц', 'Ю', 'Х', 'Ё',	// #FBFE
+	'1', '2', '3', '4', '5',	// #F7FE
+	'0', '9', '8', '7', '6',	// #EFFE
+	'З', 'Щ', 'Ш', 'Ж', 'Н',	// #DFFE
+	 En, 'Д', 'Л', 'О', 'Р',	// #BFFE
+	' ',  SS, 'Ъ', 'Т', 'И'		// #7FFE
+};
+
+// rus lower case ( ъ х э ж ю б ё ) - только с ss
+static const uint8_t rus_lower[40]={
+	 CS, 'я', 'ч', 'с', 'м',	// #fefe
+	'ф', 'ы', 'в', 'а', 'п',	// #fdfe
+	'й', 'ц', 'у', 'к', 'е',	// #fbfe
+	'1', '2', '3', '4', '5',	// #f7fe
+	'0', '9', '8', '7', '6',	// #effe
+	'з', 'щ', 'ш', 'г', 'н',	// #dffe
+	 En, 'д', 'л', 'о', 'р',	// #bffe
+	' ', SS, 'ь', 'т', 'и'		// #7ffe
+};
+
+// ъ - ss+ ь
+// х - ss+ к
+// э - ss+ ы
+// ж - ss+ г
+// ю - ss+ у
+// б - ss+ в
+// ё - ss+ е
+
+// rus lower case ( ъ х э ж ю б ё )
+static const uint8_t rus_lower_ss[40]={
+	 CS, 'я', 'ч', 'с', 'м',	// #fefe
+	'ф', 'э', 'б', 'а', 'п',	// #fdfe
+	'й', 'ц', 'ю', 'х', 'ё',	// #fbfe
+	'1', '2', '3', '4', '5',	// #f7fe
+	'0', '9', '8', '7', '6',	// #effe
+	'з', 'щ', 'ш', 'ж', 'н',	// #dffe
+	 En, 'д', 'л', 'о', 'р',	// #bffe
+	' ',  SS, 'ъ', 'т', 'и'		// #7ffe
+};
+
 static const uint8_t* mode_table[8]={
 	lat_lower,
 	lat_upper,
 	lat_lower_SS,
 	lat_upper_SS,
-	0,	//ru_lower
-	0,	//ru_upper
-	0,	//ru_lower_SS
-	0,	//ru_upper_SS
+	rus_lower,
+	rus_upper,
+	rus_lower_ss,
+	rus_upper_ss
 	
 };
 
-// п≈п╟п╢п╣я─п╤п╨п╟ п╫п╟ п╢я─п╣п╠п╣п╥пЁ
-#define delayDrizg	5
+// Задержка на дребезг
+#define delayDrizg	10
 
-// п°п╟я│п╨п╟ Caps Shift
+// Маска Caps Shift
 #define CS_MASK		1
-// п°п╟я│п╨п╟ Symbol Shift
+#define CS_BIT		0
+// Маска Symbol Shift
 #define SS_MASK		2
-// п°п╟я│п╨п╟ RUS
+#define SS_BIT		1
+// Маска RUS
 #define RU_MASK		4
-// п°п╟я│п╨п╟ Caps Lock
+#define RU_BIT		2
+// Маска Caps Lock
 #define CL_MASK		8
+#define CL_BIT		3
 
-// п≈п╟п╢п╣я─п╤п╨п╟ п╫п╟ п╢я─п╣п╠п╣п╥пЁ
-static uint8_t		key_pause;
+// Задержка на дребезг
+static uint8_t		key_pause=0;
 
-// п╒п╟п╠п╩п╦я├п╟, я│п╨п╟п╫-п╨п╬п╢п╬п╡-п╠п╦я┌, я│я┤п╦я┌п╟п╫п╫п╟я▐ я│ п©п╬я─я┌п╟
+// Таблица, скан-кодов-бит, считанная с порта
 static uint8_t		scan_port[8];
-static uint8_t		modes; // 0 - CS; 1 - SS 2 - rus 3 - caps lock
+static uint8_t		modes=0; // bit 0 - CS; 1 - SS 2 - rus 3 - caps lock
 
-// я┌п╣п╨я┐я┴п╟я▐ п╨п╩п╟п╡п╦я┬п╟
+// текущая клавиша
 static uint16_t		key;
 
 uint16_t zxInKey(){
@@ -121,32 +189,33 @@ uint16_t zxInKey(){
 
 void scanINT()__naked{
 __asm;
-	;// п∙я│п╩п╦ п╥п╟п╢п╣я─п╤п╨п╟ п╫п╟ п╢я─п╣п╠п╣п╥пЁ - п╡я▀я┘п╬п╢п╦п╪,
-	;// я┐п╪п╣п╫я▄я┬п╟я▐ я│я┤п╣я┌я┤п╦п╨
+	;// Если задержка на дребезг - выходим,
+	;// уменьшая счетчик
 	ld 	a,(_key_pause)
 	or 	a
 	jr 	z, scanINTscanInit
 	dec 	a
 	ld 	(_key_pause),a
-	;// п▓я▀я┘п╬п╢, п╣я│п╩п╦ п╥п╟п╢п╣я─п╤п╨п╟ п©п╬ п╢я─п╣п╠п╣п╥пЁя┐
+	;// Выход, если задержка по дребезгу
 	ret
-	;// п║п╬п╠я│я┌п╡п╣п╫п╫п╬ я│п╨п╟п╫п╦я─п╬п╡п╟п╫п╦п╣
+	;// Собственно сканирование
 scanINTscanInit:
 	ld 	hl,#_scan_port
 	ld 	bc,#0xFEFE
 scanINTscan:
-	;//	п║я┤п╦я┌я▀п╡п╟п╣п╪. п∙я│п╩п╦ п╫п╣ 0x1f - я┌п╬ п╣я│я┌я▄ п╫п╟п╤п╟я┌п╦п╣
+	;//	Считываем. Если не 0x1f - то есть нажатие
 	in	a,(c)
 	and	#0x1F
 	ld 	(hl),a
 	inc 	hl
-	;// п²п╣я┌ п╫п╟п╤п╟я┌п╦я▐
+	;// Нет нажатия
 	scf 		;// CY=1
 	rl	b	;// b = b<<1 | 1
-	;// п∙я│п╩п╦ CY=0, я┌п╬ п╡я│п╣ я│я┌я─п╬п╨п╦ п╬я┌я│п╨п╟п╫п╦я─п╬п╡п╟п╫я▀.
+	;// Если CY=0, то все строки отсканированы.
 	jr	c,scanINTscan
-	;// п╒п╣п©п╣я─я▄ п╡ _scan_port п╡я│я▐ я┌п╟п╠п╩п╦я├п╟.
-	;// п▓я▀я│я┌п╟п╡п╩я▐п╣п╪ п©я─п╦п╥п╫п╟п╨п╦ SS п╦ CS
+	
+	;// Теперь в _scan_port вся таблица.
+	;// Выставляем признаки SS и CS
 	;// CS
 	ld	a,(_scan_port+0)
 	ld	b,a
@@ -171,24 +240,24 @@ scanINTscan:
 	and 	#~(CS_MASK | SS_MASK)
 	or 	c
 	ld 	(_modes),a
-	;// п÷я─п╦п╥п╫п╟п╨п╦ п╡я▀я│я┌п╟п╡п╩п╣п╫я▀
+	;// Признаки выставлены
 	ld 	a,#3
 	cp 	c
 	jr	nz, noChangeLang
-	;// п°п╣п╫я▐п╣п╪ я─п╟я│п╨п╩п╟п╢п╨я┐
+	;// Меняем раскладку
 	ld	a,#delayDrizg
 	ld 	(_key_pause),a
 	ld 	a,(_modes)
 	xor	#RU_MASK
 	ld 	(_modes),a
-	;// п÷п╬я│п╩п╣ я│п╪п╣п╫я▀ я─п╟я│п╨п╩п╟п╢п╨п╦ - п╡я▀я┘п╬п╢ я│ п©я┐п╥п╬п╧
+	;// После смены раскладки - выход с пузой
 	ret
 	
-	;// п╒я┐я┌ п╤п╣ п╪я▀ п©я─п╬п╡п╣я─я▐п╣п╪ я┤я┌п╬ п╫п╟п╤п╟я┌п╬
+	;// Тут же мы проверяем что нажато
 noChangeLang:
-	;// п▓я▀п╠п╬я─ я┌п╟п╠п╩п╦я├я▀
+	;// Выбор таблицы
 	ld 	a,(_modes)
-	and 	#CL_MASK
+	bit 	CL_BIT,a
 	jr	z, noCaps
 	xor 	#CS_MASK
 noCaps:
@@ -202,7 +271,7 @@ noCaps:
 	inc 	hl
 	ld 	d,(hl)
 	ex 	de,hl
-	;// HL = я┌п╟п╠п╩п╦я├п╟
+	;// HL = таблица
 	ld 	de,#_scan_port
 	ld 	b,#8
 next_line:
@@ -215,7 +284,7 @@ next_line:
 	pop 	de
 	inc 	de
 	djnz 	next_line
-	;// п п╩п╟п╡п╦я┬ п╫п╣ п╫п╟п╤п╟я┌п╬. п╡я▀я┘п╬п╢
+	;// Клавиш не нажато. выход
 	ret
 	
 	;//
@@ -227,11 +296,56 @@ key_found:
 	jr	key_found 
 getCode:
 	ld 	a,(hl)
+	ld 	c,a
+	;// Caps lock?
+	cp 	a,#'2'
+	jr 	nz,addKey
+	ld 	a,(_modes)
+	bit 	CS_BIT,a
+	jr 	z,addKey
+	;// Toggle CAPS LOCK
+	xor	#CL_MASK
+	ld 	(_modes),a
+	;//
+	jr	exitKbd
+addKey:
+	ld 	a,c
 	ld 	(_key),a
+
+exitKbd:
 	;//
 	ld	a,#delayDrizg
 	ld 	(_key_pause),a
 	;//
 	ret
 __endasm;
+}
+
+/**
+ * @brief Получить язык
+ */
+uint8_t  zxIsRus(){
+	return (modes & RU_MASK)?1:0;
+}
+
+/**
+ * @brief Установить язык
+ */
+uint8_t  zxSetLang(uint8_t lang){
+	modes = lang?(modes|RU_MASK):(modes&~RU_MASK);
+}
+
+/**
+ * @brief Получить регистр
+ */
+uint8_t  zxIsCaps(){
+	uint8_t cl=(modes & CL_MASK)?1:0;
+	return  (modes&CS_MASK)?cl^1:cl;
+}
+
+/**
+ * @brief Установить регистр
+ */
+uint8_t  zxSetCaps(uint8_t caps){
+	modes = caps?(modes|CL_MASK):(modes&~CL_MASK);
 }

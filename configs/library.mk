@@ -16,7 +16,7 @@ LIBRARY+=libim2
 # LIBRARY+=libconio
 
 # PS/2 keyboard (Pentevo etc)
-# LIBRARY+=libps2
+LIBRARY+=libps2
 
 # ZX keyboard (not work yet)
 LIBRARY+=libzxkbd
