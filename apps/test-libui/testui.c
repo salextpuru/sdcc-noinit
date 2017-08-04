@@ -1,6 +1,5 @@
 #include <window.h>
 #include <im2.h>
-#include <ps2.h>
 
 
 window w1;
@@ -8,7 +7,6 @@ window w1;
 
 int main(int argc, char* argv[]){
 	setScrDriverZX();
-	InitPS2();
 	
 	txt_screen_driver->puts("Init ", 0);
 	window_init(&w1);

@@ -1,6 +1,5 @@
 #include "window.h"
 #include <string.h>
-#include <ps2.h>
 
 // Деструктор окна
 void window_destructor(window* this){
@@ -79,7 +78,7 @@ void window_getEvent(window* this, event* ev){
 	ev->ev = evKbd;
 	ev->key = 0;
 	while( ev->key == 0 ){
-		ev->key = InKey();
+		// ev->key = InKey();
 	}
 }
 	
