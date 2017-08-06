@@ -4,7 +4,7 @@
 # APPLICATIONS+=testapp
 
 # Simple demo
-# APPLICATIONS+=microdemo
+APPLICATIONS+=microdemo
 
 # Test if zx keyboard
 APPLICATIONS+=test-zxkbd

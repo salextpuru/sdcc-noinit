@@ -7,13 +7,13 @@ LIBRARY+=libz80
 LIBRARY+=libim2
 
 # AY-players
-# LIBRARY+=libay
+LIBRARY+=libay
 
 # Sprite (standart ZX-mode)
-# LIBRARY+=libspr
+LIBRARY+=libspr
 
 # Console io (printf)
-# LIBRARY+=libconio
+LIBRARY+=libconio
 
 # PS/2 keyboard (Pentevo etc)
 LIBRARY+=libps2
