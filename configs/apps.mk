@@ -6,8 +6,11 @@
 # Simple demo
 # APPLICATIONS+=microdemo
 
-# Test if zx keyboard (no works yet)
-# APPLICATIONS+=zxkbdtest
+# Test if zx keyboard
+APPLICATIONS+=test-zxkbd
+
+# Test if ps2 keyboard
+APPLICATIONS+=test-ps2kbd
 
 # Test libringbuf
 # APPLICATIONS+=test-libringbuf

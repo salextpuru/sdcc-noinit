@@ -181,13 +181,13 @@ static uint8_t		modes=0; // bit 0 - CS; 1 - SS 2 - rus 3 - caps lock
 // текущая клавиша
 static uint16_t		key;
 
-uint16_t zxInKey(){
+uint16_t zxKbdInKey(){
 	uint16_t k = key;
 	key=0;
 	return k;
 }
 
-void scanINT()__naked{
+void zxKbdScan()__naked{
 __asm;
 	;// Если задержка на дребезг - выходим,
 	;// уменьшая счетчик
@@ -324,21 +324,21 @@ __endasm;
 /**
  * @brief Получить язык
  */
-uint8_t  zxIsRus(){
+uint8_t  zxKbdIsRus(){
 	return (modes & RU_MASK)?1:0;
 }
 
 /**
  * @brief Установить язык
  */
-uint8_t  zxSetLang(uint8_t lang){
+uint8_t  zxKbdSetLang(uint8_t lang){
 	modes = lang?(modes|RU_MASK):(modes&~RU_MASK);
 }
 
 /**
  * @brief Получить регистр
  */
-uint8_t  zxIsCaps(){
+uint8_t  zxKbdIsCaps(){
 	uint8_t cl=(modes & CL_MASK)?1:0;
 	return  (modes&CS_MASK)?cl^1:cl;
 }
@@ -346,6 +346,18 @@ uint8_t  zxIsCaps(){
 /**
  * @brief Установить регистр
  */
-uint8_t  zxSetCaps(uint8_t caps){
+uint8_t  zxKbdSetCaps(uint8_t caps){
 	modes = caps?(modes|CL_MASK):(modes&~CL_MASK);
+}
+
+uint8_t zxKbdIsSHIFT(){
+	return (modes & CS_MASK)?1:0;
+}
+
+uint8_t zxKbdIsCTRL(){
+	return (modes & SS_MASK)?1:0;
+}
+
+uint8_t zxKbdIsALT(){
+	return 0;
 }

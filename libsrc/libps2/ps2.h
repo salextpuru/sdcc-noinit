@@ -2,18 +2,13 @@
 #define PS2_H_DEFINED
 
 #include <types.h>
+#include <stdint.h>
 #include "ps2_const.h"
 
 /**
 	Инициализация.
 */
-void InitPS2();
-
-/**
-	Получить скан-код и флаги.
-	Служебная и не очень нужная
-*/
-WORD GetPS2();
+void ps2Init();
 
 /**
 	Получение нажатой клавиши.
@@ -21,31 +16,32 @@ WORD GetPS2();
 	обычная клавиша или дополнительная. Младший байт - код символа
 	с учётом регистра и раскладки. KOI8-R
 */
-WORD InKey();
+uint16_t ps2InKey();
 
 /**
 	Проверка - нажат ли CTRL (0-не нажат)
 */
-BYTE IsCTRL();
+uint8_t ps2IsCTRL();
 
 /**
 	Проверка - нажат ли ALT (0-не нажат)
 */
-BYTE IsALT();
+uint8_t ps2IsALT();
 
 /**
 	Проверка - нажат ли SHIFT (0-не нажат)
 */
-BYTE IsSHIFT();
+uint8_t ps2IsSHIFT();
 
 /**
 	Проверка - Регистра (0 - лат., иначе рус.)
 */
-BYTE IsRUS();
+uint8_t ps2IsRus();
 
 /**
 	Проверка - Регистра (0 - строчные, иначе - заглавные)
 */
-BYTE IsUPPER();
+//BYTE IsUPPER();
+uint8_t ps2IsCaps();
 
 #endif /* PS2_H_DEFINED */

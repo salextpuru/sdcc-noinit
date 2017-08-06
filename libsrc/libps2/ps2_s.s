@@ -5,8 +5,8 @@
 
 ;----------------------------------------------
 ; Init PS2 keyboard
-.globl _InitPS2
-_InitPS2:
+.globl _ps2Init
+_ps2Init:
 	;
 	ld	bc,	#0xEFF7
 	ld	a,	#0x80
@@ -29,7 +29,7 @@ _InitPS2:
 ; if E0 prefix then L bit 7 is 1
 ; if F0 (keyup) then H bit 0 is 1
 ;----------------------------------------------
-.globl _GetPS2
+;//.globl _GetPS2
 _GetPS2:
 ps2kbd_loop:
 	ld	bc,	#0xDFF7
@@ -132,8 +132,8 @@ ICAPS=	2
 ; Получить код клавиши в соответствии
 ; с учётом RUS-LAT ALT SHIFT
 ;----------------------------------------------
-.globl _InKey
-_InKey:
+.globl _ps2InKey
+_ps2InKey:
 	push ix
 	call InKey_IX_STORED
 	pop ix
@@ -379,8 +379,8 @@ ModePS2_T: ; PS2_ALT PS2_SHIFT PS2_CTRL
 	.db	0x00
 
 ; Проверка нажатия CTRL
-.globl _IsCTRL
-_IsCTRL:
+.globl _ps2IsCTRL
+_ps2IsCTRL:
 	ld	a,(ModePS2_T)
 	bit	PS2_CTRL,a
 	and 	#(1<<PS2_CTRL)
@@ -388,8 +388,8 @@ _IsCTRL:
 	ret
 
 ; Проверка нажатия ALT
-.globl _IsALT
-_IsALT:
+.globl _ps2IsALT
+_ps2IsALT:
 	ld	a,(ModePS2_T)
 	bit	PS2_ALT,a
 	and 	#(1<<PS2_ALT)
@@ -397,8 +397,8 @@ _IsALT:
 	ret
 
 ; Проверка нажатия SHIFT
-.globl _IsSHIFT
-_IsSHIFT:
+.globl _ps2IsSHIFT
+_ps2IsSHIFT:
 	ld	a,(ModePS2_T)
 	bit	PS2_SHIFT,a
 	and 	#(1<<PS2_SHIFT)
@@ -406,8 +406,8 @@ _IsSHIFT:
 	ret
 
 ; Проверка Режима (рус-лат)
-.globl _IsRUS
-_IsRUS:
+.globl _ps2IsRus
+_ps2IsRus:
 	ld	a,(ModePS2_P)
 	ld	c,a
 	ld	a,(ModePS2_T)
@@ -419,8 +419,8 @@ _IsRUS:
 	ret
 
 ; Проверка заглавные-строчные
-.globl _IsUPPER
-_IsUPPER:
+.globl _ps2IsCaps
+_ps2IsCaps:
 	ld	a,(ModePS2_P)
 	ld	c,a
 	ld	a,(ModePS2_T)
