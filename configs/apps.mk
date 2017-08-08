@@ -1,8 +1,5 @@
 # Application list
 
-# Stuff.
-# APPLICATIONS+=testapp
-
 # Simple demo
 APPLICATIONS+=microdemo
 
@@ -13,22 +10,22 @@ APPLICATIONS+=test-zxkbd
 APPLICATIONS+=test-ps2kbd
 
 # Test libringbuf
-# APPLICATIONS+=test-libringbuf
+APPLICATIONS+=test-libringbuf
 
 # Test libfs
-# APPLICATIONS+=test-libfs
+APPLICATIONS+=test-libfs
 
 # WC plugin (some tests)
-# APPLICATIONS+=wcplugin
+APPLICATIONS+=wcplugin
 
 # WC plugin (terminal test)
-# APPLICATIONS+=wcptermtst
+APPLICATIONS+=wcptermtst
 
 # WC plugin
-# APPLICATIONS+=wcpzxmczifi
+APPLICATIONS+=wcpzxmczifi
 
 # Test ESP8266 socket
-# APPLICATIONS+=test-libesp8266
+APPLICATIONS+=test-libesp8266
 
 # Test libui
 APPLICATIONS+=test-libui

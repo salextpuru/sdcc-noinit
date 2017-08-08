@@ -1,18 +1,5 @@
-# App name
-APP=wcplugin
-
-LDEVICE=/dev/ttyUSB0
-LSPEED=19200
-
-
 # Config files
 include *.mk
-
-# CRT0
-CRT0PATH=$(TOP)/libsrc/crt0/$(CRT0WCPLUGIN)
-
-# Object files
-OBJ=plugin.rel
 
 # Generate all targets
 all: $(APPDIR)/$(APP).wmf

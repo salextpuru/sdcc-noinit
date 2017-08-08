@@ -22,22 +22,22 @@ LIBRARY+=libps2
 LIBRARY+=libzxkbd
 
 # Ring buffer
-# LIBRARY+=libringbuf
+LIBRARY+=libringbuf
 
 # Файлы
-# LIBRARY+=libfs
+LIBRARY+=libfs
 
 # WC plugin lib
-# LIBRARY+=libwcplugin
+LIBRARY+=libwcplugin
 
 # Class control library
 LIBRARY+=libui
 
 # RS232 Library
-# LIBRARY+=libuart
+LIBRARY+=libuart
 
 # Timers library
-# LIBRARY+=libtimer
+LIBRARY+=libtimer
 
 # ESP8266 WiFi-UART
-# LIBRARY+=libesp8266
+LIBRARY+=libesp8266

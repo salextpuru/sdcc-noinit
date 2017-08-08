@@ -1,11 +1,5 @@
-# App name
-APP=ps2kbdtest
-
 # Config files
 include *.mk
-
-# Object files
-OBJ=main.rel
 
 # Generate all targets
 all: $(APPDIR)/$(APP).bin $(APPDIR)/$(APP).\$$C $(APPDIR)/$(APP)-code.tap $(APPDIR)/$(APP)-basic.tap

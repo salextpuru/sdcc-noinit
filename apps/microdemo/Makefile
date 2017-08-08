@@ -1,11 +1,5 @@
-# App name
-APP=microdemo
-
 # Config files
 include *.mk
-
-# Object files
-OBJ=again_stc.rel  green_b1.rel  kiss_pt3.rel  love_stc.rel mus010_pt3.rel  mus01D_pt2.rel  red_b2.rel  yellow_b2.rel main.rel
 
 # Generate all targets
 all: $(APPDIR)/$(APP).bin $(APPDIR)/$(APP).\$$C $(APPDIR)/$(APP)-code.tap $(APPDIR)/$(APP)-basic.tap
