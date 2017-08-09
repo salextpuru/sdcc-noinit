@@ -29,3 +29,6 @@ APPLICATIONS+=test-libesp8266
 
 # Test libui
 APPLICATIONS+=test-libui
+
+# Lode runner Game Demo
+APPLICATIONS+=game-loderunner

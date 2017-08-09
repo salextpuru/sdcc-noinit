@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Преобразует .PBM файлы текущего каталога в спрайты
+
+# Цвет (атрибут)
+if [[ $# -ge 2 ]]; then 
+	COLOR=$2
+else
+	COLOR=7
+fi
+
+# Имя C-файлов (.h .c)
+if [[ $# -ge 1 ]]; then 
+	FN=$1
+else
+	printf "Usage:\n\tpbm2sprite0 <filename> [color (attr)]\n"
+	exit
+fi
+
+
+echo "// Auto generated sprite" > $FN.h
+echo "#ifndef "$FN"_H_INCLUDED" >> $FN.h
+echo "#define "$FN"_H_INCLUDED" >> $FN.h
+echo "#include <spr0.h>" >> $FN.h
+
+echo "#include \"$FN.h\"" > $FN.c
+
+# w h data name
+function add_structure() {
+	echo "Sprite0 "$4" = {"
+	echo "	.sz =  "$(( $1 * $2 * 9 )) " + sizeof(Sprite0),"
+	echo "	.w = "$1","
+	echo "	.h = "$2","
+	echo "	.datap ="{ $3 }
+	echo "};"
+}
+
+
+
+for i in *.pbm; do
+	echo $i
+	for k in 1 2 ; do
+		read LINE
+	done < $i
+	wh=( $LINE )
+	W=$(( ${wh[0]} / 8 ))
+	H=$(( ${wh[1]} / 8 ))
+	SN=`basename $i .pbm`
+	data=`cat $i | sed '1,2d' | hexdump -v -e '1/1 "0x%.2x," "\n"' 2>&1 `
+	
+	for k in `seq 1 $(( $W * $H )) ` ; do
+		d=`printf "0x%.2x," $COLOR`
+		data="$data $d"
+	done
+	
+	add_structure $W $H "$data" spr_"$SN" >> $FN.c
+	echo "extern Sprite0 spr_"$SN";" >> $FN.h
+done
+
+echo "#endif /* "$FN"_H_INCLUDED */" >> $FN.h

@@ -60,8 +60,14 @@ out_char_mode: LD A,(HL)	; // XOR (HL) AND (HL) OR (HL)
         RRCA
         RRCA
         AND #3
-        OR #0x58
+        OR #0x18
         LD D,A
+        ;//
+        ld A,(_screen_adr+1)
+        and #0xE0
+        or  d
+        LD D,A
+        ;//
         ; Копируем атрибут
         LD A,(ATTR_P)
         LD (DE),A
@@ -178,7 +184,7 @@ _cls:
 	ldir
 	
 	; border
-	ld (ATTR_P),a
+	ld a,(ATTR_P)
 	rrca
 	rrca
 	rrca

@@ -46,4 +46,9 @@ void conio_at(uint8_t x, uint8_t y);
 
 void conio_where(uint8_t* x, uint8_t* y);
 
+// Set screen adress.
+// Possible adresses:	0x0000, 0x4000, 0x8000, 0xC0000
+//			0x2000, 0x6000, 0xA000, 0xE0000
+void conio_set_scr_adr(uint16_t adr);
+
 #endif /* CONIO_H_DEFINED */
