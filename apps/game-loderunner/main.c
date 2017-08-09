@@ -6,6 +6,7 @@
 #include <string.h>
 #include <conio.h>
 
+#include "music.h"
 #include "scrHelper.h"
 #include "scenes.h"
 #include "sprites.h"
@@ -182,8 +183,6 @@ static void setScene(){
 	
 	hero_x=16;
 	hero_y=16;
-	
-	
 }
 
 // Проверка - не поймал ли черт героя
@@ -192,7 +191,13 @@ static void check_collision(){
 	// (потом переход на уровень дальше)
 	if( treasures == 0 ){
 		setScene();
+		showStatus();
 	}
+}
+
+static void im2Handler(){
+	zxKbdScan();
+	stc_music_check();
 }
 
 void main(){
@@ -200,7 +205,7 @@ void main(){
 	scrInit();
 	
 	// Init keyboard on IM2
-	im2SetHandler(zxKbdScan);
+	im2SetHandler(im2Handler);
 	im2Set();
 	SEI();
 
