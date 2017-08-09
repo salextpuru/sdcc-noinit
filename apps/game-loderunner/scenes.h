@@ -3,6 +3,6 @@
 
 #include "scrHelper.h"
 
-extern scrPlan	scene_0;
+void scn_decomp(uint8_t* scnz, scrPlan scn );
 
 #endif // SCENES_H

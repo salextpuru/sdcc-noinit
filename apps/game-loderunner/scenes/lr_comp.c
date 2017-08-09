@@ -1,5 +1,8 @@
-
-#include "scenes.h"
+// LODE RUNNER SCENE COMPRESSOR
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
 
 /**
  *	Карта кодируется символами:
@@ -21,25 +24,52 @@
  * 	остальные символы - не кодируются
 */
 
-void scn_decomp(uint8_t* scnz, scrPlan scn ){
+// Счетчик (0-несчитаемый символ)
+static uint16_t counter;
+
+// Символ, который считаем
+static uint8_t c_c;
+
+// Вывод в stdout
+static void emit(uint8_t c){
+	static int count=0;
+	
+	if(count == 0){
+		printf("\t\t");
+	}
+	
+	count+=printf("0x%.2X,",c);
+	
+	if(count>=48){
+		printf("\n");
+		count=0;
+	}
+	else{
+		printf(" ");
+	}
+}
+
+// Завершить подсчет
+static void complete(){
+	if(counter){
+		emit(counter);
+	}
+	counter=0;
+}
+
+int main(int argc, const char* argv[]){
 	uint8_t c;
-	uint16_t i;
-	uint8_t counter;
-	uint8_t* ptr;
 	
-	ptr=(uint8_t*)scn;
-	
-	i=0;
-	while(i<sizeof(scrPlan)){
-		c=*(scnz++);
+	while( read(0,&c,1)>0 ){
 		switch(c){
 			// Неподсчитываемые символы
 			case 'D':
 			case 'M':
 			case 'T':
 			case 'L':{
-				*(ptr++)=c;
-				i++;
+				complete();
+				emit(c);
+				c_c=c;
 				break;
 			}
 			
@@ -48,17 +78,20 @@ void scn_decomp(uint8_t* scnz, scrPlan scn ){
 			case 'B':
 			case 'U':
 			case ' ':{
-				counter=*(scnz++);
-				while((i<sizeof(scrPlan)) && (counter!=0)){
-					*(ptr++)=c;
-					i++;
-					counter--;
+				if( (c != c_c) || (counter == 0xFF) ) {
+					c_c=c;
+					complete();
+					emit(c);
 				}
 				
+				counter++;
 				break;
 			}
 			default:;
 		}
 	}
-	//
+	
+	complete();
+	
+	return 0;
 }

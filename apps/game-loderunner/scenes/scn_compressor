@@ -1,0 +1,21 @@
+#!/bin/bash
+
+FN=scenesz
+
+echo "// Auto generated compressed scenes" > $FN.h
+echo "#ifndef "$FN"_H_INCLUDED" >> $FN.h
+echo "#define "$FN"_H_INCLUDED" >> $FN.h
+echo "#include <stdint.h>" >> $FN.h
+
+echo "#include \"$FN.h\"" > $FN.c
+
+
+for i in *.scn ; do
+	OBJ=scn_`basename $i .scn`
+	echo "uint8_t "$OBJ"[]={" >> $FN.c
+	echo "extern uint8_t "$OBJ"[];" >> $FN.h
+	cat $i | ./lr_comp >> $FN.c
+	printf "\n};\n" >> $FN.c
+done
+
+echo "#endif /* "$FN"_H_INCLUDED */" >> $FN.h

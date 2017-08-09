@@ -9,6 +9,7 @@
 #include "music.h"
 #include "scrHelper.h"
 #include "scenes.h"
+#include "scenesz.h"
 #include "sprites.h"
 
 // Клавиши управления
@@ -60,6 +61,7 @@ static void check_key(){
 			switch (blk){
 				// Низзя!
 				case 'b':
+				case 'B':
 					break;
 				//
 				default:
@@ -78,6 +80,7 @@ static void check_key(){
 			switch (blk){
 				// Низзя!
 				case 'b':
+				case 'B':
 					break;
 				//
 				default:
@@ -98,8 +101,9 @@ static void check_key(){
 			blk1 = plane[hero_y-1][hero_x];
 			
 			// Поднимаемся только по лесенкам
-			if( blk=='l' ) switch (blk1){
+			if( blk=='L' ) switch (blk1){
 				case 'b':
+				case 'B':
 					break;
 				default:
 					hero_y--;
@@ -116,8 +120,9 @@ static void check_key(){
 			// Опускаемся только по лесенкам
 			switch (blk1){
 				case 'b':
+				case 'B':
 					break;
-				case 'l':
+				case 'L':
 					hero_y++;
 					break;
 				default:;
@@ -146,7 +151,7 @@ static void check_hero(){
 	blk1 = plane[hero_y+1][hero_x];
 	
 	// Собираем сундук
-	if( blk == 't' ){
+	if( blk == 'T' ){
 		treasures--;
 		plane[hero_y][hero_x] = ' ';
 		showStatus();
@@ -169,20 +174,38 @@ static void setScene(){
 	uint8_t x;
 	uint8_t y;
 	
-	memcpy(&plane, &scene_0, sizeof(scrPlan));
+	hero_x=16;
+	hero_y=16;
 	
-	// Сколько сундуков надо собрать?
+	// memcpy(&plane, &scene_0, sizeof(scrPlan));
+	scn_decomp(scn_scene_0, plane);
+	
+	// Анализ карты
 	treasures=0;
 	for(y=0; y<sceneH; y++){
 		for(x=0; x<sceneW; x++){
-			if( plane[y][x] == 't' ){
-				treasures++;
+			switch(plane[y][x]){
+				// Сундук
+				case 'T':{
+					treasures++;
+					break;
+				}
+				// Черт
+				case 'D':{
+					break;
+				}
+				// Герой
+				case 'M':{
+					hero_x=x;
+					hero_y=y;
+					plane[y][x]=' ';
+					break;
+				}
 			}
 		}
 	}
 	
-	hero_x=16;
-	hero_y=16;
+	
 }
 
 // Проверка - не поймал ли черт героя

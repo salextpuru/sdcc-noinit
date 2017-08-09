@@ -60,19 +60,20 @@ void draw_scene(const scrPlan scn){
 	for(y=0; y<sceneH; y++){
 		for(x=0; x<sceneW; x++){
 			switch(scn[y][x]){
+				case 'B':
 				case 'b':{
 					spr0_out0_attr(&spr_brick, x, y);
 					break;
 				}
-				case 'l':{
+				case 'L':{
 					spr0_out0_attr(&spr_ladder, x, y);
 					break;
 				}
-				case 't':{
+				case 'T':{
 					spr0_out0_attr(&spr_treasure, x, y);
 					break;
 				}
-				case 'u':{
+				case 'U':{
 					spr0_out0_attr(&spr_upholder, x, y);
 					break;
 				}
