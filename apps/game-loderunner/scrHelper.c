@@ -1,7 +1,6 @@
 #include <spr0.h>
 #include <conio.h>
 #include "scrHelper.h"
-#include "sprites.h"
 
 /**
  * @brief Инициализация экрана с 0xC000
@@ -49,36 +48,4 @@ __asm;
 	pop 	hl
 	ret
 __endasm;
-}
-
-void draw_scene(const scrPlan scn){
-	uint8_t x;
-	uint8_t y;
-	
-	scrCLS();
-	
-	for(y=0; y<sceneH; y++){
-		for(x=0; x<sceneW; x++){
-			switch(scn[y][x]){
-				case 'B':
-				case 'b':{
-					spr0_out0_attr(&spr_brick, x, y);
-					break;
-				}
-				case 'L':{
-					spr0_out0_attr(&spr_ladder, x, y);
-					break;
-				}
-				case 'T':{
-					spr0_out0_attr(&spr_treasure, x, y);
-					break;
-				}
-				case 'U':{
-					spr0_out0_attr(&spr_upholder, x, y);
-					break;
-				}
-				default:;
-			}
-		}
-	}
 }

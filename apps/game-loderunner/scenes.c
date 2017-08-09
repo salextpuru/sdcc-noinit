@@ -1,5 +1,9 @@
-
 #include "scenes.h"
+#include "sprites.h"
+#include "hero.h"
+
+// Текущий экран
+scrPlan curScene;
 
 /**
  *	Карта кодируется символами:
@@ -61,4 +65,77 @@ void scn_decomp(uint8_t* scnz, scrPlan scn ){
 		}
 	}
 	//
+}
+
+void draw_scene(const scrPlan scn){
+	uint8_t x;
+	uint8_t y;
+	
+	scrCLS();
+	
+	for(y=0; y<sceneH; y++){
+		for(x=0; x<sceneW; x++){
+			switch(scn[y][x]){
+				case 'B':
+				case 'b':{
+					spr0_out0_attr(&spr_brick, x, y);
+					break;
+				}
+				case 'L':{
+					spr0_out0_attr(&spr_ladder, x, y);
+					break;
+				}
+				case 'T':{
+					spr0_out0_attr(&spr_treasure, x, y);
+					break;
+				}
+				case 'U':{
+					spr0_out0_attr(&spr_upholder, x, y);
+					break;
+				}
+				default:;
+			}
+		}
+	}
+}
+
+// Сколько сундуков надо собрать?
+uint8_t howTreasures;
+
+void setScene(uint8_t* scnz){
+	uint8_t x;
+	uint8_t y;
+	
+	hero_x=16;
+	hero_y=16;
+	
+	// memcpy(&plane, &scene_0, sizeof(scrPlan));
+	scn_decomp(scnz, curScene);
+	
+	// Анализ карты
+	   howTreasures=0;
+	for(y=0; y<sceneH; y++){
+		for(x=0; x<sceneW; x++){
+			switch(curScene[y][x]){
+				// Сундук
+				case 'T':{
+					           howTreasures++;
+					break;
+				}
+				// Черт
+				case 'D':{
+					break;
+				}
+				// Герой
+				case 'M':{
+					hero_x=x;
+					hero_y=y;
+					           curScene[y][x]=' ';
+					break;
+				}
+			}
+		}
+	}
+	
+	
 }
