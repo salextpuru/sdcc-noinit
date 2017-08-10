@@ -42,4 +42,9 @@ void scn_decomp(uint8_t* scnz, scrPlan scn );
  */
 void setScene(uint8_t* scnz);
 
+/**
+ * @brief Рисует один блок сцены с заданными координатами
+ */
+void draw_scene_block ( const scrPlan scn, uint8_t x, uint8_t y );
+
 #endif // SCENES_H

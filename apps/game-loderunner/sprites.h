@@ -8,4 +8,5 @@ extern Sprite0 spr_ladder;
 extern Sprite0 spr_treasure;
 extern Sprite0 spr_upholder;
 extern Sprite0 spr_hero;
+extern Sprite0 spr_empty;
 #endif /* sprites_H_INCLUDED */

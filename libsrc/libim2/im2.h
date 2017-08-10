@@ -41,4 +41,13 @@ void SEI();
  */
 void waitINTS(uint8_t tick);
 
+/**
+ * @brief Ждем один INT
+ */
+inline void HALT()__naked{
+__asm;
+	halt
+__endasm;
+}
+
 #endif /* IM2_DEFINED */

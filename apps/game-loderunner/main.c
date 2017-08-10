@@ -27,6 +27,7 @@ static void check_collision(){
 	if( hero_on == 'T' ){
 		      howTreasures--;
 		*hero_p = ' ';
+		//
 		showStatus();
 	}
 	
@@ -58,13 +59,12 @@ void main(){
 	
 	// Loop
 	while(1){
+		// Ждем кадра
+		HALT();
+		//
 		check_hero();
 		check_collision();
-		//
-		draw_scene(curScene);
-		draw_hero();
 		draw_devils();
-		//
 		scrFlip();
 	}
 }

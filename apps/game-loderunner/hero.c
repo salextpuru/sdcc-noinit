@@ -14,6 +14,26 @@ uint8_t* hero_p;
 uint8_t hero_x;
 uint8_t hero_y;
 
+// Направление движения героя
+enum {
+	hdirNone=0,
+	hdirLeft=1,
+	hdirRight=2,
+	
+	heroSprites=3
+};
+static	uint8_t direction=hdirNone;
+
+// Номер спрайта анимации
+static uint8_t spr_hero_num;
+
+// Анимация движения влево
+static Sprite0* spr_hero_left[heroSprites];
+// Анимация движения вправо
+static Sprite0* spr_hero_right[heroSprites];
+
+
+// Получить окружение
 void getMedia( uint8_t x, uint8_t y ){
 	hero_p = &curScene[y][x];
 	//
@@ -120,6 +140,9 @@ void check_hero(){
 	// Получаем окружение героя
 	getMedia( hero_x, hero_y );
 	
+	// Удаляем героя
+	draw_scene_block(curScene, hero_x, hero_y);
+	
 	// Падаем? 
 	if( ( hero_on == ' ' ) && ( hero_dn == ' ' ) ){
 		// да
@@ -129,9 +152,6 @@ void check_hero(){
 		// Не падаем. Проверка клавиатуры
 		check_key();
 	}
-}
-
-// Отрисовка героя
-void draw_hero(){
+	//
 	spr0_out0_attr(&spr_hero, hero_x, hero_y);
 }

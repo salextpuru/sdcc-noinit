@@ -36,9 +36,4 @@ enum {
  */
 void check_hero();
 
-/**
- * @brief Отрисовка героя
- */
-void draw_hero();
-
 #endif // HERO_H
