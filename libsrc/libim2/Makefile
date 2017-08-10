@@ -1,6 +1,5 @@
-LIBNAME=libim2.lib
-
-OBJS=im2.rel
+# Config files
+include *.mk
 
 $(LIBDIR)/$(LIBNAME): $(LIBNAME)
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)

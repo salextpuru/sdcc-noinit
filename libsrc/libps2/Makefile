@@ -1,8 +1,5 @@
-LIBNAME=libps2.lib
-
-HSFILES=ps2_const.hS
-
-OBJS=ps2_s.rel
+# Config files
+include *.mk
 
 $(LIBDIR)/$(LIBNAME): $(LIBNAME)
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)

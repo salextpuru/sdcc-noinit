@@ -1,8 +1,6 @@
-# Library Name
-LIBNAME=libringbuf.lib
+# Config files
+include *.mk
 
-OBJS=ringbuf.rel
-     
 $(LIBDIR)/$(LIBNAME): $(LIBNAME)
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)
 

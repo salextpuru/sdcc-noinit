@@ -1,9 +1,3 @@
-LIBNAME=libesp8266.lib
-
-HSFILES=
-
-OBJS= esp8266.rel
-
 # Config files
 include *.mk
 

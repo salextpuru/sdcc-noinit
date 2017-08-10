@@ -1,9 +1,5 @@
-LIBNAME=libconio.lib
-
-HSFILES=conio_const.hS
-
-OBJS= conio_s.rel conio.rel conio_var.rel  koi8r-8x8.rel
-#printf.rel
+# Config files
+include *.mk
 
 $(LIBDIR)/$(LIBNAME): $(LIBNAME)
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)
