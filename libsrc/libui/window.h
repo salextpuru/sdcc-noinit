@@ -16,6 +16,10 @@ typedef struct window{
 	uint8_t  w;
 	uint8_t  h;
 	
+	/** @brief Позиция курсора внутри окна */
+	uint8_t  cur_x;
+	uint8_t  cur_y;
+	
 	/** @brief фон	 */
 	tColor		paper;
 	
@@ -23,7 +27,7 @@ typedef struct window{
 	tColor		ink;
 	
 	/** @brief тип рамки */
-	borderTypes	border;
+	uint8_t		border;
 	
 	/** @brief окна-потомки (списко заканчивается NULL) */
 	struct window**		childs;
@@ -53,6 +57,11 @@ typedef struct window{
 	/** @brief обработать событие */
 	void (*hEvent)(struct window* this, event* ev);
 	
+	/** @brief Печать строки в окне (за пределы не выходим) */
+	uint8_t (*puts)(struct window* this, const char* s);
+	
+	/** @brief Установка позиции курсора в окне (за пределы не выходим) */
+	void (*at)(struct window* this, uint8_t x, uint8_t y);
 }window;
 
 // Методы по умолчанию
@@ -62,6 +71,9 @@ void window_exec(window* this);
 void window_activate(window* this);
 void window_getEvent(window* this, event* ev);
 void window_hEvent(window* this, event* ev);
+uint8_t window_puts(struct window* this, const char* s);
+void window_at(struct window* this, uint8_t x, uint8_t y);
+
 void window_init(window* this);
 
 #endif // WINDOW_H

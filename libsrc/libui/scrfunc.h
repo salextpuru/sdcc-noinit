@@ -12,8 +12,8 @@
  */
 typedef enum curTypes{
 	ctNone=0,	// Невидимый (скрыть курсор)
-	ctInsert,	// Вставка
-	ctReplace	// Замена
+	ctInsert=1,	// Вставка
+	ctReplace=2	// Замена
 } curTypes;
 
 /**
@@ -21,8 +21,8 @@ typedef enum curTypes{
  */
 typedef enum borderTypes{
 	btNone=0,	// нет
-	btSingl,	// одинарная
-	btDoubl		// двойная
+	btSingl=1,	// одинарная
+	btDoubl=2	// двойная
 } borderTypes;
 
 /**
@@ -154,7 +154,7 @@ typedef struct {
 	/**
 	 * @brief Вывести рамку заданного типа
 	 */
-	void	(*border)(borderTypes btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+	void	(*border)(uint8_t btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 	
 } scrDriverFunc;
 
@@ -184,7 +184,7 @@ extern box_symbols	boxDouble;
  * @brief Стандартная процедура рисования рамки
  * 
  */
-void borderUI(borderTypes btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+void borderUI(uint8_t btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 
 /**
  * @brief Установить драйвер экрана ZX

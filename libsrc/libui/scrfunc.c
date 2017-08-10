@@ -201,7 +201,7 @@ uint8_t*	current_font = koi8r_8x8_ui;
 box_symbols	boxSingle;
 box_symbols	boxDouble;
 
-void borderUI(borderTypes btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h){
+void borderUI(uint8_t btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h){
 	box_symbols bs;
 	uint8_t	i;
 	switch( btype ){
@@ -217,6 +217,8 @@ void borderUI(borderTypes btype, uint8_t x, uint8_t y, uint8_t w, uint8_t h){
 			bs=boxDouble;
 			break;
 		}
+		default:
+			bs=0;
 	}
 	
 	if(!bs){

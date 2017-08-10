@@ -1,5 +1,8 @@
 #include "window.h"
 #include <string.h>
+#include <zxkbd.h>
+
+#define getu8(v) ((uint8_t)(v))
 
 // Деструктор окна
 void window_destructor(window* this){
@@ -10,12 +13,28 @@ void window_destructor(window* this){
 	}
 }
 
+void window_draw_border(window* this){
+	txt_screen_driver->border(this->border,
+				this->x,this->y,
+				this->w,this->h);
+}
+
+void window_clear(window* this){
+	txt_screen_driver->clear_window(
+				this->x,this->y,
+				this->w,this->h);
+}
+
 // метод рисования окна
 void window_draw(window* this){
 	txt_screen_driver->ink = this->ink;
 	txt_screen_driver->paper = this->paper;
-	txt_screen_driver->clear_window(this->x,this->y,this->w,this->h);
-	txt_screen_driver->border(this->border, this->x,this->y,this->w,this->h);
+	txt_screen_driver->clear_window(
+				this->x,this->y,
+				this->w,this->h);
+	txt_screen_driver->border(this->border,
+				this->x,this->y,
+				this->w,this->h);
 }
 
 static void window_exec_send_to_childs(window* this, event* ev){
@@ -78,16 +97,49 @@ void window_getEvent(window* this, event* ev){
 	ev->ev = evKbd;
 	ev->key = 0;
 	while( ev->key == 0 ){
-		// ev->key = InKey();
+		// Переделать настраиваемый драйвер!
+		ev->key = zxKbdInKey();
 	}
 }
 	
 // обработать событие
 void window_hEvent(window* this, event* ev){
 	if(ev->ev == evKbd){
-		// ESC - EXIT (default)
-		if( ev->key == '\x1B' )	ev->ev = evClose;
+		// Выход по любой клавише - умолчание
+		ev->ev = evClose;
 	}
+}
+
+// Печать строки в окне (за пределы не выходим)
+uint8_t window_puts(struct window* this, const char* s){
+	uint8_t x=this->cur_x;
+	uint8_t y=this->cur_y;
+	uint8_t w=this->w;
+	uint8_t h=this->h;
+	uint8_t x0=x;
+	//
+	if( y>=h ){
+		return;
+	}
+	txt_screen_driver->cur_x=x+this->x;
+	txt_screen_driver->cur_y=y+this->y;
+	
+	while( s && (*s) && (x<w) ){
+		txt_screen_driver->putc(*s);
+		s++;
+		x++;
+		txt_screen_driver->cur_x++;
+	}
+	
+	// Возвращаем количество символов
+	this->cur_x=x;
+	return x-x0;
+}
+	
+// Установка позиции курсора в окне (за пределы не выходим)
+void window_at(struct window* this, uint8_t x, uint8_t y){
+	this->cur_x = x;
+	this->cur_y = y;
 }
 
 
@@ -104,9 +156,13 @@ static const window window_init_data = {
 	//uint8_t  h;
 	.h = 24,
 	
+	/** @brief Позиция курсора внутри окна */
+	.cur_x=0,
+	.cur_y=0,
+	
 	/** @brief фон	 */
 	//tColor		paper;
-	.paper = 8,
+	.paper = 1 << 3,
 	
 	/** @brief тон	 */
 	//tColor		ink;
@@ -151,12 +207,16 @@ static const window window_init_data = {
 	
 	/** @brief обработать событие */
 	//void (*hEvent)(struct window* this, event* ev);
-	.hEvent = window_hEvent
+	.hEvent = window_hEvent,
+	
+	/** @brief Печать строки в окне (за пределы не выходим) */
+	.puts=window_puts,
+	
+	/** @brief Установка позиции курсора в окне (за пределы не выходим) */
+	.at=window_at
 };
 
 // Конструктор окна
 void window_init(window* this){
-	memcpy(this, &window_init_data, sizeof(struct window) );
+	memcpy(this, &window_init_data, sizeof(window) );
 }
-
-
