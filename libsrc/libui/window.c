@@ -1,6 +1,6 @@
 #include "window.h"
 #include <string.h>
-#include <zxkbd.h>
+#include <keyboard.h>
 
 #define getu8(v) ((uint8_t)(v))
 
@@ -96,17 +96,19 @@ void window_activate(window* this){
 void window_getEvent(window* this, event* ev){
 	ev->ev = evKbd;
 	ev->key = 0;
-	while( ev->key == 0 ){
-		// Переделать настраиваемый драйвер!
-		ev->key = zxKbdInKey();
+	// получаем событие от клавиатуры
+	if( keyboardDriver ) while( ev->key == 0 ){
+		ev->key = keyboardDriver->InKey();
 	}
 }
 	
 // обработать событие
 void window_hEvent(window* this, event* ev){
 	if(ev->ev == evKbd){
-		// Выход по любой клавише - умолчание
-		ev->ev = evClose;
+		// Если вдруг, то закрываем
+		if( ev->key == kbdESC ){
+			ev->ev = evClose;
+		}
 	}
 }
 
