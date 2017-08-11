@@ -32,3 +32,6 @@ APPLICATIONS+=test-libui
 
 # Lode runner Game Demo
 APPLICATIONS+=game-loderunner
+
+# Examples
+APPLICATIONS+=example-0
