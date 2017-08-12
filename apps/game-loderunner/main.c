@@ -6,14 +6,10 @@
 //
 #include "music.h"
 #include "hero.h"
+#include "devils.h"
 //
 #include "scenes.h"
 #include "scenesz.h"
-
-// Отрисовка чертей
-static void draw_devils(){
-	
-}
 
 static void showStatus(){
 	color(YELLOW);conio_at(0,22);print("TREASURES: ");
@@ -24,9 +20,9 @@ static void showStatus(){
 // Проверка - не поймал ли черт героя
 static void check_collision(){
 	// Собираем сундук
-	if( hero_on == 'T' ){
+	if( point_on == 'T' ){
 		      howTreasures--;
-		*hero_p = ' ';
+		*point_p = ' ';
 		//
 		showStatus();
 	}
@@ -39,9 +35,15 @@ static void check_collision(){
 	}
 }
 
+// Случайное число (доделать)
+uint16_t pseudoRand;
+
 static void im2Handler(){
 	zxKbdScan();
 	stc_music_check();
+	//
+	pseudoRand ^= 0xA55A;
+	pseudoRand += 0x3C67;
 }
 
 void main(){
@@ -62,9 +64,9 @@ void main(){
 		// Ждем кадра
 		HALT();
 		//
+		check_devils();
 		check_hero();
 		check_collision();
-		draw_devils();
 		scrFlip();
 	}
 }

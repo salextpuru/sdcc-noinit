@@ -156,7 +156,7 @@ static const uint8_t* mode_table[8]={
 };
 
 // Задержка на дребезг
-#define delayDrizg	10
+#define delayDrizg	5
 
 // Маска Caps Shift
 #define CS_MASK		1

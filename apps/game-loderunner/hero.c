@@ -3,12 +3,12 @@
 #include "sprites.h"
 
 // Окружение героя (ф-ця getMedia)
-uint8_t hero_on='b';
-uint8_t hero_up='b';
-uint8_t hero_dn='b';
-uint8_t hero_rt='b';
-uint8_t hero_lf='b';
-uint8_t* hero_p;
+uint8_t point_on='b';
+uint8_t point_up='b';
+uint8_t point_dn='b';
+uint8_t point_rt='b';
+uint8_t point_lf='b';
+uint8_t* point_p;
 
 // Координаты героя
 uint8_t hero_x;
@@ -32,25 +32,13 @@ static Sprite0* spr_hero_left[heroSprites];
 // Анимация движения вправо
 static Sprite0* spr_hero_right[heroSprites];
 
-
-// Получить окружение
-void getMedia( uint8_t x, uint8_t y ){
-	hero_p = &curScene[y][x];
-	//
-	hero_on = *hero_p;
-	hero_lf = (x==0)?'b':*(hero_p-1);
-	hero_rt = (x>=(sceneW-1))?'b':*(hero_p+1);
-	hero_up = (y==0)?'b':*(hero_p-sceneW);
-	hero_dn = (y>=(sceneH-1))?'b':*(hero_p+sceneW);
-}
-
 // Обработка перемещения героя по клавишам
 static void check_key(){
 	uint8_t key = zxKbdInKey();
 	
 	switch(key){
 		case kLeft:{
-			switch (hero_lf){
+			switch ( point_lf ){
 				// Низзя!
 				case 'b':
 				case 'B':
@@ -62,7 +50,7 @@ static void check_key(){
 			break;
 		}
 		case kRight:{
-			switch (hero_rt){
+			switch ( point_rt ){
 				// Низзя!
 				case 'b':
 				case 'B':
@@ -78,7 +66,7 @@ static void check_key(){
 			uint8_t r=1;
 			
 			// Не упремся башкой?
-			switch (hero_up){
+			switch ( point_up ){
 				case 'b':
 				case 'B':{
 					r=0;
@@ -91,7 +79,7 @@ static void check_key(){
 			}
 			
 			// Поднимаемся только по лесенкам
-			switch (hero_on){
+			switch ( point_on ){
 				case 'L':
 				case 'U':
 					hero_y--;
@@ -105,7 +93,7 @@ static void check_key(){
 			// Лесенка под героем или герой на лесенке
 			
 			// Не упремся ногами?
-			switch (hero_dn){
+			switch ( point_dn ){
 				case 'b':
 				case 'B':{
 					// Упремся
@@ -124,7 +112,7 @@ static void check_key(){
 				break;
 			}
 			
-			switch (hero_on){
+			switch ( point_on ){
 				case 'L':
 				case 'U':
 					hero_y++;
@@ -138,13 +126,13 @@ static void check_key(){
 // Проверка движения (падение и проч)
 void check_hero(){
 	// Получаем окружение героя
-	getMedia( hero_x, hero_y );
+	getPointArea ( hero_x, hero_y );
 	
 	// Удаляем героя
 	draw_scene_block(curScene, hero_x, hero_y);
 	
 	// Падаем? 
-	if( ( hero_on == ' ' ) && ( hero_dn == ' ' ) ){
+	if( ( point_on == ' ' ) && ( point_dn == ' ' ) ){
 		// да
 		hero_y++;
 	}

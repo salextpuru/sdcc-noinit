@@ -1,6 +1,7 @@
 #include "scenes.h"
 #include "sprites.h"
 #include "hero.h"
+#include "devils.h"
 
 // Текущий экран
 scrPlan curScene;
@@ -114,12 +115,12 @@ void setScene ( uint8_t* scnz ) {
 	uint8_t x;
 	uint8_t y;
 
-	hero_x=16;
-	hero_y=16;
-
 	// memcpy(&plane, &scene_0, sizeof(scrPlan));
 	scn_decomp ( scnz, curScene );
 
+	// Обнуляем счетчик чертей
+	StartAddDevils();
+	
 	// Анализ карты
 	howTreasures=0;
 	for ( y=0; y<sceneH; y++ ) {
@@ -132,6 +133,7 @@ void setScene ( uint8_t* scnz ) {
 			}
 			// Черт
 			case 'D': {
+				AddDevil(x,y);
 				break;
 			}
 			// Герой
@@ -148,3 +150,13 @@ void setScene ( uint8_t* scnz ) {
 	draw_scene(curScene);
 }
 
+// Получить окружение
+void getPointArea ( uint8_t x, uint8_t y ){
+	point_p = &curScene[y][x];
+	//
+	point_on = *point_p;
+	point_lf = (x==0)?'b':*( point_p-1);
+	point_rt = (x>=(sceneW-1))?'b':*( point_p+1);
+	point_up = (y==0)?'b':*( point_p-sceneW);
+	point_dn = (y>=(sceneH-1))?'b':*( point_p+sceneW);
+}

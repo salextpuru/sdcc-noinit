@@ -47,4 +47,19 @@ void setScene(uint8_t* scnz);
  */
 void draw_scene_block ( const scrPlan scn, uint8_t x, uint8_t y );
 
+
+// Окружение точки (то есть заданного блока на карте, ф-ця getPointArea)
+extern uint8_t point_on; // символ на заданном месте карты
+extern uint8_t point_up; // символ над заданным местом карты
+extern uint8_t point_dn; // символ под заданным местом карты
+extern uint8_t point_rt; // символ справа от заданного места карты
+extern uint8_t point_lf; // символ слева от заданного места карты
+extern uint8_t* point_p; // указатель на заданном месте карты
+
+/**
+ * @brief Получить окружение точка x,y
+ *  и поместить его в hero_xx
+ */
+void getPointArea ( uint8_t x, uint8_t y );
+
 #endif // SCENES_H
