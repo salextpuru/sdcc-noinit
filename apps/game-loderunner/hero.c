@@ -16,10 +16,14 @@ uint8_t hero_y;
 
 // Направление движения героя
 enum {
+	// Направление движения
 	hdirNone=0,
 	hdirLeft=1,
 	hdirRight=2,
+	hdirUp=3,
+	hdirDn=4,
 	
+	// Количество спрайтов
 	heroSprites=3
 };
 static	uint8_t direction=hdirNone;
@@ -29,8 +33,15 @@ static uint8_t spr_hero_num;
 
 // Анимация движения влево
 static Sprite0* spr_hero_left[heroSprites];
+
 // Анимация движения вправо
 static Sprite0* spr_hero_right[heroSprites];
+
+// Анимация движения вверх
+static Sprite0* spr_hero_up[heroSprites];
+
+// Анимация движения вниз
+static Sprite0* spr_hero_down[heroSprites];
 
 // Обработка перемещения героя по клавишам
 static void check_key(){
@@ -38,6 +49,13 @@ static void check_key(){
 	
 	switch(key){
 		case kLeft:{
+			if(direction==hdirRight){
+				direction=hdirNone;
+			}
+			else{
+				direction=hdirLeft;
+			}
+			
 			switch ( point_lf ){
 				// Низзя!
 				case 'b':
@@ -50,6 +68,13 @@ static void check_key(){
 			break;
 		}
 		case kRight:{
+			if(direction==hdirLeft){
+				direction=hdirNone;
+			}
+			else{
+				direction=hdirRight;
+			}
+			
 			switch ( point_rt ){
 				// Низзя!
 				case 'b':
@@ -64,6 +89,13 @@ static void check_key(){
 		}
 		case kUp:{
 			uint8_t r=1;
+			
+			if(direction==hdirDn){
+				direction=hdirNone;
+			}
+			else{
+				direction=hdirUp;
+			}
 			
 			// Не упремся башкой?
 			switch ( point_up ){
@@ -91,6 +123,13 @@ static void check_key(){
 			uint8_t r=1;
 			// Опускаемся только по лесенкам
 			// Лесенка под героем или герой на лесенке
+			
+			if(direction==hdirUp){
+				direction=hdirNone;
+			}
+			else{
+				direction=hdirDn;
+			}
 			
 			// Не упремся ногами?
 			switch ( point_dn ){

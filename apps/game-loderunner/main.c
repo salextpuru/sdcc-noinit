@@ -27,6 +27,13 @@ static void check_collision(){
 		showStatus();
 	}
 	
+	if( point_dn == 'T' ){
+		howTreasures--;
+		*(point_p+sceneW) = ' ';
+		//
+		showStatus();
+	}
+	
 	// Если все сундуки схвали - начинаем сначала
 	// (потом переход на уровень дальше)
 	if( howTreasures == 0 ){
