@@ -24,9 +24,6 @@ LIBRARY+=libzxkbd
 # Ring buffer
 LIBRARY+=libringbuf
 
-# Файлы
-LIBRARY+=libfs
-
 # WC plugin lib
 LIBRARY+=libwcplugin
 
@@ -39,5 +36,5 @@ LIBRARY+=libuart
 # Timers library
 LIBRARY+=libtimer
 
-# ESP8266 WiFi-UART
-LIBRARY+=libesp8266
+# ZXSLIP
+LIBRARY+=libslip

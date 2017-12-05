@@ -1,0 +1,3 @@
+[submodule "libsrc/libslip"]
+	path = libsrc/libslip
+	url = git@github.com:salextpuru/libslip.git
