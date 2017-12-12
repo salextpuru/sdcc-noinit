@@ -32,3 +32,4 @@ APPLICATIONS+=example-0
 
 # SLIP and ZXSLIP tests
 APPLICATIONS+=test-slip
+APPLICATIONS+=test-slip-poll
