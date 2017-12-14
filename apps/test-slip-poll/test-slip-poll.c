@@ -14,6 +14,8 @@
 
 int main ( int argc, char **argv ) {
 	//
+	ccls(6);
+	printf("Test esp-poll\n");
 	zxmc_uart()->init();
 	
 	cmdtrscl_init(zxmc_uart());

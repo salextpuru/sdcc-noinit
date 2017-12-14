@@ -3,6 +3,7 @@
  */
 #include <slip.h>
 #include <zxslip.h>
+#include <stdio.h>
 
 #include "cmdtrscl.h"
 
@@ -11,8 +12,8 @@ enum {
 	zxslip_tbuffer_size=0x400,
 	zxslip_rbuffer_size=0x400,
 	//
-	zxslip_time_out_senbyte = 128,
-	zxslip_time_out_recbyte = 128
+	zxslip_time_out_senbyte = 1024,
+	zxslip_time_out_recbyte = 1024
 };
 
 // TimeOut counter
@@ -55,6 +56,7 @@ static uint8_t slip_begin_cb() {
 static uint8_t slip_end_cb() {
 	// Handle packet here
 	zxslip_answer_parse(rbuf, slip_rbufc);
+	reset();
 	return 0;
 }
 
@@ -88,9 +90,11 @@ int8_t cmdtrscl_transfer(uint8_t* b, uint8_t* e) {
 
 	status = statWait;
 	
+	slip_send_startend(send_byte);
 	while ( ( b!=e ) && (status==statWait) ) {
 		slip_send_byte(*(b++), send_byte);
 	}
+	slip_send_startend(send_byte);
 
 	time_out = 0;
 	
@@ -108,6 +112,7 @@ int8_t cmdtrscl_transfer(uint8_t* b, uint8_t* e) {
 		}
 		
 		if ( uart->read(&c,1)>0 ) {
+			//printf("0%X ",c);
 			slip_recv_byte(&slip_rec, c);
 			time_out = 0;
 		}
@@ -128,7 +133,7 @@ void esp_poll(){
 }
 
 static void esp_poll_cb(zxslip_pkt_header* h, zxslip_apkt_esp_poll* p){
-	
+	printf("poll() answ: wifi=%x, nsock=%x\n",p->wifi_status, p->nsock);
 }
 
 void cmdtrscl_init(zxuart* uart_) {
