@@ -4,6 +4,7 @@
 #include <slip.h>
 #include <zxslip.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "cmdtrscl.h"
 
@@ -15,6 +16,10 @@ enum {
 	zxslip_time_out_senbyte = 1024,
 	zxslip_time_out_recbyte = 1024
 };
+
+// Answer on poll() query
+static SockStatus		poll_answer_sock_status[zxslip_max_sockets];
+static zxslip_apkt_esp_poll	poll_answer;
 
 // TimeOut counter
 static uint16_t		time_out;
@@ -85,7 +90,7 @@ static uint8_t send_byte(uint8_t c) {
 	return 0;
 }
 
-int8_t cmdtrscl_transfer(uint8_t* b, uint8_t* e) {
+static int8_t cmdtrscl_transfer(uint8_t* b, uint8_t* e) {
 	zxslip_setId(zxslip_getId()+1);
 
 	status = statWait;
@@ -133,6 +138,7 @@ void esp_poll(){
 }
 
 static void esp_poll_cb(zxslip_pkt_header* h, zxslip_apkt_esp_poll* p){
+	memcpy(&poll_answer,p, sizeof(zxslip_apkt_esp_poll));
 	printf("poll() answ: wifi=%x, nsock=%x\n",p->wifi_status, p->nsock);
 }
 
@@ -140,4 +146,5 @@ void cmdtrscl_init(zxuart* uart_) {
 	uart=uart_;
 	slip_recv_init(&slip_rec, slip_recv_cb, slip_begin_cb, slip_end_cb );
 	zxslip_a_esp_poll_cb=esp_poll_cb;
+	
 }

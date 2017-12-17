@@ -7,6 +7,7 @@
 #include <color.h>
 //
 #include "cmdtrscl.h"
+#include <zxslip.h>
 //
 #include <zxmc_uart.h>
 //
@@ -21,6 +22,7 @@ int main ( int argc, char **argv ) {
 	cmdtrscl_init(zxmc_uart());
 	
 	while( 1 ){
+		printf("poll() query %u\n",zxslip_getId());
 		esp_poll();
 	}
 	//
