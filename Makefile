@@ -54,6 +54,7 @@ libs: .EXPORT_ALL_VARIABLES $(LIBS)
 
 kdevelop_path:
 	@echo -n > $(TOP)/.kdev_include_paths
+	@echo "$(TOP)/include" >> $(TOP)/.kdev_include_paths
 	@for i in $(addprefix $(LIBSRC)/, $(LIBRARY) ) $(addprefix $(APPDIR)/, $(APPLICATIONS) ) ; do \
 	echo $$i >> $(TOP)/.kdev_include_paths ; \
 	done
