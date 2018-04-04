@@ -6,7 +6,7 @@ START=0x6000
 SSIZE=0x0800
 
 # Interrupt on start: 0-disable, 1-enable
-DISTART=0
+DISTART=1
 
 # Store caller stack (1) or self stack (0)
 CALLERSTACK=0

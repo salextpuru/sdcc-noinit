@@ -1,26 +1,46 @@
 #include <types.h>
 #include <conio.h>
+#include <spr0.h>
 
-#include "zxscradr.h"
+extern Sprite0 sdccnoinit;
 
+static void flash_atr() __naked {
+	__asm;
+	ld a,#0x00
+	ld bc,#100
+flash_atr_loop:
+	push af
+	push bc
+
+	ld hl, #0x5800
+	ld de, #0x5801
+	ld bc, #0x2FF
+	ld (hl),a
+	ldir
+	
+	inc a 
+	and #0x7F
+	halt
+	
+	pop bc
+	pop af
+	dec bc
+	ld a,b
+	or c
+	
+	jr nz,flash_atr_loop
+	ret
+	__endasm;
+}
 
 int main(){
 	// Init screen
 	ccls(7);
-	print("Test string size 32 byte length.");
 	
-__asm;
-	// size
-	ld b,#0x20
-	// adr
-	ld hl,#0x4000
-	// shift
-	ld c,#0x00 
+	spr0_out0(&sdccnoinit,0,0);
 	
+	flash_atr();
 	
-	
-	
-__endasm;
 	while(1){}
 	//
 	return 0;
