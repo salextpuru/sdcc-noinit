@@ -124,3 +124,45 @@ __asm;
 __endasm;
 }
 
+// in:
+// 	hl - source adr
+// 	de - destination adr
+//	c - width
+//	b - heigh
+void shsc_spr2scr_asm()__naked{
+__asm;
+	ld a,b
+	add a,a
+	add a,a
+	add a,a
+	ld b,a
+
+shsc_spr2scr_asmh:
+	push de
+	push bc
+
+shsc_spr2scr_asm0:
+	
+	ld a,(hl)
+	ld (de),a
+	inc hl
+	inc de
+	dec c
+	jr nz,shsc_spr2scr_asm0
+	
+	pop bc
+	pop de
+	
+	ld a,e
+	add #0x20
+	ld e,a
+	ld a,d
+	adc #0
+	ld d,a
+	
+	djnz shsc_spr2scr_asmh
+
+	ret
+__endasm;
+}
+

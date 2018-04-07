@@ -4,28 +4,42 @@
 
 #include "spr_shadow.h"
 
-extern const Sprite0 sdccnoinit;
+#define baseadr _sprd_xbh
+
+extern const unsigned char baseadr[];
 
 int main(){
 	uint8_t i;
 	
 	// Init screen
-	//shsc_set_color(016);
 	shsc_cls();
-
-	shsc_flip();
-	while(1){}
-	
+while(1){
 __asm;
-	;// test screen
-	ld hl,#_sdccnoinit+4
+	ld hl,#baseadr+0
 	ld de,#0x6000
-	ld bc,#0x1800
-	ldir
-	;//
-__endasm;
+	ld bc,#0x0203
+	call _shsc_spr2scr_asm
+	call _shsc_flip
 	
-	shsc_flip();
+	ld hl,#baseadr+48
+	ld de,#0x6000
+	ld bc,#0x0203
+	call _shsc_spr2scr_asm
+	call _shsc_flip
+	
+	ld hl,#baseadr+48*2
+	ld de,#0x6000
+	ld bc,#0x0203
+	call _shsc_spr2scr_asm
+	call _shsc_flip
+	
+	ld hl,#baseadr+48*3
+	ld de,#0x6000
+	ld bc,#0x0203
+	call _shsc_spr2scr_asm
+	call _shsc_flip
+__endasm;
+}
 	while(1){}
 	//
 	return 0;

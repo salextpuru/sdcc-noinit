@@ -25,4 +25,11 @@ uint8_t* shsc_adr(uint8_t x, uint8_t y);
 //	HL - adress on shadow screen
 void shsc_adr_asm();
 
+// in:
+// 	hl - source adr
+// 	de - destination adr
+//	c - width
+//	b - heigh
+void shsc_spr2scr_asm();
+
 #endif /* __SPR_SHADOW_H__ */
