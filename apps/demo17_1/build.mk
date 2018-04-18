@@ -2,7 +2,7 @@
 APP=demo17_1
 
 # Object files
-OBJ=main.rel spritebook.rel
+OBJ=main.rel spritebook.rel sdccnoinit.rel
 OBJ+=spr_shadow.rel
 
 # CRT0

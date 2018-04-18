@@ -15,6 +15,16 @@ static uint8_t scr_color=016;
 
 void shsc_flip()__naked{
 __asm;
+	; // Copy attributes
+	ld  bc,#0x1800
+	ld  hl,(_scr_adr)
+	add hl,bc
+	ex de,hl
+	ld hl,(_shascr_adr)
+	add hl,bc
+	ld bc,#0x300
+	ldir
+	
 	; // Copy characters
 	ld de,(_scr_adr)
 	ld hl,(_shascr_adr)
@@ -67,9 +77,6 @@ flip_eol:
 	ld a,b 
 	or c
 	jr nz, flip_loop0
-	; // Copy attributes
-	ld bc,#0x300
-	ldir
 	ret
 __endasm;
 }
@@ -113,14 +120,52 @@ __asm;
 __endasm;
 }
 
+// assembler
+// in:	C - x
+// 	B - y
+// out:
+//	HL - attr adress on shadow screen
+void shsc_atradr_asm()__naked{
+__asm;
+	ld	l,b
+	ld 	b,#0x00
+	ld 	h,b
+	// y * 32
+	add 	hl,hl
+	add 	hl,hl
+	add 	hl,hl
+	add 	hl,hl
+	add 	hl,hl
+	// y*32 + x
+	add 	hl,bc
+	// y*32 + x + adr
+	ld	bc,(_shascr_adr)
+	add 	hl,bc
+	ld	bc,#0x1800
+	add 	hl,bc
+	ret
+__endasm;
+}
+
 // return adress on shadow screen
-uint8_t* shsc_adr(uint8_t x, uint8_t y){
+uint8_t* shsc_adr(uint8_t x, uint8_t y)__naked{
 __asm;
 	pop hl
 	pop bc
 	push bc
 	push hl
 	jr _shsc_adr_asm
+__endasm;
+}
+
+// return adress on shadow screen
+uint8_t* shsc_atradr(uint8_t x, uint8_t y)__naked{
+__asm;
+	pop hl
+	pop bc
+	push bc
+	push hl
+	jr _shsc_atradr_asm
 __endasm;
 }
 
@@ -142,8 +187,11 @@ shsc_spr2scr_asmh:
 	push bc
 
 shsc_spr2scr_asm0:
-	
+	ld a,(de)
+	;//
+shsc_spr2scr_asm_op:
 	ld a,(hl)
+	;//
 	ld (de),a
 	inc hl
 	inc de
@@ -166,3 +214,110 @@ shsc_spr2scr_asm0:
 __endasm;
 }
 
+/**
+* @brief Вывод спрайта
+* 
+* @param sprdata - адрес спрайта
+* @param scradr - адрес теневого экрана
+* @param w - ширина (знакоместа)
+* @param h - высота (знакоместа)
+*/
+void shsc_spr2scr(void* sprdata, void* scradr, uint8_t w, uint8_t h ) __naked {
+__asm;
+	push	ix
+	ld	ix,#4
+	add	ix,sp
+	;
+	exx
+	ld	l,0x00(ix)
+	ld	h,0x01(ix)
+	ld	e,0x02(ix)
+	ld	d,0x03(ix)
+	ld	c,0x04(ix)
+	ld	b,0x05(ix)
+	call	_shsc_spr2scr_asm
+	exx
+	;
+	pop	ix
+	ret
+__endasm;
+}
+
+// in:
+// 	hl - attr adr in screen
+// 	a  - color
+//	c - width
+//	b - heigh
+void shsc_atr2scr_asm()__naked{
+__asm;
+	ld 	de,#0x0020
+shsc_atr2scr_asm_h:
+	push	hl
+	push	bc
+	;//
+shsc_atr2scr_asm_w:
+	ld	(hl),a
+	inc 	hl
+	dec	c
+	jr 	nz,shsc_atr2scr_asm_w
+	;//
+	pop	bc
+	pop	hl
+	add 	hl,de
+	djnz	shsc_atr2scr_asm_h
+	ret
+__endasm;
+}
+
+void shsc_atr2scr(uint8_t color, void* scradr, uint8_t w, uint8_t h)__naked {
+__asm;
+	push	ix
+	ld	ix,#4
+	add	ix,sp
+	;
+	exx
+	ld	a,0x00(ix)
+	ld	l,0x01(ix)
+	ld	h,0x02(ix)
+	ld	c,0x03(ix)
+	ld	b,0x04(ix)
+	call	_shsc_atr2scr_asm
+	exx
+	;
+	pop	ix
+	ret
+	ret
+__endasm;
+}
+
+void shsc_putmode()__naked{
+__asm;
+	ld a,#0x7E
+	ld (shsc_spr2scr_asm_op),a
+	ret
+__endasm;
+}
+
+void shsc_xormode()__naked{
+__asm;
+	ld a,#0xAE
+	ld (shsc_spr2scr_asm_op),a
+	ret
+__endasm;
+}
+
+void shsc_andmode()__naked{
+__asm;
+	ld a,#0xA6
+	ld (shsc_spr2scr_asm_op),a
+	ret
+__endasm;
+}
+
+void shsc_ormode()__naked{
+__asm;
+	ld a,#0xB6
+	ld (shsc_spr2scr_asm_op),a
+	ret
+__endasm;
+}
