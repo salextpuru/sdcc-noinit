@@ -2,6 +2,8 @@
 #define SPR0_H_DEFINED
 #include <types.h>
 
+// -------------------------- Sprite functions ----------------------------------------------
+
 // Sprite descriptor
 typedef struct {
 	WORD	sz;		// size of sprite (include header)
@@ -32,5 +34,25 @@ void	spr0_out0_setopt_xor();
 // Possible adresses:	0x0000, 0x4000, 0x8000, 0xC0000
 //			0x2000, 0x6000, 0xA000, 0xE0000
 void spr0_set_scr_adr(WORD adr);
+
+// -------------------------- Screen functions ----------------------------------------------
+
+// Move shadow screen to 0x4000
+void scr0_flip4000();
+
+// Move shadow screen to 0xC000
+void scr0_flipC000();
+
+// Clear pixels on shadow screen
+void scr0_clr_pix();
+
+// Fill pixels on shadow screen. a=fills
+void scr0_fill_pix(uint8_t a);
+
+// Clear attrs on shadow screen. (to zero INC and PAPER)
+void scr0_clr_atr();
+
+// Fill attrs on shadow screen. a=fills
+void scr0_fill_atr(uint8_t a);
 
 #endif /* SPR0_H_DEFINED */
