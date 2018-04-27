@@ -1,0 +1,135 @@
+#!/bin/bash
+
+# Режет PBM на спрайты с цветом или без
+# Ширина спрайта берётся из файла.
+# Количество фаз и цвет задаётся
+# Высота стпрайта вычисляется
+
+# Paramtres
+INPUT="$1"
+PHASES="$2"
+
+function usage() {
+	printf \
+"	Usage:
+		$0 <file.pbm> <phases> [color]
+
+		if color not defined generate uncolored sprites (only pixels)
+\n"
+}
+
+if [[ -z $INPUT ]] ; then
+	usage
+	exit 1
+fi
+
+if [[ -z $PHASES ]] ; then
+	usage
+	exit 1
+fi
+
+
+COLOR_STR=""
+COLOR=""
+
+if [[ -z "$3" ]] ; then
+	COLOR_STR="uncolored (pixel only)"
+else
+	COLOR=`printf "0%o" "$3"`
+	COLOR_STR="$COLOR"
+fi
+
+BASENAME=`basename $INPUT .pbm | tr '[\.\,\-\*\:]' _ | tr -s '_'`
+OUTFILEC="$BASENAME".c
+OUTFILEH="$BASENAME".h
+
+# Format
+if [[ `cat $INPUT | sed -n '1,1p'` == "P4" ]] ; then
+	echo "Format P4 (PBM) ok"
+else
+	echo "Format wrong! exit"
+	exit 1
+fi
+
+# Extract binary part
+TMPBIN="$BASENAME.bin~"
+# Extract binary part
+cat $INPUT | sed '1,2d' > $TMPBIN
+# FILESIZE=`du -b $TMPBIN | awk '{printf $1}'`
+
+# Sizes
+SIZESTR=`cat $INPUT | sed -n '2,2p'`
+SPRW=$(( `echo $SIZESTR | awk '{print $1}'` / 8 ))
+SPRH=$(( `echo $SIZESTR | awk '{print $2}'` / $PHASES / 8 ))
+
+COLOR_DATA=""
+if [[ -n $COLOR ]] ; then
+	for i in `seq 1 $(( $SPRW * $SPRH ))` ; do
+		COLOR_DATA="$COLOR_DATA""$COLOR,"
+	done
+fi
+
+function header() {
+printf \
+"/**
+	@file $1
+
+	Spite name: $BASENAME"*"
+
+	W(chars): $SPRW     H(CHARS):$SPRH
+	PHASES: $PHASES
+	Phase's size: $SPRPHASE bytes
+	Sprite size:  $SPRSIZE bytes
+	Color: $COLOR_STR
+
+*/\n" > "$1"
+}
+
+# *.h file create
+header $OUTFILEH
+printf \
+"#ifndef $BASENAME""_H_DEFINED
+#define $BASENAME""_H_DEFINED
+#include <stdint.h>
+#include <spr0.h>
+\n" >> $OUTFILEH
+
+# *.c file create
+header $OUTFILEC
+printf "#include \"$OUTFILEH\"\n\n" >> $OUTFILEC
+printf "extern const Sprite0* const $BASENAME""[$PHASES];	// Sprite phases\n" >> $OUTFILEH
+
+for i in `seq 0 $(( $PHASES - 1))` ; do
+	printf "extern const Sprite0 $BASENAME""_$i;	// Sprite phase $i\n" >> $OUTFILEH
+
+SPRDATA=`dd if="$TMPBIN" bs=$(( $SPRW * $SPRH * 8 )) skip=$i count=1 2>/dev/null | hexdump -v -e '8/1 "0x%02x,"' -e '"\n\t\t"'`
+
+if [[ -n $COLOR ]] ; then
+	SPRDATA="$SPRDATA""$COLOR_DATA"
+fi
+
+printf \
+"
+// Phase $i
+const Sprite0 $BASENAME""_$i = {
+	.sz =  9  + sizeof(Sprite0),
+	.w = $SPRW,
+	.h = $SPRH,
+	.datap ={
+		$SPRDATA}
+};
+" >> $OUTFILEC
+done
+
+# All phases
+printf "\n// Sprite phases\n" >> $OUTFILEC
+printf "const Sprite0* const $BASENAME""[$PHASES]={" >> $OUTFILEC
+for i in `seq 0 $(( $PHASES - 1))` ; do
+printf "&""$BASENAME""_$i," >> $OUTFILEC
+done
+printf "};\n" >> $OUTFILEC
+
+printf "\n#endif /* $BASENAME""_H_DEFINED */\n" >> $OUTFILEH
+
+#
+rm -f "$TMPBIN"

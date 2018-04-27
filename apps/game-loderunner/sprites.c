@@ -1,43 +1,43 @@
 #include "sprites.h"
-Sprite0 spr_brick = {
+const Sprite0 spr_brick = {
 	.sz =  9  + sizeof(Sprite0),
 	.w = 1,
 	.h = 1,
 	.datap ={ 0x00, 0xfb, 0xfb, 0xfb, 0x00, 0xdf, 0xdf, 0xdf, 0x02, }
 };
-Sprite0 spr_devil = {
+const Sprite0 spr_devil = {
 	.sz =  9  + sizeof(Sprite0),
 	.w = 1,
 	.h = 1,
 	.datap ={ 0x5a, 0x52, 0x3c, 0x10, 0x10, 0x18, 0x14, 0x14, 0x03, }
 };
 
-Sprite0 spr_hero = {
+const Sprite0 spr_hero = {
 	.sz =  9  + sizeof(Sprite0),
 	.w = 1,
 	.h = 1,
 	.datap ={ 0x5a, 0x52, 0x3c, 0x10, 0x10, 0x18, 0x14, 0x14, 0x47, }
 };
 
-Sprite0 spr_ladder = {
+const Sprite0 spr_ladder = {
 	.sz =  9  + sizeof(Sprite0),
 	.w = 1,
 	.h = 1,
 	.datap ={ 0x42, 0x42, 0x7e, 0x42, 0x42, 0x42, 0x7e, 0x42, 0x07, }
 };
-Sprite0 spr_treasure = {
+const Sprite0 spr_treasure = {
 	.sz =  9  + sizeof(Sprite0),
 	.w = 1,
 	.h = 1,
 	.datap ={ 0x00, 0x38, 0x2c, 0x7e, 0x42, 0x42, 0x7e, 0x00, 0x06, }
 };
-Sprite0 spr_upholder = {
+const Sprite0 spr_upholder = {
 	.sz =  9  + sizeof(Sprite0),
 	.w = 1,
 	.h = 1,
 	.datap ={ 0x00, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, }
 };
-Sprite0 spr_empty = {
+const Sprite0 spr_empty = {
 	.sz =  9  + sizeof(Sprite0),
 	.w = 1,
 	.h = 1,

@@ -3,7 +3,7 @@
 START=0x8000
 
 # Stack Size
-SSIZE=0x01000
+SSIZE=0x02000
 
 # Interrupt on start: 0-disable, 1-enable
 DISTART=0
