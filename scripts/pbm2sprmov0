@@ -55,18 +55,22 @@ fi
 TMPBIN="$BASENAME.bin~"
 # Extract binary part
 cat $INPUT | sed '1,2d' > $TMPBIN
-# FILESIZE=`du -b $TMPBIN | awk '{printf $1}'`
 
 # Sizes
 SIZESTR=`cat $INPUT | sed -n '2,2p'`
 SPRW=$(( `echo $SIZESTR | awk '{print $1}'` / 8 ))
 SPRH=$(( `echo $SIZESTR | awk '{print $2}'` / $PHASES / 8 ))
 
+PHASESIZE=""
+
 COLOR_DATA=""
 if [[ -n $COLOR ]] ; then
 	for i in `seq 1 $(( $SPRW * $SPRH ))` ; do
 		COLOR_DATA="$COLOR_DATA""$COLOR,"
 	done
+	PHASESIZE=$(( $SPRW * $SPRH * 9 ))
+else
+	PHASESIZE=$(( $SPRW * $SPRH * 8 ))
 fi
 
 function header() {
@@ -112,7 +116,7 @@ printf \
 "
 // Phase $i
 const Sprite0 $BASENAME""_$i = {
-	.sz =  9  + sizeof(Sprite0),
+	.sz =  $PHASESIZE  + sizeof(Sprite0),
 	.w = $SPRW,
 	.h = $SPRH,
 	.datap ={

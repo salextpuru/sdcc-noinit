@@ -7,7 +7,7 @@
 	PHASES: 4
 	Phase's size:  bytes
 	Sprite size:   bytes
-	Color: 04
+	Color: 03
 
 */
 #ifndef ball3_H_DEFINED

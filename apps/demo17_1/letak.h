@@ -7,7 +7,7 @@
 	PHASES: 4
 	Phase's size:  bytes
 	Sprite size:   bytes
-	Color: 02
+	Color: 04
 
 */
 #ifndef letak_H_DEFINED

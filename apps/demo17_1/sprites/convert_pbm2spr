@@ -1,0 +1,9 @@
+#!/bin/bash
+
+PHASES=4
+COLOR=1
+
+for i in *.pbm; do
+	../../../scripts/pbm2sprmov0 "$i" $PHASES $COLOR
+	COLOR=$(( $COLOR + 1 ))
+done

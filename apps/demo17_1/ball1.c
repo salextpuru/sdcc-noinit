@@ -15,7 +15,7 @@
 
 // Phase 0
 const Sprite0 ball1_0 = {
-	.sz =  9  + sizeof(Sprite0),
+	.sz =  54  + sizeof(Sprite0),
 	.w = 3,
 	.h = 2,
 	.datap ={
@@ -30,7 +30,7 @@ const Sprite0 ball1_0 = {
 
 // Phase 1
 const Sprite0 ball1_1 = {
-	.sz =  9  + sizeof(Sprite0),
+	.sz =  54  + sizeof(Sprite0),
 	.w = 3,
 	.h = 2,
 	.datap ={
@@ -45,7 +45,7 @@ const Sprite0 ball1_1 = {
 
 // Phase 2
 const Sprite0 ball1_2 = {
-	.sz =  9  + sizeof(Sprite0),
+	.sz =  54  + sizeof(Sprite0),
 	.w = 3,
 	.h = 2,
 	.datap ={
@@ -60,7 +60,7 @@ const Sprite0 ball1_2 = {
 
 // Phase 3
 const Sprite0 ball1_3 = {
-	.sz =  9  + sizeof(Sprite0),
+	.sz =  54  + sizeof(Sprite0),
 	.w = 3,
 	.h = 2,
 	.datap ={
