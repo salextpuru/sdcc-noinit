@@ -164,11 +164,11 @@ static const window window_init_data = {
 	
 	/** @brief фон	 */
 	//tColor		paper;
-	.paper = 1 << 3,
+	.paper = 010,
 	
 	/** @brief тон	 */
 	//tColor		ink;
-	.ink = 6,
+	.ink = 006,
 	
 	/** @brief тип рамки */
 	//borderTypes	border;
@@ -181,6 +181,9 @@ static const window window_init_data = {
 	/** @brief текущий потомок (-1 - нет такого) */
 	//int16_t			cur_child;
 	.cur_child=-1,
+	
+	/** Указатель на потомка, если окно чей-то предок */
+	.child_ifparent=NULL,
 	
 /* Методы окна */
 	/** @brief деструктор */
@@ -217,6 +220,26 @@ static const window window_init_data = {
 	/** @brief Установка позиции курсора в окне (за пределы не выходим) */
 	.at=window_at
 };
+
+void window_setsize(window* this, wRect* w) {
+	if( (!this) || (!w) ){
+		return;
+	}
+	this->x = w->point.x;
+	this->y = w->point.y;
+	this->w = w->size.w;
+	this->h = w->size.h;
+}
+
+void window_store_color(window* this, tColor* ink, tColor* paper) {
+	*ink = this->ink;
+	*paper = this->paper;
+}
+
+void window_set_color(window* this, tColor ink, tColor paper) {
+	this->ink=ink;
+	this->paper=paper;
+}
 
 // Конструктор окна
 void window_init(window* this){

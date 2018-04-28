@@ -43,6 +43,30 @@ typedef uint16_t	tColor;
 
 
 /**
+* @brief Точка
+*/
+typedef struct wPoint{
+	uint8_t	x;
+	uint8_t	y;
+}wPoint;
+
+/**
+* @brief Размеры
+*/
+typedef struct wSize{
+	uint8_t	w;
+	uint8_t	h;
+}wSize;
+
+/**
+* @brief Окно
+*/
+typedef struct wRect{
+	wPoint	point;
+	wSize	size;
+}wRect;
+
+/**
  * @brief Типы экранов
  */
 typedef enum modeScreen{

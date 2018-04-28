@@ -30,10 +30,13 @@ typedef struct window{
 	uint8_t		border;
 	
 	/** @brief окна-потомки (списко заканчивается NULL) */
-	struct window**		childs;
+	struct window**	childs;
 	
 	/** @brief текущий потомок (-1 - нет такого) */
-	int16_t			cur_child;
+	int16_t		cur_child;
+	
+	/** Указатель на потомка, если окно чей-то предок */
+	void*		child_ifparent;
 	
 /* Методы окна */
 	/** @brief деструктор */
@@ -64,7 +67,7 @@ typedef struct window{
 	void (*at)(struct window* this, uint8_t x, uint8_t y);
 }window;
 
-// Методы по умолчанию
+// Методы по умолчанию (виртуальные)
 void window_destructor(window* this);
 void window_draw(window* this);
 void window_exec(window* this);
@@ -73,7 +76,10 @@ void window_getEvent(window* this, event* ev);
 void window_hEvent(window* this, event* ev);
 uint8_t window_puts(struct window* this, const char* s);
 void window_at(struct window* this, uint8_t x, uint8_t y);
-
 void window_init(window* this);
 
+// Невиртуальные методы
+void window_setsize(window* this, wRect* w);
+void window_store_color(window* this, tColor* ink, tColor* paper);
+void window_set_color(window* this, tColor ink, tColor paper);
 #endif // WINDOW_H
