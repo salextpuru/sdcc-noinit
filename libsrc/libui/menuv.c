@@ -5,9 +5,12 @@
 
 static void menuv_draw_item(window* this, uint16_t n, uint8_t show) {
 	menuv* parent = this->child_ifparent;
+	uint8_t w = this->w-2;
+	uint8_t l = strlen(parent->items[n].name);
 	char s[0x21];
-	memset(s,0, 0x21);
-	strncpy(s, parent->items[n].name, this->w-2 );
+	memset(s,' ', 0x21);
+	strncpy(s, parent->items[n].name, (w<=l)?w:l );
+	s[w]=0;
 	
 	window_at(this,1,n-parent->item_first+1);
 	
@@ -47,25 +50,12 @@ static uint8_t menuv_check(window* this) {
 	return rv;
 }
 
-// Методы окна (переопределены)
-static void menuv_draw(window* this) {
+static void menuv_draw_items(window* this) {
 	menuv* parent = this->child_ifparent;
 	uint16_t first = parent->item_first;
 	uint16_t cur = parent->item_current;
 	
 	uint16_t	i;
-	
-	window_draw(this);
-	
-	if( parent->header ) {
-		window_at(this,2,0);
-		window_puts(this, parent->header );
-	}
-	
-	if( ! parent->item_count ) {
-		return;
-	}
-	
 	
 	for(i=first; i<(first+(this->h)-2); i++){
 		if( i >= (parent->item_count) ){
@@ -78,6 +68,26 @@ static void menuv_draw(window* this) {
 	}
 	
 	menuv_draw_item(this, cur, 1);
+}
+
+// Методы окна (переопределены)
+static void menuv_draw(window* this) {
+	menuv* parent = this->child_ifparent;
+	uint16_t first = parent->item_first;
+	uint16_t cur = parent->item_current;
+	
+	window_draw(this);
+	
+	if( parent->header ) {
+		window_at(this,2,0);
+		window_puts(this, parent->header );
+	}
+	
+	if( ! parent->item_count ) {
+		return;
+	}
+	
+	menuv_draw_items(this);
 }
 
 static void menuv_exec(window* this) {
@@ -95,8 +105,14 @@ static void menuv_hEvent(window* this, event* ev) {
 		}
 		
 		case 0x0D:{
-			parent->exit_code=menuCodeEnter;
-			ev->key=kbdESC;
+			if( parent->items[ parent->item_current ].handler ){
+				parent->items[ parent->item_current ].handler( parent );
+				menuv_draw(this);
+			}
+			else if(parent->exitOnEnter) {
+				parent->exit_code=menuCodeEnter;
+				ev->key=kbdESC;
+			}
 			break;
 		}
 		
@@ -105,7 +121,7 @@ static void menuv_hEvent(window* this, event* ev) {
 			menuv_draw_item(this, parent->item_current, 0);
 			parent->item_current--;
 			if( menuv_check(this) ){
-				this->draw(this);
+				menuv_draw_items(this);
 			}else{
 				menuv_draw_item(this, parent->item_current, 1);
 			}
@@ -117,7 +133,7 @@ static void menuv_hEvent(window* this, event* ev) {
 			menuv_draw_item(this, parent->item_current, 0);
 			parent->item_current++;
 			if( menuv_check(this) ){
-				this->draw(this);
+				menuv_draw_items(this);
 			} else {
 				menuv_draw_item(this, parent->item_current, 1);
 			}

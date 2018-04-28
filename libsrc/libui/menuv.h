@@ -44,6 +44,8 @@ typedef struct menuv{
 	menu_item*	items;
 	/** Код выхода меню */
 	uint8_t		exit_code;
+	/** Выход из меню по Enter */
+	uint8_t		exitOnEnter;
 }menuv;
 
 void menuv_init(menuv* this, menu_item* items, wRect* w);
