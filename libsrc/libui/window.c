@@ -37,7 +37,7 @@ void window_draw(window* this) {
 	}
 
 	while ( *p ) {
-		if ( ( *p ) && ( (*p)->draw ) ) {
+		if ( (*p)->draw ) {
 			(*p)->draw(*p);
 		}
 		p++;
@@ -46,10 +46,12 @@ void window_draw(window* this) {
 
 static void window_exec_send_to_childs(window* this, event* ev) {
 	window** p=this->childs;
-	if (p) while (*p) {
+	if (p) {
+		while (*p) {
 			if ((*p)->hEvent) (*p)->hEvent(*p, ev);
 			p++;
 		}
+	}
 }
 
 static void window_exec_send_to_cur_child(window* this, event* ev) {
@@ -64,6 +66,8 @@ static void window_exec_send_to_cur_child(window* this, event* ev) {
 void window_exec(window* this) {
 	event ev;
 	ev.ev = evEmpty;
+
+	window_calc_n_childs(this);
 
 	if (this->activate) this->activate(this);
 	//
@@ -206,6 +210,10 @@ static const window window_init_data = {
 	//int16_t			cur_child;
 	.cur_child=-1,
 
+	/** @brief Количество потомков */
+	//int16_t		n_childs;
+	.n_childs=0,
+
 	/** Указатель на потомка, если окно чей-то предок */
 	.child_ifparent=NULL,
 
@@ -281,43 +289,85 @@ window * window_get_cur_child(window* this) {
 
 uint8_t window_next_child(window* this) {
 	window*  w;
+	int16_t cur;
 	uint8_t rv=0;
-	window** p=this->childs;
-	int16_t cur=this->cur_child;
+	int16_t c=cur=this->cur_child;
+	window** p=this->childs+c;
 
-	if ( ( cur<0 ) || (!p) || (!*p) ) {
+	if ( !(this->n_childs) ) {
 		return 0;
 	}
 
-	w=*(p+cur);
-	if( ( w->deactivate ) && (w->winFlags & wflagActivate ) ) w->deactivate(w);
-
-	while ( !((*(p + (++cur) ))->winFlags & wflagActivate )) {
-		if ( !*(p+cur) ) {
+	while ( (++c) != cur ) {
+		p++;
+		if ( !*p) {
+			p=this->childs;
+			c=0;
+		}
+		if ( (*p)->winFlags & wflagActivate ) {
 			break;
 		}
 	}
 
-	w=*(p+cur);
+	if ( c!=cur) {
+		w=*(this->childs + cur);
+		if ( ( w->deactivate ) && (w->winFlags & wflagActivate ) ) w->deactivate(w);
 
+		this->cur_child = c;
+		w=*(this->childs + c);
 
-	if ( w  ) {
-		rv=1;
-	} else {
-		cur=0;
-		w=*(p+cur);
-		rv=2;
+		if ( ( w->activate ) && (w->winFlags & wflagActivate ) ) w->activate(w);
 	}
-
-	this->cur_child = cur;
-
-	if( ( w->activate ) && (w->winFlags & wflagActivate ) ) w->activate(w);
 
 	return rv;
 }
 
 uint8_t window_prev_child(window* this) {
-	
+	window*  w;
+	int16_t cur;
+	uint8_t rv=0;
+	int16_t c=cur=this->cur_child;
+	window** p=this->childs+c;
+
+	if ( !(this->n_childs) ) {
+		return 0;
+	}
+
+	while ( (--c) != cur ) {
+		p--;
+		if ( c<0 ) {
+			c=this->n_childs-1;
+			p=this->childs+c;
+		}
+		if ( (*p)->winFlags & wflagActivate ) {
+			break;
+		}
+	}
+
+	if ( c!=cur) {
+		w=*(this->childs + cur);
+		if ( ( w->deactivate ) && (w->winFlags & wflagActivate ) ) w->deactivate(w);
+
+		this->cur_child = c;
+		w=*(this->childs + c);
+
+		if ( ( w->activate ) && (w->winFlags & wflagActivate ) ) w->activate(w);
+	}
+
+	return rv;
+}
+
+uint16_t window_calc_n_childs(window* this) {
+	uint16_t rv=0;
+	window** p=this->childs;
+	if ( p ) {
+		while (*p) {
+			p++;
+			rv++;
+		}
+	}
+	this->n_childs = rv;
+	return rv;
 }
 
 // Конструктор окна

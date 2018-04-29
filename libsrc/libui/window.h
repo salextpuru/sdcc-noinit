@@ -43,6 +43,9 @@ typedef struct window{
 	/** @brief текущий потомок (-1 - нет такого) */
 	int16_t		cur_child;
 	
+	/** @brief Количество потомков */
+	int16_t		n_childs;
+	
 	/** Указатель на потомка, если окно чей-то предок */
 	void*		child_ifparent;
 	
@@ -103,4 +106,6 @@ window* window_get_cur_child(window* this);
 uint8_t window_next_child(window* this);
 /** Перейти к предыдущему потомку (возвращает 1 - все ОК, 0 - потомков нет, 2 - возврат на начало) */
 uint8_t window_prev_child(window* this);
+/** Считает число потомков по списку */
+uint16_t window_calc_n_childs(window* this);
 #endif // WINDOW_H

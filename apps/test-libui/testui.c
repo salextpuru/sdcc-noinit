@@ -14,11 +14,37 @@
 	#include <zxkbd.h>
 #endif
 
-menuv	m1;
+// Простое окно
+static const wRect	simple_window_rect= {{4,4},{24,16}};
+static window	simple_window;
 
-const wRect	m1rect={{0,0},{32,24}};
-const menu_item	m1items[]={
-	{"Empty item",0},
+static void simple_window_draw(window* this) {
+	window_draw(this);
+	this->at(this, 3, 2 );
+	this->puts(this, "This");
+	this->at(this, 3, 4 );
+	this->puts(this, "is");
+	this->at(this, 3, 6 );
+	this->puts(this, "Simple");
+	this->at(this, 3, 8 );
+	this->puts(this, "Window");
+}
+
+void simple_windowExec(struct menuv* m) {
+	window_init(&simple_window);
+	window_setsize(&simple_window,&simple_window_rect);
+	window_set_color(&simple_window,000,0106);
+	simple_window.border = btSingl;
+	simple_window.winFlags&=~wflagActivate; // Оно не может быть активным
+	simple_window.draw = simple_window_draw;
+	simple_window.exec(&simple_window);
+}
+
+// Основное меню
+static menuv	m1;
+static const wRect	m1rect={{0,0},{32,24}};
+static const menu_item	m1items[]={
+	{"Simple window", simple_windowExec},
 	{"Go to Multi Menu", multiMenuExec },
 	{"Exit",0},
 	//
