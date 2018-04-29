@@ -1,6 +1,12 @@
 # Config files
 include *.mk
 
+# Generate lib specificaton ( if LIBS variable defined in build.mk )
+ifdef LIBS
+LIBSMAKE:=$(addprefix $(LIBDIR)/, $(LIBS:=.lib) )
+LIBSLINK:=$(addprefix -l , $(LIBSMAKE) )
+endif
+
 # Generate all targets
 all: $(APPDIR)/$(APP).bin $(APPDIR)/$(APP).\$$C $(APPDIR)/$(APP)-code.tap $(APPDIR)/$(APP)-basic.tap
 	@echo "all ok"
@@ -9,7 +15,7 @@ $(APPDIR)/$(APP)%:$(APP)%
 	install -m 0666 -D $< $@
 
 # Binary image
-$(APP).bin: autoconfig.asm crt0.rel $(OBJ)
+$(APP).bin: autoconfig.asm crt0.rel $(OBJ) $(LIBSMAKE)
 	$(LD) -imjwx -b _CODE=$(START) -o $(APP) crt0.rel $(OBJ) $(LIBSLINK) > /dev/null
 	@if [[ -f $(APP).ihx ]]; then \
 	echo "Hex generated: "$(APP).ihx ; \

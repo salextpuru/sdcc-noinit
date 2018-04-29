@@ -1,8 +1,5 @@
 # Library list
 
-# STD C LIBRARY
-LIBRARY+=libz80
-
 # Interrupt control
 LIBRARY+=libim2
 
@@ -38,3 +35,6 @@ LIBRARY+=libtimer
 
 # ZXSLIP
 LIBRARY+=libslip
+
+# STD C LIBRARY
+LIBRARY+=libz80

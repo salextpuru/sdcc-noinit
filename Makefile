@@ -20,8 +20,8 @@ PATH:=$(PATH):$(TCPATH)
 # CRT0
 CRT0PATH=$(TOP)/libsrc/crt0/$(CRT0)
 
-# Generate library names
-LIBS:=$(addprefix $(LIBDIR)/, $(LIBRARY:=.lib) )
+# Generate library  directory names
+LIBSMAKE:=$(addprefix $(LIBDIR)/, $(LIBRARY:=.lib) )
 
 # Generate lib specificaton
 LIBSLINK:=$(addprefix -l $(LIBDIR)/, $(LIBRARY:=.lib) ) $(STDLIBS)
@@ -34,7 +34,7 @@ COPTS+=-I $(TOP)/include $(INCS)
 APPS:=$(addprefix $(APPDIR)/, $(APPLICATIONS:=.bin) )
 
 all: libs apps kdevelop_path
-	@echo "$(STDLIBS)"
+	@echo "StdLibs: $(STDLIBS)"
 	@echo "all ok"
 
 $(APPDIR)/%.bin: $(APPSRC)/%
@@ -49,7 +49,7 @@ $(LIBDIR)/lib%.lib: $(LIBSRC)/lib%
 .EXPORT_ALL_VARIABLES:
 	@echo "Export All variables"
 
-libs: .EXPORT_ALL_VARIABLES $(LIBS)
+libs: .EXPORT_ALL_VARIABLES $(LIBSMAKE)
 	@echo -n
 
 kdevelop_path:
