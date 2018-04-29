@@ -67,7 +67,12 @@ static void menuv_draw_items(window* this) {
 		}
 	}
 	
-	menuv_draw_item(this, cur, 1);
+	if( this->winFlags & wflagActive ){
+		menuv_draw_item(this, cur, 1);
+	}
+	else {
+		menuv_draw_item(this, cur, 0);
+	}
 }
 
 // Методы окна (переопределены)
@@ -145,6 +150,16 @@ static void menuv_hEvent(window* this, event* ev) {
 	window_hEvent(this,ev);
 }
 
+static void menuv_activate(window* this) {
+	window_activate(this);
+	menuv_draw_item(this, ((menuv*)(this->child_ifparent))->item_current, 1);
+}
+
+static void menuv_deactivate(window* this) {
+	menuv_draw_item(this, ((menuv*)(this->child_ifparent))->item_current, 0);
+	window_deactivate(this);
+}
+
 // Методы меню
 /** пересчитывает количество элементов меню */ 
 static void menuv_items_calc(menuv* this) {
@@ -174,6 +189,8 @@ void menuv_init(menuv* this, menu_item* items, wRect* w) {
 	
 	// Виртуальные методы (private!:)
 	this->win.draw = menuv_draw;
+	this->win.activate = menuv_activate;
+	this->win.deactivate = menuv_deactivate;
 	this->win.exec = menuv_exec;
 	this->win.hEvent = menuv_hEvent;
 	//

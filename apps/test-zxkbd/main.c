@@ -1,13 +1,14 @@
 #include <window.h>
 #include <im2.h>
 #include <zxkbd.h>
+#include <stdio.h>
 
 void at(uint8_t x, uint8_t y){
 	txt_screen_driver->cur_x=x;
 	txt_screen_driver->cur_y=y;
 }
 
-void cls(){
+void ncls(){
 	txt_screen_driver->ink=006; // Octal system is very good for ZX colors:)
 	txt_screen_driver->paper=010; // Octal system is very good for ZX colors:)
 	txt_screen_driver->clear_window(0,0,txt_screen_driver->w,txt_screen_driver->h);
@@ -22,11 +23,12 @@ void putc(const char c){
 	txt_screen_driver->putc(c);
 }
 
+char s[0x10];
 void main(){
 	CLI();
 	setScrDriverZX();
 	//
-	cls();
+	ncls();
 	putsat(0,0,"ZX keyboard driver test.");
 	//
 	im2SetHandler(zxKbdScan);
@@ -38,6 +40,8 @@ void main(){
 		putsat(0,2,"Symbol:");
 		if(k){
 			at(9,2);putc(k);
+			sprintf(s,"0x%.2X",k);
+			putsat(12,2,s);
 		}
 		
 		putsat(0,4,"Caps lock: ");putsat(11,4, zxKbdIsCaps()?"On ":"Off");
