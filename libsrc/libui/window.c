@@ -23,8 +23,11 @@ void window_clear(window* this) {
 void window_draw(window* this) {
 	window** p=this->childs;
 
-	txt_screen_driver->ink = this->ink;
-	txt_screen_driver->paper = this->paper;
+//	txt_screen_driver->ink = this->ink;
+//	txt_screen_driver->paper = this->paper;
+	
+	txt_screen_driver->setcolor(this->ink,this->paper);
+	
 	txt_screen_driver->clear_window(
 	        this->x,this->y,
 	        this->w,this->h);
@@ -32,7 +35,7 @@ void window_draw(window* this) {
 	                          this->x,this->y,
 	                          this->w,this->h);
 
-	if ( ( (this->cur_child)<0 ) || (!p) || (!*p) ) {
+	if (!p) {
 		return;
 	}
 

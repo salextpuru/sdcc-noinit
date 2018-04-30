@@ -31,7 +31,7 @@ static uint16_t zInKey(){
 	return key;
 }
 
-static kbdDriver zxkbd={
+static const kbdDriver zxkbd={
 
 /**
  * @brief Необходимо, чтобы функция

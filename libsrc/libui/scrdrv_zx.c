@@ -18,11 +18,11 @@ static void curpos(uint8_t x, uint8_t y);
 
 static void puts(const char* s, uint8_t maxsize);
 
-static void	curset(tColor color, curTypes t);
+static void curset(tColor color, curTypes t);
 
-static void	store_window(scrDriverStored* buf, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+static void store_window(scrDriverStored* buf, uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 
-static void	restore_window(scrDriverStored* buf);
+static void restore_window(scrDriverStored* buf);
 
 scrDriverFunc	scrDriver_ZX={
 	/**
@@ -134,7 +134,6 @@ static uint16_t	ScrBegin=0x4000;
 static void	curset(tColor color, curTypes t){
 	if( scrDriver_ZX.cur_type != btNone){
 		// Убрать курсор
-		
 	}
 	
 	scrDriver_ZX.cur_color = color;
@@ -142,17 +141,18 @@ static void	curset(tColor color, curTypes t){
 	
 	if( scrDriver_ZX.cur_type != btNone){
 		// нарисовать курсор
-		
 	}
 }
 
 static uint8_t getColor(){
-	return *((uint8_t*)(&scrDriver_ZX.ink)) |  *((uint8_t*)(&scrDriver_ZX.paper));
+	return ((uint8_t)scrDriver_ZX.ink) | ((uint8_t)scrDriver_ZX.paper);
 }
 
 static void setcolor(tColor ink, tColor paper){
-	scrDriver_ZX.ink = ink;
-	scrDriver_ZX.paper = paper;
+	register uint16_t i=ink;
+	register uint16_t p=paper;
+	scrDriver_ZX.ink = i;
+	scrDriver_ZX.paper = p;
 }
 
 static uint32_t get_win_size(uint8_t w, uint8_t h){
