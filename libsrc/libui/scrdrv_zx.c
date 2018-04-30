@@ -24,7 +24,7 @@ static void store_window(scrDriverStored* buf, uint8_t x, uint8_t y, uint8_t w, 
 
 static void restore_window(scrDriverStored* buf);
 
-scrDriverFunc	scrDriver_ZX={
+static scrDriverFunc	scrDriver_ZX={
 	/**
 	 * @brief размеры экрана
 	 */
