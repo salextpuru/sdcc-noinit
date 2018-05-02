@@ -3,7 +3,7 @@
 
 // Screen base adress	0x0000, 0x4000, 0x8000, 0xC000
 //			0x2000, 0x6000, 0xA000, 0xE000
-const WORD	spr0_scr_adr=0x4000;
+void*	spr0_scr_adr=0x4000;
 
 void spr0_set_scr_adr(WORD adr)__naked{
 __asm;

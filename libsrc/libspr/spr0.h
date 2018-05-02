@@ -55,4 +55,7 @@ void scr0_clr_atr();
 // Fill attrs on shadow screen. a=fills
 void scr0_fill_atr(uint8_t a);
 
+// Adress of screen 0
+extern void*	spr0_scr_adr;
+
 #endif /* SPR0_H_DEFINED */

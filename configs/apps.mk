@@ -36,3 +36,6 @@ APPLICATIONS+=test-slip-poll
 
 # DEMO
 APPLICATIONS+=demo17_1
+
+# Invitro for CSP2018
+APPLICATIONS+=csp2018invitro

@@ -1,0 +1,108 @@
+#include <types.h>
+
+#include <conio.h>
+#include <color.h>
+
+#include <spr0.h>
+
+#include "pt3xplayer.h"
+#include "stc_player.h"
+#include "im2.h"
+
+/* Music (PT2 and PT3) in files
+ *	kiss_pt3.c
+ *	mus010_pt3.c
+ *	mus01D_pt2.c
+ */
+extern unsigned char kiss_pt3[];
+extern unsigned char mus010_pt3[];
+extern unsigned char mus01D_pt2[];
+
+extern unsigned char again_stc[];
+extern unsigned char love_stc[];
+
+
+
+/*
+ * Structures, which define mode (unlooped) and type (PT2 or PT3)
+ */
+#define MUSFMT_PTX	0
+#define MUSFMT_STC	1
+ 
+typedef struct {
+	void *music;
+	BYTE mode;
+	BYTE format;
+}sMusic;
+
+// Quantity of musics
+#define N_MUSICS	5
+
+sMusic musics[N_MUSICS]={
+	{&again_stc,   STC_UNLOOP, MUSFMT_STC },
+	{&love_stc,   STC_UNLOOP, MUSFMT_STC },
+
+	{&mus01D_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
+	{&mus010_pt3, PT3_UNLOOP, MUSFMT_PTX },
+	{&kiss_pt3,   PT3_UNLOOP, MUSFMT_PTX }
+};
+
+
+BYTE checkEndOfMusic(sMusic* sm){
+	BYTE r=0;
+	switch( sm->format ){
+		case MUSFMT_PTX:{
+			r = (pt3GetMode() & PT3_LOOP_FLAG)!=0;
+			break;
+		}
+		case MUSFMT_STC:{
+			r = (stcGetMode() & STC_LOOP_FLAG)!=0;
+			break;
+		}
+		default:
+			r = 1;
+	}
+	return(r);
+}
+
+
+void initNewMusic(sMusic* sm){
+	CLI();
+	switch( sm->format ){
+		case MUSFMT_PTX:{
+			// irq
+			im2SetHandler( (void*)pt3Play );
+			im2Set();
+			// mode and init
+			pt3SetMode(sm->mode);
+			pt3Init(sm->music);
+			break;
+		}
+		case MUSFMT_STC:{
+			im2SetHandler( (void*)stcPlay );
+			im2Set();
+			stcSetMode(sm->mode);
+			stcInit(sm->music);
+			break;
+		}
+		default:;
+	}
+	SEI();
+}
+
+/*
+ * Check for end of current music
+ * and begin play next music
+ */
+char musicNumber=N_MUSICS;
+void checkMusic(){
+	
+	// Current music finished ?
+	if( checkEndOfMusic(&musics[musicNumber]) || (musicNumber>=N_MUSICS) ){
+		musicNumber++;
+		if(musicNumber>=N_MUSICS){
+			musicNumber=0;
+		}
+		initNewMusic(&musics[musicNumber]);
+	}
+}
