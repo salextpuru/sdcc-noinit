@@ -5,132 +5,55 @@
 #include <spr0.h>
 #include <im2.h>
 
-static uint16_t rndnext=0x6AE7;
 
-static void fadeRND3() __naked {
-	__asm
-	;// HL=adr of 1/3 screen
-	ld	hl,#0x4000
 
-	ld 	bc,#0x0800 ;// 2K (1/3 scr)
+#include "cspLogo.h"
+#include "scrarea13.h"
+#include "printscale.h"
 
-	push	hl
-	fadeRND3L1:
-	call	rndnext_g
-
-	ld 	a,(_rndnext)
-	and	(hl)
-	ld 	(hl),a
-
-	inc	hl
-	dec 	bc
-	ld	a,c
-	or	b
-	jr	nz,fadeRND3L1
-	pop	hl
-
-	ret
-
-	rndnext_g:
-	push	hl
-	ld	hl,(_rndnext)
-	ld 	a,#0x5A
-	add	a,l
-	ld 	l,a
-	ld 	a,#0xA5
-	adc 	a,h
-	ld	h,a
-	adc 	a,l
-	ld 	l,a
-	ld 	(_rndnext),hl
-	pop	hl
-	ret
-	__endasm;
-}
-
-static void clear13() __naked {
-	__asm
-	;// HL=adr of 1/3 screen
-	ld	hl,#0x4000
-	;//
-	ld 	bc,#0x07FF ;// 2K (1/3 scr)
-	push	hl
-	pop	de
-	push	hl
-	inc	de
-	ld	(hl),#0
-	ldir
-	pop	hl
-	ld 	c,h
-	ld	a,h
-	and	#0xF8
-	add	a,#0x18
-	ld	h,a
-	ld	a,c
-	and	#0x18
-	rr	a
-	rr	a
-	rr	a
-	add	a,h
-	ld 	h,a
-	ld 	bc,#0x00FF
-	push	hl
-	pop	de
-	inc	de
-	ld	(hl),#0
-	ldir
-	ret
-	__endasm;
-}
-
-static const char* allText[]= {
-	"Внимание! ВНИМАНИЕ! Внимание!",
-	"28-29 ИЮЛЯ 2018 ГОДА",
-	"СОСТОИТСЯ - CSP 2018 -",
-	"В городе НОВОСИБИРСКЕ!",
-	"БУХЛО и ЖЕНЩИНЫ!",
-	"СВОИ!",
-	"ДЕМО от УЧАСТНИКОВ!",
-	NULL
+static const char* issues[][4]={
+	{"Приветствуем участников","CSP 2018","в городе","Новосибирске!"},
+	{"Есть Бухло!","Возможны Женщины!","Назревают Танцы!","Поглощается Еда!"},
+	{"И, конечно","ДЕМО! ДЕМО! ДЕМО!","и ещё раз", "--- ДЕМО ---"},
+	{"Сегодня у нас в гостях!","Известные!","Не очень известные!","Вообще не известные!"},
+	{"Спектрумисты!","Друзья Спектрумистов!","Подруги Спектрумистов!","Жены Спектрумистов!"},
+	{NULL,NULL,NULL,NULL}
 };
 
-static const char** tPtr=allText;
+static uint16_t issuen=0;
 
 static void printNextMsg() {
-	uint8_t l;
-	if ( !*tPtr ) {
-		tPtr=allText;
-	}
-
-	l=strlen(*tPtr);
-	conio_at((0x20-l)>>1,4);
-	print(*tPtr);
-	tPtr++;
-}
-
-static void clearTextArea() {
+	uint8_t x;
 	uint8_t i;
-	for (i=0; i<12; i++) {
-		fadeRND3();
-		HALT();
+	uint8_t l;
+	if ( !issues[issuen][0] ) {
+		issuen=0;
 	}
-	clear13();
+
+	for (i=1; i<=2; i++) {
+		for(l=0; l<4; l++){
+			x=(0x20-strlen(issues[issuen][l]) )>>1;
+			printStrScale(x,l+l,i,issues[issuen][l]);
+		}
+		waitINTS(20);
+	}
+	waitINTS(100);
+	clearTextArea(0,0104);
+
+	issuen++;
 }
 
 void checkMusic();
 
 int main() {
-	logoToScreen();
+	ccls(0104);
+	logoToScreen(3,9);
 	SEI();
-	//
-	color(0104);
-	clear13();
-
+	
 	while (1) {
 		printNextMsg();
 		checkMusic();
-		waitINTS(50);
-		clearTextArea();
+		//waitINTS(50);
 	}
 	//
 	return 0;

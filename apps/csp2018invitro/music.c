@@ -36,17 +36,15 @@ typedef struct {
 }sMusic;
 
 // Quantity of musics
-#define N_MUSICS	5
-
-sMusic musics[N_MUSICS]={
-	{&again_stc,   STC_UNLOOP, MUSFMT_STC },
+sMusic musics[]={
+//	{&again_stc,   STC_UNLOOP, MUSFMT_STC },
 	{&love_stc,   STC_UNLOOP, MUSFMT_STC },
-
-	{&mus01D_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
-	{&mus010_pt3, PT3_UNLOOP, MUSFMT_PTX },
+//	{&mus01D_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
+//	{&mus010_pt3, PT3_UNLOOP, MUSFMT_PTX },
 	{&kiss_pt3,   PT3_UNLOOP, MUSFMT_PTX }
 };
 
+#define N_MUSICS	(sizeof(musics)/sizeof(sMusic))
 
 BYTE checkEndOfMusic(sMusic* sm){
 	BYTE r=0;
