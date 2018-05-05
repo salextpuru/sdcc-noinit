@@ -33,11 +33,62 @@ static const char* issues[][4]={
 	{"There is drinks!","Posiible will be womens!","Maybe dances!","Eating foods!"},
 	{"Of course,","DEMO! ARTS! MUSICS! GAMES!","and","other ZX-Programms!"},
 	*/
-	{"Приветствуем участников","CSP 2018","в городе","Новосибирске!"},
-	{"Есть Бухло!","Возможны Женщины!","Назревают Танцы!","Поглощается Еда!"},
-	{"И, конечно","ДЕМО! ДЕМО! ДЕМО!","и ещё раз", "--- ДЕМО ---"},
-	{"Сегодня у нас в гостях!","Известные!","Не очень известные!","Вообще не известные!"},
-	{"Спектрумисты!","Друзья Спектрумистов!","Подруги Спектрумистов!","Жены Спектрумистов!"},
+	{	"Приветствуем участников слёта",
+		"--  CSP 2018 --",
+		"в городе Новосибирске!",
+		"( Это в центре Сибири России )"},
+	//
+	{	"Наш слет-конкурс состоится",
+		"28 и 29 июля сего 2018 года!",
+		"Это выходные!",
+		"Поэтому отказы-отмазы не канают!"},
+	//
+	{	"Приносите свои игры и демо,",
+		"музыку и ОСи, картинки.",
+		"И главное: --- СЕБЯ --- !!!",
+		"Кто не приедет - тот бука! :)"},
+	//
+	{	"Особо приглашаются:",
+		"AAA, AER, AlexClap,aturbidflow,",
+		"Baxter, BlackCat, BlastOff,",
+		"Buddy,Burst, Canifol, Cardinal"},
+	//
+	{
+		"А также:",
+		"Connect-2000, Corvax, Creator,",
+		"Daniel,Debosh, Diamond, Djoni,",
+		"dman, Dr.Bars,Fikus, Gibson"},
+	//
+	{
+		"И ещё:",
+		"Grachev, Hrumer,John Norton Irr,",
+		"Kakos_nonos, Kas29,Kowalski,Lzb,",
+		"Maddev, Marinovsoft,Maxximum"},
+	//
+	{
+		"Кроме того:",
+		"Misha Pertsovsky, MMCM, MrNick,",
+		"MV1971, OLN, OTO-man, Quiet,",
+		"Raider, RetroDroid, Sambura"},
+	//
+	{
+		"И, наконец:",
+		"Sayman,scalesmann^mc, shuran33,",
+		"SlackDen, Sobos,Tiden, T!m0n,",
+		"Tzerra, Voxon, wbc, wbr"},
+	//
+	{
+		"И чтобы никого не забыть:",
+		"Whitehalt, Xlat, ZeroXor,Zhizh,",
+		"ZX_NOVOSIB, Шынни",
+		""},
+	
+	//
+	{
+		"Ну и я, SfS, создатель сего",
+		"inVitro тоже постараюсь БЫТЬ",
+		"с вами в эти замечательные,",
+		"весёлые, разгульные дни!"},
 	//
 	{NULL,NULL,NULL,NULL}
 };
@@ -64,13 +115,13 @@ static void printNextMsg() {
 	}
 	
 	
-	waitINTS(100);
+	waitINTS(200);
 	winSetAtr(0,0,32,8, 04, 0xFF );
-	waitINTS(10);
+	waitINTS(5);
 	winSetAtr(0,0,32,8, 0101, 0xFF );
-	waitINTS(10);
+	waitINTS(5);
 	winSetAtr(0,0,32,8, 01, 0xFF );
-	waitINTS(10);
+	waitINTS(5);
 	winClearRnd(0,0,32,8);
 
 	issuen++;
@@ -132,23 +183,31 @@ static volatile uint8_t lock;
 	}
 }
 
+void border0() __naked{
+__asm;
+	xor a
+	out (0xFE),a
+	ret
+__endasm;
+}
+
 uint8_t checkMusic();
 
 int main() {
 	static uint8_t nsk_color=1;
-	
+	// Set IM2 handler
 	CLI();
-	logoToScreen(3,9);
-	
 	im2Set();
 	im2SetHandler( im2userHandler );
-	
 	SEI();
-	
+	// Clear
+	border0();
+	winSetAtr(0, 0, 32, 24, 0x00, 0xFF );
 	winClear(0,0,32,8);
-	
+	// and LOGO
 	spr0_out0_attr(&spr2018,0,16);
-	
+	logoToScreen(3,9);
+	// Main loop
 	while (1) {
 		printNextMsg();
 		if( checkMusic() ) {
