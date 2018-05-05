@@ -8,6 +8,8 @@
 #include "stc_player.h"
 #include "im2.h"
 
+void (*music_im2h)();
+
 /* Music (PT2 and PT3) in files
  *	kiss_pt3.c
  *	mus010_pt3.c
@@ -19,8 +21,6 @@ extern unsigned char mus01D_pt2[];
 
 extern unsigned char again_stc[];
 extern unsigned char love_stc[];
-
-
 
 /*
  * Structures, which define mode (unlooped) and type (PT2 or PT3)
@@ -36,11 +36,10 @@ typedef struct {
 
 // Quantity of musics
 sMusic musics[]={
-//	{&again_stc,   STC_UNLOOP, MUSFMT_STC },
+	{&mus01D_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
+	{&mus010_pt3, PT3_UNLOOP, MUSFMT_PTX },
+	{&again_stc,   STC_UNLOOP, MUSFMT_STC },
 	{&love_stc,   STC_UNLOOP, MUSFMT_STC },
-//	{&mus01D_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
-//	{&mus010_pt3, PT3_UNLOOP, MUSFMT_PTX },
-	{&kiss_pt3,   PT3_UNLOOP, MUSFMT_PTX }
 };
 
 #define N_MUSICS	(sizeof(musics)/sizeof(sMusic))
@@ -67,17 +66,14 @@ void initNewMusic(sMusic* sm){
 	CLI();
 	switch( sm->format ){
 		case MUSFMT_PTX:{
-			// irq
-			im2SetHandler( (void*)pt3Play );
-			im2Set();
+			music_im2h = pt3Play;
 			// mode and init
 			pt3SetMode(sm->mode);
 			pt3Init(sm->music);
 			break;
 		}
 		case MUSFMT_STC:{
-			im2SetHandler( (void*)stcPlay );
-			im2Set();
+			music_im2h = stcPlay;
 			stcSetMode(sm->mode);
 			stcInit(sm->music);
 			break;
