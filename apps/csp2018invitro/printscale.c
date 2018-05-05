@@ -7,7 +7,7 @@
 
 // ПОТОМ СДЕЛАТЬ параметром!
 #include <koi8r-8x8.h>
-static void* psFont=koi8r_8x8;
+static const void* psFont=(void*)0x3C00;
 //
 
 void printScale(uint8_t x, uint8_t y, uint8_t scale, uint8_t ch) __naked {

@@ -65,8 +65,11 @@ PHASESIZE=""
 
 COLOR_DATA=""
 if [[ -n $COLOR ]] ; then
-	for i in `seq 1 $(( $SPRW * $SPRH ))` ; do
-		COLOR_DATA="$COLOR_DATA""$COLOR,"
+	for i in `seq 1 $SPRW` ; do
+		for j in `seq 1 $SPRH` ; do
+			COLOR_DATA="$COLOR_DATA""$COLOR,"
+		done
+			COLOR_DATA="$COLOR_DATA""\n\t\t"
 	done
 	PHASESIZE=$(( $SPRW * $SPRH * 9 ))
 else

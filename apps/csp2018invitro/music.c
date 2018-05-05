@@ -1,6 +1,5 @@
 #include <types.h>
 
-#include <conio.h>
 #include <color.h>
 
 #include <spr0.h>

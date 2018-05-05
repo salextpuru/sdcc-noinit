@@ -1,5 +1,12 @@
 [Buildset]
 BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x16\x00s\x00d\x00c\x00c\x00-\x00n\x00o\x00i\x00n\x00i\x00t)
 
+[MakeBuilder]
+Number Of Jobs=1
+Override Number Of Jobs=true
+
 [Project]
 VersionControlSupport=kdevgit
+
+[SourceFileTemplates]
+LastUsedTemplate=/home/salex/.local/share/kdevfiletemplates/template_descriptions/c_gobject.desktop
