@@ -11,16 +11,10 @@
 void (*music_im2h)();
 
 /* Music (PT2 and PT3) in files
- *	kiss_pt3.c
- *	mus010_pt3.c
- *	mus01D_pt2.c
  */
-extern unsigned char kiss_pt3[];
-extern unsigned char mus010_pt3[];
-extern unsigned char mus01D_pt2[];
-
-extern unsigned char again_stc[];
-extern unsigned char love_stc[];
+extern unsigned char jungle_pt3[];
+extern unsigned char sanixon_pt3[];
+extern unsigned char louboutin_pt3[];
 
 /*
  * Structures, which define mode (unlooped) and type (PT2 or PT3)
@@ -36,10 +30,12 @@ typedef struct {
 
 // Quantity of musics
 sMusic musics[]={
-	{&mus01D_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
-	{&mus010_pt3, PT3_UNLOOP, MUSFMT_PTX },
-	{&again_stc,   STC_UNLOOP, MUSFMT_STC },
-	{&love_stc,   STC_UNLOOP, MUSFMT_STC },
+	{&jungle_pt3, PT3_UNLOOP, MUSFMT_PTX },
+	{&louboutin_pt3, PT3_UNLOOP, MUSFMT_PTX },
+	{&sanixon_pt3, PT3_UNLOOP, MUSFMT_PTX },
+//	{&mus01D_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
+//	{&again_stc,   STC_UNLOOP, MUSFMT_STC },
+//	{&love_stc,   STC_UNLOOP, MUSFMT_STC },
 };
 
 #define N_MUSICS	(sizeof(musics)/sizeof(sMusic))
@@ -88,7 +84,7 @@ void initNewMusic(sMusic* sm){
  * and begin play next music
  */
 char musicNumber=N_MUSICS;
-void checkMusic(){
+uint8_t checkMusic(){
 	
 	// Current music finished ?
 	if( checkEndOfMusic(&musics[musicNumber]) || (musicNumber>=N_MUSICS) ){
@@ -97,5 +93,7 @@ void checkMusic(){
 			musicNumber=0;
 		}
 		initNewMusic(&musics[musicNumber]);
+		return 1;
 	}
+	return 0;
 }

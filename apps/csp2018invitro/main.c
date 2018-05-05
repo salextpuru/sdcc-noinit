@@ -28,16 +28,17 @@ static const struct {
 };
 
 static const char* issues[][4]={
+	/*
 	{"Welcome to","CSP 2018 party","in Novosibirsk","great siberian city!"},
 	{"There is drinks!","Posiible will be womens!","Maybe dances!","Eating foods!"},
 	{"Of course,","DEMO! ARTS! MUSICS! GAMES!","and","other ZX-Programms!"},
-	/*
+	*/
 	{"Приветствуем участников","CSP 2018","в городе","Новосибирске!"},
 	{"Есть Бухло!","Возможны Женщины!","Назревают Танцы!","Поглощается Еда!"},
 	{"И, конечно","ДЕМО! ДЕМО! ДЕМО!","и ещё раз", "--- ДЕМО ---"},
 	{"Сегодня у нас в гостях!","Известные!","Не очень известные!","Вообще не известные!"},
 	{"Спектрумисты!","Друзья Спектрумистов!","Подруги Спектрумистов!","Жены Спектрумистов!"},
-	*/
+	//
 	{NULL,NULL,NULL,NULL}
 };
 
@@ -77,7 +78,6 @@ static void printNextMsg() {
 
 // Defines for music.c
 extern void (*music_im2h)();
-void checkMusic();
 
 // AY Dump
 static uint8_t ayRgDump[0x10];
@@ -132,7 +132,11 @@ static volatile uint8_t lock;
 	}
 }
 
+uint8_t checkMusic();
+
 int main() {
+	static uint8_t nsk_color=1;
+	
 	CLI();
 	logoToScreen(3,9);
 	
@@ -147,7 +151,10 @@ int main() {
 	
 	while (1) {
 		printNextMsg();
-		checkMusic();
+		if( checkMusic() ) {
+			if( (++nsk_color) > 15 ) {nsk_color=1;}
+			winSetAtr(0, 22, 32, 2, colorTable[nsk_color], 0x07 );
+		}
 	}
 	//
 	return 0;

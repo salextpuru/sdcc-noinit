@@ -2,11 +2,12 @@
  * @file printscale.c - vertical scaled print
  */
 #include <spr0.h>
-
+#include "koi8r-8x8.h"
 #include "printscale.h"
 
 // ПОТОМ СДЕЛАТЬ параметром!
-static const void* psFont=(void*)0x3C00;
+//static const void* psFont=(void*)0x3C00;
+static const void* psFont=koi8r_8x8;
 //
 
 void printScale(uint8_t x, uint8_t y, uint8_t scale, uint8_t ch) __naked {
