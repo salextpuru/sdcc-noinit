@@ -38,3 +38,6 @@ LIBRARY+=libslip
 
 # STD C LIBRARY
 LIBRARY+=libz80
+
+# Interrupt control
+LIBRARY+=libfonts

@@ -51,4 +51,9 @@ void conio_where(uint8_t* x, uint8_t* y);
 //			0x2000, 0x6000, 0xA000, 0xE0000
 void conio_set_scr_adr(uint16_t adr);
 
+/**
+ * Установить адрес шрифта
+ */
+void conio_set_font(void* f);
+
 #endif /* CONIO_H_DEFINED */

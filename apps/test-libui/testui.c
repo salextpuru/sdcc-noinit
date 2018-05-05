@@ -3,6 +3,8 @@
 
 #include "multimenu.h"
 
+#include <koi8r-8x8.h>
+
 // =1 - PS2 клавиатура
 // =0 - ZX  клавиатура
 #define PS2_KEYS	0
@@ -54,6 +56,7 @@ static const menu_item	m1items[]={
 int main(int argc, char* argv[]){
 	// Драйвер экрана
 	setScrDriverZX();
+	current_font = koi8r_8x8;
 	// Драйвер клавиатуры
 #if PS2_KEYS
 	setKeyboardPS2();

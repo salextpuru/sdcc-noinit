@@ -6,7 +6,6 @@
 #include "printscale.h"
 
 // ПОТОМ СДЕЛАТЬ параметром!
-#include <koi8r-8x8.h>
 static const void* psFont=(void*)0x3C00;
 //
 
