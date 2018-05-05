@@ -142,6 +142,7 @@ ay_dump_loop1:
 	ld	a,e
 	out	(c),a
 	in	a,(c)
+	and	a,#0x0F
 	ld	(hl),a
 	;//
 	inc	hl
@@ -177,7 +178,7 @@ static volatile uint8_t lock;
 		winSetAtr(boxText[3].x, boxText[3].y, boxText[3].w, boxText[3].h, colorTable[ayRgDump[1]], 0x07 );
 		winSetAtr(boxText[4].x, boxText[4].y, boxText[4].w, boxText[4].h, colorTable[ayRgDump[3]], 0x07 );
 		winSetAtr(boxText[5].x, boxText[5].y, boxText[5].w, boxText[5].h, colorTable[ayRgDump[5]], 0x07 );
-		winSetAtr(boxText[6].x, boxText[6].y, boxText[6].w, boxText[6].h, colorTable[ayRgDump[6]>>1], 0x07 );
+		winSetAtr(boxText[6].x, boxText[6].y, boxText[6].w, boxText[6].h, colorTable[ayRgDump[6]], 0x07 );
 		//
 		lock=0;
 	}
