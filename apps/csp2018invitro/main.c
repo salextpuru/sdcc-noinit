@@ -95,12 +95,14 @@ static const char* issues[][4]={
 
 static uint16_t issuen=0;
 
+enum {msgY=8};
+
 static void printNextMsg() {
 	uint8_t x;
 	uint8_t i;
 	uint8_t l;
 	
-	winSetAtr(0,0,32,8, 0104, 0xFF );
+	winSetAtr(0,msgY,32,8, 0104, 0xFF );
 	
 	if ( !issues[issuen][0] ) {
 		issuen=0;
@@ -109,20 +111,20 @@ static void printNextMsg() {
 	for (i=1; i<=2; i++) {
 		for(l=0; l<4; l++){
 			x=(0x20-strlen(issues[issuen][l]) )>>1;
-			printStrScale(x,l+l,i,issues[issuen][l]);
+			printStrScale(x,l+l+msgY,i,issues[issuen][l]);
 		}
 		waitINTS(20);
 	}
 	
 	
 	waitINTS(200);
-	winSetAtr(0,0,32,8, 04, 0xFF );
+	winSetAtr(0,msgY,32,8, 04, 0xFF );
 	waitINTS(5);
-	winSetAtr(0,0,32,8, 0101, 0xFF );
+	winSetAtr(0,msgY,32,8, 0101, 0xFF );
 	waitINTS(5);
-	winSetAtr(0,0,32,8, 01, 0xFF );
+	winSetAtr(0,msgY,32,8, 01, 0xFF );
 	waitINTS(5);
-	winClearRnd(0,0,32,8);
+	winClearRnd(0,msgY,32,8);
 
 	issuen++;
 }
@@ -207,7 +209,7 @@ int main() {
 	winClear(0,0,32,8);
 	// and LOGO
 	spr0_out0_attr(&spr2018,0,16);
-	logoToScreen(3,9);
+	logoToScreen(3,0);
 	// Main loop
 	while (1) {
 		printNextMsg();

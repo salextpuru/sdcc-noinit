@@ -1,0 +1,50 @@
+#!/bin/bash
+
+INPUT="$1"
+
+function usage() {
+	printf \
+"	Usage:
+		$0 <file> [Width Heigh]
+\n"
+}
+
+WIDTH=1
+HEIGH=1
+
+if [[ -z "$INPUT" ]] ; then
+	usage
+	exit 1
+fi
+
+if [[ -f "$INPUT" ]] ; then
+	echo > /dev/null
+else
+	printf "\nError! No file: $INPUT\n\n"
+	usage
+	exit 1
+fi
+
+if [[ -n $2 ]] ; then
+	WIDTH=$2
+fi
+
+if [[ -n $3 ]] ; then
+	HEIGH=$3
+fi
+
+OUTPUT=`echo "$INPUT" | tr '[[:space:]\.\,\-\*\:]' _ | tr -s '_'`.pbm
+INSIZE=`du -b "$INPUT" | awk '{print $1}'`
+
+CHARS=$(( $INSIZE / $WIDTH / $HEIGH / 8 ))
+
+printf "Input font file: $INPUT ($INSIZE bytes)\n"
+
+printf "Output font file: $OUTPUT\n"
+
+printf "Sizes: WxH= $WIDTH x $HEIGH ($CHARS chars in file)\n"
+
+printf "P4
+$(( $WIDTH * 8 )) $(( $HEIGH * 8 * $CHARS ))
+" > "$OUTPUT"
+cat "$INPUT" >> "$OUTPUT"
