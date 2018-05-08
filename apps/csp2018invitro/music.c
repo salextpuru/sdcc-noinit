@@ -13,7 +13,6 @@ void (*music_im2h)();
 /* Music (PT2 and PT3) in files
  */
 extern unsigned char jungle_pt3[];
-extern unsigned char sanixon_pt3[];
 extern unsigned char louboutin_pt3[];
 
 /*
@@ -32,7 +31,6 @@ typedef struct {
 sMusic musics[]={
 	{&jungle_pt3, PT3_UNLOOP, MUSFMT_PTX },
 	{&louboutin_pt3, PT3_UNLOOP, MUSFMT_PTX },
-	{&sanixon_pt3, PT3_UNLOOP, MUSFMT_PTX },
 //	{&mus01D_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
 //	{&again_stc,   STC_UNLOOP, MUSFMT_STC },
 //	{&love_stc,   STC_UNLOOP, MUSFMT_STC },
