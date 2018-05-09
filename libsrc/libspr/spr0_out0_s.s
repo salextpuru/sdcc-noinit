@@ -21,7 +21,8 @@
 ;-------------------------------------------------
 	.globl sprXYtoHL
 	.globl sprXYtoHLattr
-
+	.globl scr_down_hl
+	
         .module spr0_out0_s
 	.area	_CODE
 ;-------------------------------------------------
@@ -42,20 +43,19 @@ spr0_out0:
 	push	ix
 	pop	de
 	pop	ix
-
+	
+	; Ширина спрайта
+	ld	c,2(ix)
 	; Высота спрайта
-	ld	b,3(ix)
+	ld	a,3(ix)
+	add	a
+	add	a
+	add	a
+	ld	b,a ; h*8 (в строках)
 spr0_out0_hline:	; Начало цикла по строкам
 	push	bc
 
-	; высота знакоместа (строки)
-	ld	c,#8
-	push	hl
-
-	; выводим 8 линий (одну строку)
-spr0_out0_line8:
-	ld	b,2(ix)
-
+	
 	; выводим w байт (одну линию)
 	push	hl
 spr0_out0_line:
@@ -67,30 +67,11 @@ spr0_out0_opt:
 	ld	(hl),a
 	inc	hl
 	inc	de
-	dec	b
+	dec	c
 	jr nz,	spr0_out0_line
 	pop	hl
-
-	; следующая линия экрана
-	inc	h
-	dec	c
-	jr nz,	spr0_out0_line8
-	pop	hl
-
-	; Следующая строка
-	ld	a,#0x20
-	add	a,l
-	ld	l,a
-
-	; Если был перенос - то переход к след. трети экрана
-	jr	nc, continue_1_3
-
-	; следующая треть экрана
-	ld	a,#0x08
-	add	a,h
-	ld	h,a		; hl = hl + 0x0800
-
-continue_1_3:
+	; Следующая строка на одну ниже
+	call	scr_down_hl
 	; Вывод в ту же треть экрана
 	pop	bc
 	djnz	spr0_out0_hline	; Конец цикла по строкам (та же треть)

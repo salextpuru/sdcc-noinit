@@ -41,7 +41,7 @@ printScaleLH:
 printScaleLSCL:
 	ld	(hl),a
 	ex 	af,af';'
-	call	down_hl
+	call	scr_down_hl
 	ex 	af,af';'
 	djnz	printScaleLSCL
 	dec 	c 
@@ -49,22 +49,6 @@ printScaleLSCL:
 	;//
 	pop  ix
 	ret
-	
-	;вход: HL=адрес экранной линии
-	;выход: HL= адрес экранной линии ниже
-down_hl:
-	INC H
-	LD A,H
-	AND #7
-	RET NZ
-	LD A,L
-	ADD A,#0x20
-	LD L,A
-	RET C
-	LD A,H
-	SUB #8
-	LD H,A
-	RET
 __endasm;
 }
 

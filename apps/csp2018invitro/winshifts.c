@@ -50,27 +50,11 @@ shiftLeftPixHoriz:
 	pop	bc
 	pop	hl
 	;// down to one line
-	call	down_hl
+	call	scr_down_hl
 	;// lines loop
 	djnz	shiftLeftPixLline
 	;//
 	pop	ix
-	ret
-	
-	;вход: HL=адрес экранной линии
-	;выход: HL= адрес экранной линии ниже
-down_hl:
-	inc	h
-	ld	a,h
-	and	#7
-	ret	nz
-	ld	a,l
-	add	a,#0x20
-	ld	l,a
-	ret	c
-	ld	a,h
-	sub	#8
-	ld	h,a
 	ret
 __endasm;
 }

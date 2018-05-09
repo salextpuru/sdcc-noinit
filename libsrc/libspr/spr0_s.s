@@ -58,3 +58,22 @@ sprXYtoHLattr:
 	add	hl,bc
 	ret
 ;-------------------------------------------------
+; вход:
+;	HL=адрес экранной линии
+; выход:
+;	HL= адрес экранной линии ниже
+.globl scr_down_hl
+scr_down_hl:
+	inc	h
+	ld	a,h
+	and	#7
+	ret	nz
+	ld	a,l
+	add	a,#0x20
+	ld	l,a
+	ret	c
+	ld	a,h
+	sub	#8
+	ld	h,a
+	ret
+;-------------------------------------------------
