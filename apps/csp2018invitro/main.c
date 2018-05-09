@@ -8,6 +8,7 @@
 #include "winprocs.h"
 #include "printscale.h"
 #include "spr2018.h"
+#include "winshifts.h"
 
 enum {boxSize=7};
 
@@ -27,106 +28,67 @@ static const struct {
 	{28,16,4,6},
 };
 
-static const char* issues[][4]={
-	/*
-	{"Welcome to","CSP 2018 party","in Novosibirsk","great siberian city!"},
-	{"There is drinks!","Posiible will be womens!","Maybe dances!","Eating foods!"},
-	{"Of course,","DEMO! ARTS! MUSICS! GAMES!","and","other ZX-Programms!"},
-	*/
-	{	"Приветствуем участников слёта",
-		"--  CSP 2018 --",
-		"в городе Новосибирске!",
-		"( Это в центре Сибири России )"},
-	//
-	{	"Наш слет-конкурс состоится",
-		"28 и 29 июля сего 2018 года!",
-		"Это выходные!",
-		"Поэтому отказы-отмазы не канают!"},
-	//
-	{	"Приносите свои игры и демо,",
-		"музыку и ОСи, картинки.",
-		"И главное: --- СЕБЯ --- !!!",
-		"Кто не приедет - тот бука! :)"},
-	//
-	{	"Особо приглашаются:",
-		"AAA, AER, AlexClap,aturbidflow,",
-		"Baxter, BlackCat, BlastOff,",
-		"Buddy,Burst, Canifol, Cardinal"},
-	//
-	{
-		"А также:",
-		"Connect-2000, Corvax, Creator,",
-		"Daniel,Debosh, Diamond, Djoni,",
-		"dman, Dr.Bars,Fikus, Gibson"},
-	//
-	{
-		"И ещё:",
-		"Grachev, Hrumer,John Norton Irr,",
-		"Kakos_nonos, Kas29,Kowalski,Lzb,",
-		"Maddev, Marinovsoft,Maxximum"},
-	//
-	{
-		"Кроме того:",
-		"Misha Pertsovsky, MMCM, MrNick,",
-		"MV1971, OLN, OTO-man, Quiet,",
-		"Raider, RetroDroid, Sambura"},
-	//
-	{
-		"И, наконец:",
-		"Sayman,scalesmann^mc, shuran33,",
-		"SlackDen, Sobos,Tiden, T!m0n,",
-		"Tzerra, Voxon, wbc, wbr"},
-	//
-	{
-		"И чтобы никого не забыть:",
-		"Whitehalt, Xlat, ZeroXor,Zhizh,",
-		"ZX_NOVOSIB, Шынни",
-		""},
-	
-	//
-	{
-		"Ну и я, SfS, создатель сего",
-		"inVitro тоже постараюсь БЫТЬ",
-		"с вами в эти замечательные,",
-		"весёлые, разгульные дни!"},
-	//
-	{NULL,NULL,NULL,NULL}
+
+enum {
+	wshStatDelay=0,
+	wshStatShift=1,
 };
 
-static uint16_t issuen=0;
+static char ShiftText[]="Приветствуем всех на слёте CSP2018!!! "
+	"Состоится сие действо 28-29 июля 2018 года в городе НОВОСИБИРСКЕ! "
+	"Приглашаем всех, кого знаем и не знаем, особенно: "
+	"AAA, AER, Alex Clap, aturbidflow, Baxter, BlackCat, BlastOff, Buddy, Burst, "
+	"Canifol, Cardinal, Connect-2000, Corvax, Creator, Daniel, Debosh, Diamond, "
+	"Djoni, dman, Dr.Bars, Fikus, Gibson, Grachev, Hrumer, John Norton Irr, "
+	"Kakos_nonos, Kas29, Kowalski, Lzb, Maddev, Marinovsoft, Maxximum, "
+	"Misha Pertsovsky, MMCM, Mr.Nick, MV1971, OLN, OTO-man, Quiet, Raider, "
+	"RetroDroid, Sambura, Sayman, scalesmann^mc, shuran33, SlackDen, Sobos, "
+	"Tiden, T!m0n, Tzerra, Voxon, wbc, wbr, Whitehalt, Xlat, ZeroXor, Zhizh, ZX_NOVOSIB, Шынни... "
+	"И ДРУГИЕ!!! Простите, если кого-то не упомянули. Вас много, а мы одни:) Приезжайте все кто хочет! "
+;
 
-enum {msgY=8};
+static char* charShiftText=ShiftText;
+static uint8_t symShiftCounter=0;
+static int8_t ShiftTextDelay=5;
+static const winShift winShiftText = {0,22,32,2};
+static uint8_t winShiftStatus=wshStatDelay;
+static uint16_t winShiftDelayCounter;
 
-static void printNextMsg() {
-	uint8_t x;
-	uint8_t i;
-	uint8_t l;
-	
-	winSetAtr(0,msgY,32,8, 0104, 0xFF );
-	
-	if ( !issues[issuen][0] ) {
-		issuen=0;
+static void InitShiftText(){
+	winSetAtr(31, 22, 1, 2, 0x00, 0xFF);
+}
+
+static void CheckShiftText(){
+	if( (--ShiftTextDelay)<=0 ){
+		shiftLeftPix(&winShiftText);
+		ShiftTextDelay=2;
 	}
-
-	for (i=1; i<=2; i++) {
-		for(l=0; l<4; l++){
-			x=(0x20-strlen(issues[issuen][l]) )>>1;
-			printStrScale(x,l+l+msgY,i,issues[issuen][l]);
+	else{
+		return;
+	}
+	
+	if( (++symShiftCounter) >= 8 ){
+		
+		if( winShiftStatus == wshStatDelay ){
+			winShiftDelayCounter++;
+			if(winShiftDelayCounter >= 256 ){
+				winShiftStatus = wshStatShift;
+				winSetAtr(0, 22, 31, 2, 0104, 0xFF);
+			}
 		}
-		waitINTS(20);
+		else {
+			symShiftCounter=0;
+			if(!*charShiftText){
+				charShiftText=ShiftText;
+				winShiftStatus = wshStatDelay;
+				winShiftDelayCounter=0;
+			}
+			else {
+				printScale(31,22,2,*charShiftText);
+				charShiftText++;
+			}
+		}
 	}
-	
-	
-	waitINTS(200);
-	winSetAtr(0,msgY,32,8, 04, 0xFF );
-	waitINTS(5);
-	winSetAtr(0,msgY,32,8, 0101, 0xFF );
-	waitINTS(5);
-	winSetAtr(0,msgY,32,8, 01, 0xFF );
-	waitINTS(5);
-	winClearRnd(0,msgY,32,8);
-
-	issuen++;
 }
 
 // Defines for music.c
@@ -171,6 +133,8 @@ static volatile uint8_t lock;
 	SEI();
 	if( !lock ){
 		lock=1;
+		// Shift Text
+		CheckShiftText();
 		// Analyze dump of AY
 		// Volume
 		winSetAtr(boxText[0].x, boxText[0].y, boxText[0].w, boxText[0].h, colorTable[ayRgDump[8]], 0x07 );
@@ -197,12 +161,10 @@ __endasm;
 uint8_t checkMusic();
 
 int main() {
-	static uint8_t nsk_color=1;
 	// Set IM2 handler
 	CLI();
 	im2Set();
 	im2SetHandler( im2userHandler );
-	SEI();
 	// Clear
 	border0();
 	winSetAtr(0, 0, 32, 24, 0x00, 0xFF );
@@ -210,13 +172,13 @@ int main() {
 	// and LOGO
 	spr0_out0_attr(&spr2018,0,16);
 	logoToScreen(3,0);
+	// Text for shift
+	InitShiftText();
+	//
+	SEI();
 	// Main loop
 	while (1) {
-		printNextMsg();
-		if( checkMusic() ) {
-			if( (++nsk_color) > 15 ) {nsk_color=1;}
-			winSetAtr(0, 22, 32, 2, colorTable[nsk_color], 0x07 );
-		}
+		checkMusic();
 	}
 	//
 	return 0;
