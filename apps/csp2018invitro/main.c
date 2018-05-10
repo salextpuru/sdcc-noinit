@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <spr0.h>
 #include <im2.h>
+#include <zxkbd.h>
 
 #include "cspLogo.h"
 #include "winprocs.h"
@@ -42,6 +43,7 @@ static const struct {
 // Defines for music.c
 extern void (*music_im2h)();
 uint8_t checkMusic();
+void keyMusic(uint16_t k);
 
 /**
 * Пролцедура получения дампа AY
@@ -81,51 +83,64 @@ static uint16_t logos_timer;
 static uint8_t logos_counter;
 
 /*
- * Обработчик прерывания 1/50 сек
+ * Процедура анимации пламени свечи
  */
 void candle_flame_animate();
+
+/*
+ * Обработчик прерывания 1/50 сек
+ */
 
 static void im2userHandler() {
 	// Переменная, блокирующая повторный запуск фоновых процедур
 	static volatile uint8_t lock;
-
+	
 	// Играем следующий кусочек музыки
 	if (music_im2h) {
 		music_im2h();
 	}
 
-	// AY DUMP
-	getAYdump();
-
 	// Увеличиваем
 	logos_timer++;
+
+	// Проверка повторного вызова (это ж прерывания!)
+	if ( lock ) {
+		return;
+	}
+	// Блокируем повторный вход в этот участок кода
+	lock=1;
 	
 	// Разрешаем прерывания.
 	SEI();
-
-	// Проверка повторного вызова (это ж прерывания!)
-	if ( !lock ) {
-		// Блокируем повторный вход в этот участок кода
-		lock=1;
-		// Сдвиг текста
-		CheckShiftText();
-
-		// Эквалайзер (подкрашиваем буковки цветами, полученными их дампа AY)
-		// Volume
-		winSetAtr(boxText[0].x, boxText[0].y, boxText[0].w, boxText[0].h, colorTable[ayRgDump[8]], 0x07 );
-		winSetAtr(boxText[1].x, boxText[1].y, boxText[1].w, boxText[1].h, colorTable[ayRgDump[9]], 0x07 );
-		winSetAtr(boxText[2].x, boxText[2].y, boxText[2].w, boxText[2].h, colorTable[ayRgDump[10]], 0x07 );
-		// Freq
-		winSetAtr(boxText[3].x, boxText[3].y, boxText[3].w, boxText[3].h, colorTable[ayRgDump[1]], 0x07 );
-		winSetAtr(boxText[4].x, boxText[4].y, boxText[4].w, boxText[4].h, colorTable[ayRgDump[3]], 0x07 );
-		winSetAtr(boxText[5].x, boxText[5].y, boxText[5].w, boxText[5].h, colorTable[ayRgDump[5]], 0x07 );
-		winSetAtr(boxText[6].x, boxText[6].y, boxText[6].w, boxText[6].h, colorTable[ayRgDump[6]], 0x07 );
+	lock=1;
+	
+	// AY DUMP
+	getAYdump();
+	
+	// Сдвиг текста
+	//CheckShiftText();
+	// Эквалайзер (подкрашиваем буковки цветами, полученными их дампа AY)
+	// Volume
+	winSetAtr(boxText[0].x, boxText[0].y, boxText[0].w, boxText[0].h, colorTable[ayRgDump[8]], 0x07 );
+	winSetAtr(boxText[1].x, boxText[1].y, boxText[1].w, boxText[1].h, colorTable[ayRgDump[9]], 0x07 );
+	winSetAtr(boxText[2].x, boxText[2].y, boxText[2].w, boxText[2].h, colorTable[ayRgDump[10]], 0x07 );
+	// Freq
+	winSetAtr(boxText[3].x, boxText[3].y, boxText[3].w, boxText[3].h, colorTable[ayRgDump[1]], 0x07 );
+	winSetAtr(boxText[4].x, boxText[4].y, boxText[4].w, boxText[4].h, colorTable[ayRgDump[3]], 0x07 );
+	winSetAtr(boxText[5].x, boxText[5].y, boxText[5].w, boxText[5].h, colorTable[ayRgDump[5]], 0x07 );
+	winSetAtr(boxText[6].x, boxText[6].y, boxText[6].w, boxText[6].h, colorTable[ayRgDump[6]], 0x07 );
 		
-		candle_flame_animate();
-		
-		// Разблокируем вход в этот участок кода
-		lock=0;
-	}
+	// анимация пламени свечи
+	candle_flame_animate();
+	
+	// Опрос клавиатуры (в фоне, т.к. только кнопочки 1-6 важны)
+	zxKbdScan();
+	// Проверка - а может надо сменить мелодию?
+	keyMusic(zxKbdInKey());
+	
+	// Разблокируем вход в этот участок кода
+	CLI();
+	lock=0;
 }
 
 // Просто BORDER 0
@@ -154,6 +169,7 @@ int main() {
 	winSetAtr(5, 8, 12, 8, 0x01, 0xFF );
 	// Инициализация бегщей строки
 	InitShiftText();
+	
 	// Разрешаем прерывания
 	SEI();
 

@@ -96,20 +96,6 @@ void im0Set()__naked{
 	__endasm;
 }
 
-void CLI()__naked{
-	__asm;
-	di
-	ret
-	__endasm;
-}
-
-void SEI()__naked{
-	__asm;
-	ei
-	ret
-	__endasm;
-}
-
 void waitINTS(uint8_t tick){
 	while(tick){
 		__asm;

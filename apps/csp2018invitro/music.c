@@ -28,9 +28,9 @@ typedef struct {
 }sMusic;
 
 // Quantity of musics
-sMusic musics[]={
-	{&jungle_pt3, PT3_UNLOOP, MUSFMT_PTX },
+const sMusic musics[]={
 	{&louboutin_pt3, PT3_UNLOOP, MUSFMT_PTX },
+	{&jungle_pt3, PT3_UNLOOP, MUSFMT_PTX },
 //	{&mus01D_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
 //	{&again_stc,   STC_UNLOOP, MUSFMT_STC },
 //	{&love_stc,   STC_UNLOOP, MUSFMT_STC },
@@ -81,7 +81,9 @@ void initNewMusic(sMusic* sm){
  * Check for end of current music
  * and begin play next music
  */
-char musicNumber=N_MUSICS;
+void musBtnDraw(uint8_t n);
+
+uint8_t musicNumber=N_MUSICS;
 uint8_t checkMusic(){
 	
 	// Current music finished ?
@@ -91,7 +93,22 @@ uint8_t checkMusic(){
 			musicNumber=0;
 		}
 		initNewMusic(&musics[musicNumber]);
+		musBtnDraw(musicNumber);
 		return 1;
 	}
 	return 0;
+}
+
+// Смена мелодии по клавише
+void keyMusic(uint16_t k){
+	uint8_t m=k-'1';
+	if(!k){
+		return;
+	}
+	if( m>= N_MUSICS ){
+		return;
+	}
+	musicNumber=m;
+	musBtnDraw(musicNumber);
+	initNewMusic(&musics[musicNumber]);
 }

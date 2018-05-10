@@ -218,6 +218,10 @@ l7cfd:  dec     2(ix)
         ld      2(ix),a
         ret     
 _stcPlay:
+	push	ix
+	call	stc_play
+	pop	ix
+	ret
 stc_play:
 	; check unlooped stc_flags
 	ld	hl,#stc_flags

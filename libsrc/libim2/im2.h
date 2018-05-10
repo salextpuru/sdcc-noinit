@@ -26,12 +26,20 @@ void im0Set();
 /*
  * 	Disable IRQ
  */
-void CLI();
+inline void CLI()__naked{
+__asm;
+	di
+__endasm;
+}
 
 /*
  * 	Enable IRQ
  */
-void SEI();
+inline void SEI()__naked{
+__asm;
+	ei
+__endasm;
+}
  
 /**
  * @brief Wait for tick (1/50sec=20ms)

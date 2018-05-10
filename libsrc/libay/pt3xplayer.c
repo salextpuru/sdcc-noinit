@@ -10,20 +10,29 @@ __asm;
 	inc	hl
 	
 	ex de,hl
-
-	jp pt3xplayer_init+3
+	
+	push	ix
+	call pt3xplayer_init+3
+	pop	ix
+	ret
 __endasm;
 }
 
 void pt3Play()__naked{
 __asm;
-	jp pt3xplayer_init+5
+	push	ix
+	call 	pt3xplayer_init+5
+	pop	ix
+	ret
 __endasm;
 }
 
 void pt3Mute()__naked{
 __asm;
-	jp pt3xplayer_init+8
+	push	ix
+	call pt3xplayer_init+8
+	pop	ix
+	ret
 __endasm;
 }
 
