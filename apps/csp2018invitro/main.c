@@ -77,7 +77,7 @@ static const uint8_t colorTable[0x10]= {1,1,2,3,4,5,6,7,0101,0101,0102,0103,0104
 /*
  * Смена картинок
  */
-static uint8_t logos_timer;
+static uint16_t logos_timer;
 static uint8_t logos_counter;
 
 /*
@@ -158,7 +158,7 @@ int main() {
 		// Проверка - доиграла ли до конца музыка
 		// и надо ли переходить к следующей мелодии
 		checkMusic();
-		if( logos_timer >= 200 ){
+		if( logos_timer >= 500 ){
 			Sprite0* spr=logos[logos_counter];
 			logos_timer=0;
 			for(i=0; i<8; i++){
