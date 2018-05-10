@@ -83,6 +83,8 @@ static uint8_t logos_counter;
 /*
  * Обработчик прерывания 1/50 сек
  */
+void candle_flame_animate();
+
 static void im2userHandler() {
 	// Переменная, блокирующая повторный запуск фоновых процедур
 	static volatile uint8_t lock;
@@ -118,6 +120,9 @@ static void im2userHandler() {
 		winSetAtr(boxText[4].x, boxText[4].y, boxText[4].w, boxText[4].h, colorTable[ayRgDump[3]], 0x07 );
 		winSetAtr(boxText[5].x, boxText[5].y, boxText[5].w, boxText[5].h, colorTable[ayRgDump[5]], 0x07 );
 		winSetAtr(boxText[6].x, boxText[6].y, boxText[6].w, boxText[6].h, colorTable[ayRgDump[6]], 0x07 );
+		
+		candle_flame_animate();
+		
 		// Разблокируем вход в этот участок кода
 		lock=0;
 	}

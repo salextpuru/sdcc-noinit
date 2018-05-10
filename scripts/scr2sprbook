@@ -1,0 +1,36 @@
+#!/bin/bash
+# Needs to modify! It id draft!
+
+# Режет SCR файл на спрайты и синтезирует .c файл
+# Спрайты имеют одинаковую ширину и высоту.
+# Распологаются на экране горизонтально один за другим
+
+# Имя экрана со спрайтами
+INSCR=logos-candle.scr
+
+# Имя спрайтов и выходного файла
+NAME=candle_flame
+
+# Количество спрайтов
+SPRITES=4
+
+# Координаты первого спрайта
+X=1
+Y=0
+W=3
+H=3
+
+echo "/* Sprite $NAME[$SPRITES] */" > "$NAME".c
+echo "#include <spr0.h>" >> "$NAME".c
+
+for i in `seq 0 $(( $SPRITES - 1 ))`; do
+	echo $NAME"_"$i" X=$X Y=$Y W=$W H=$H"
+	scr2spr $X $Y $W $H "$INSCR" | bin2c "$NAME"_"$i"  -- >> "$NAME".c
+	X=$(( $X + $W ))
+done
+
+printf "const Sprite0* $NAME[$SPRITES]={\n" >> "$NAME".c
+for i in `seq 0 $(( $SPRITES - 1 ))`; do
+	printf "\t(Sprite0*)$NAME"_"$i,\n" >> "$NAME".c
+done
+printf "\n};\n" >> "$NAME".c
