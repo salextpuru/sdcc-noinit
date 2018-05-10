@@ -9,6 +9,7 @@
 #include "printscale.h"
 #include "spr2018.h"
 #include "winshifts.h"
+#include "logos.h"
 
 /**
  * -------------------------------- Бегущая строка ------------------------------------------
@@ -163,6 +164,12 @@ static void getAYdump() __naked {
 static const uint8_t colorTable[0x10]= {1,1,2,3,4,5,6,7,0101,0101,0102,0103,0104,0105,0106,0107};
 
 /*
+ * Смена картинок
+ */
+static uint8_t logos_timer;
+static uint8_t logos_counter;
+
+/*
  * Обработчик прерывания 1/50 сек
  */
 static void im2userHandler() {
@@ -177,6 +184,9 @@ static void im2userHandler() {
 	// AY DUMP
 	getAYdump();
 
+	// Увеличиваем
+	logos_timer++;
+	
 	// Разрешаем прерывания.
 	SEI();
 
@@ -224,6 +234,7 @@ int main() {
 	// Вывод картинок
 	logoToScreen(3,0);
 	spr0_out0_attr(&spr2018,0,16);
+	spr0_out0_attr(&logos_base,0,8);
 	// Инициализация бегщей строки
 	InitShiftText();
 	// Разрешаем прерывания
@@ -234,6 +245,13 @@ int main() {
 		// Проверка - доиграла ли до конца музыка
 		// и надо ли переходить к следующей мелодии
 		checkMusic();
+		if( logos_timer >= 200 ){
+			logos_timer=0;
+			spr0_out0_attr(logos[logos_counter++],5,8);
+			if( logos_counter >=  logos_count() ){
+				logos_counter=0;
+			}
+		}
 	}
 	//
 	return 0;
