@@ -109,16 +109,14 @@ static void im2userHandler() {
 	}
 	// Блокируем повторный вход в этот участок кода
 	lock=1;
-	
 	// Разрешаем прерывания.
 	SEI();
-	lock=1;
 	
 	// AY DUMP
 	getAYdump();
 	
 	// Сдвиг текста
-	//CheckShiftText();
+	CheckShiftText();
 	// Эквалайзер (подкрашиваем буковки цветами, полученными их дампа AY)
 	// Volume
 	winSetAtr(boxText[0].x, boxText[0].y, boxText[0].w, boxText[0].h, colorTable[ayRgDump[8]], 0x07 );

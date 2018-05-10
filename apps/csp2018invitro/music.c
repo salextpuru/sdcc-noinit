@@ -13,7 +13,12 @@ void (*music_im2h)();
 /* Music (PT2 and PT3) in files
  */
 extern unsigned char jungle_pt3[];
-extern unsigned char louboutin_pt3[];
+extern unsigned char kiss_pt3[];
+extern unsigned char love_stc[];
+
+extern unsigned char taiga_pt2[];
+extern unsigned char mozart_stc[];
+extern unsigned char kosmos_pt3[];
 
 /*
  * Structures, which define mode (unlooped) and type (PT2 or PT3)
@@ -29,11 +34,12 @@ typedef struct {
 
 // Quantity of musics
 const sMusic musics[]={
-	{&louboutin_pt3, PT3_UNLOOP, MUSFMT_PTX },
 	{&jungle_pt3, PT3_UNLOOP, MUSFMT_PTX },
-//	{&mus01D_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
-//	{&again_stc,   STC_UNLOOP, MUSFMT_STC },
-//	{&love_stc,   STC_UNLOOP, MUSFMT_STC },
+	{&kiss_pt3, PT3_UNLOOP, MUSFMT_PTX },
+	{&love_stc,   STC_UNLOOP, MUSFMT_STC },
+	{&taiga_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
+	{&mozart_stc,   STC_UNLOOP, MUSFMT_STC },
+	{&kosmos_pt3, PT3_UNLOOP, MUSFMT_PTX },
 };
 
 #define N_MUSICS	(sizeof(musics)/sizeof(sMusic))

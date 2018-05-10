@@ -3,8 +3,9 @@ APP=csp2018inv
 
 # Object files
 OBJ=main.rel music.rel printscale.rel psernd.rel winprocs.rel winshifts.rel
-OBJ+=cspLogo.rel spr2018.rel logos.rel uSctrollText.rel spr0_fade.rel candle_flame.rel
-OBJ+=jungle_pt3.rel louboutin_pt3.rel musbtn.rel
+OBJ+=cspLogo.rel spr2018.rel logos.rel uSctrollText.rel spr0_fade.rel
+OBJ+=musbtn.rel candle_flame.rel
+OBJ+=jungle_pt3.rel kiss_pt3.rel  love_stc.rel kosmos_pt3.rel  mozart_stc.rel  taiga_pt2.rel
 
 # LIBS (user-defined) if LIBS not defined then ALL libraies will be used.
 LIBS=libim2 libzxkbd libspr libay libfonts libz80
