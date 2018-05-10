@@ -6,99 +6,10 @@
 
 #include "cspLogo.h"
 #include "winprocs.h"
-#include "printscale.h"
 #include "spr2018.h"
-#include "winshifts.h"
+#include "uSctrollText.h"
 #include "logos.h"
-
-/**
- * -------------------------------- Бегущая строка ------------------------------------------
- * Код ужасный и писался на раз-два ухнем:)
- */
-enum {
-	// Состояние ожидания.
-	// Окно сдвигается, но новые буквы не выводятся
-	wshStatDelay=0,
-	// Состояние прокрутки.
-	// После прокрутки на 8 пикселей - выводится новая буква
-	wshStatShift=1,
-};
-
-// Собственно, текст. Любой длины (< 64К )
-static char ShiftText[]=
-        "Приветствуем всех на слёте CSP2018!!! "
-        "Состоится сие действо 28-29 июля 2018 года в городе НОВОСИБИРСКЕ! "
-        "Приглашаем всех, кого знаем и не знаем, особенно: "
-        "AAA, AER, Alex Clap, aturbidflow, Baxter, BlackCat, BlastOff, Buddy, Burst, "
-        "Canifol, Cardinal, Connect-2000, Corvax, Creator, Daniel, Debosh, Diamond, "
-        "Djoni, dman, Dr.Bars, Fikus, Gibson, Grachev, Hrumer, John Norton Irr, "
-        "Kakos_nonos, Kas29, Kowalski, Lzb, Maddev, Marinovsoft, Maxximum, "
-        "Misha Pertsovsky, MMCM, Mr.Nick, MV1971, OLN, OTO-man, Quiet, Raider, "
-        "RetroDroid, Sambura, Sayman, scalesmann^mc, shuran33, SlackDen, Sobos, "
-        "Tiden, T!m0n, Tzerra, Voxon, wbc, wbr, Whitehalt, Xlat, ZeroXor, Zhizh, ZX_NOVOSIB, Шынни... "
-        "И ДРУГИЕ!!! Простите, если кого-то не упомянули. Вас много, а мы одни:) Приезжайте все кто хочет! "
-        ;
-
-// Текущий выводимый символ
-static char* charShiftText=ShiftText;
-// Счетчик сдвигов символа (как досигает 8 - надо выводить следующий)
-static uint8_t symShiftCounter=0;
-// Задержка сдвига (в 1/50)
-static int8_t ShiftTextDelay=5;
-// Окно сдвига
-static const winShift winShiftText = {0,22,32,2};
-// Состояние (ожидание или сдвиг)
-static uint8_t winShiftStatus=wshStatDelay;
-// Счетчик сдвигов в состоянии ожидания
-static uint16_t winShiftDelayCounter;
-
-// Делаем невидимым выводимый символ (черное на черном:)
-static void InitShiftText() {
-	winSetAtr(31, 22, 1, 2, 0x00, 0xFF);
-}
-
-// Сдвиг
-static void CheckShiftText() {
-	// Уменьшаем счетчик задержки
-	if ( (--ShiftTextDelay)<=0 ) {
-		// Сдвиг на 1 пиксель
-		shiftLeftPix(&winShiftText);
-		ShiftTextDelay=2;
-	} else {
-		// Выход, счетчик задержки не упал до нуля
-		return;
-	}
-
-	// Увеличиваем счетчик сдвига.
-	// Если он равен 8, то надо выводить следующий символ
-	if ( (++symShiftCounter) >= 8 ) {
-		// Если состояние ожидания, то проверяем,
-		// Закончилось ли оно
-		if ( winShiftStatus == wshStatDelay ) {
-			winShiftDelayCounter++;
-			if (winShiftDelayCounter >= 256 ) {
-				winShiftStatus = wshStatShift;
-				winSetAtr(0, 22, 31, 2, 0104, 0xFF);
-			}
-		}
-		// Состояние прокрутки
-		else {
-			symShiftCounter=0;
-			// Если дошли до конца строки,
-			// то переход в состояние ожидания
-			if (!*charShiftText) {
-				charShiftText=ShiftText;
-				winShiftStatus = wshStatDelay;
-				winShiftDelayCounter=0;
-			}
-			// Иначе вывод следующего символа
-			else {
-				printScale(31,22,2,*charShiftText);
-				charShiftText++;
-			}
-		}
-	}
-}
+#include "spr0_fade.h"
 
 /**
  * -------------------------------- Эквалайзер ------------------------------------------
@@ -235,6 +146,7 @@ int main() {
 	logoToScreen(3,0);
 	spr0_out0_attr(&spr2018,0,16);
 	spr0_out0_attr(&logos_base,0,8);
+	winSetAtr(5, 8, 12, 8, 0x01, 0xFF );
 	// Инициализация бегщей строки
 	InitShiftText();
 	// Разрешаем прерывания
@@ -242,13 +154,20 @@ int main() {
 
 	// Основной цикл
 	while (1) {
+		uint8_t i;
 		// Проверка - доиграла ли до конца музыка
 		// и надо ли переходить к следующей мелодии
 		checkMusic();
 		if( logos_timer >= 200 ){
+			Sprite0* spr=logos[logos_counter];
 			logos_timer=0;
-			spr0_out0_attr(logos[logos_counter++],5,8);
-			if( logos_counter >=  logos_count() ){
+			for(i=0; i<8; i++){
+				spr0_fade_step(spr,5,8);
+				HALT();
+			}
+			spr0_out0_attr(spr,5,8);
+			
+			if( (++logos_counter) >=  logos_count() ){
 				logos_counter=0;
 			}
 		}
