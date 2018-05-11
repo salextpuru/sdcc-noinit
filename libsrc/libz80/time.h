@@ -87,4 +87,9 @@ time_t mktime(struct tm *timeptr);
 char *asctime(struct tm *timeptr);
 char *ctime(time_t *timep);
 
+#ifndef HAVE_RTC
+#define HAVE_RTC 1
+unsigned char RtcRead(struct tm *timeptr);
+#endif
+
 #endif /* TIME_H */
