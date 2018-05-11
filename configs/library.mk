@@ -44,3 +44,6 @@ LIBRARY+=libfonts
 
 # Randomize generators
 LIBRARY+=librnd
+
+# Memory managers
+LIBRARY+=libmemman
