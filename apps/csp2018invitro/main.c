@@ -6,6 +6,7 @@
 #include <im2.h>
 #include <zxkbd.h>
 #include <winprocs.h>
+#include <aydump.h>
 
 #include "cspLogo.h"
 #include "spr2018.h"
@@ -44,32 +45,6 @@ static const struct {
 extern void (*music_im2h)();
 uint8_t checkMusic();
 void keyMusic(uint16_t k);
-
-/**
-* Пролцедура получения дампа AY
-*/
-static uint8_t ayRgDump[0x10];
-static void getAYdump() __naked {
-	__asm;
-	ld	e,#0x00 ; // Номер регистра
-	ld	hl,#_ayRgDump ; // Адрес массива
-	ld	bc,#0xFFFD ;// #FFFD - регистр адреса #BFFD - регистр данных
-	ay_dump_loop1:
-	;//
-	ld	a,e
-	out	(c),a
-	in	a,(c)
-	and	a,#0x0F
-	ld	(hl),a
-	;//
-	inc	hl
-	inc	e
-	ld	a,#0x0E
-	cp	a,e
-	jr	nz, ay_dump_loop1
-	ret
-	__endasm;
-}
 
 /*
  * Таблица цветов для эквалайзера
@@ -113,20 +88,20 @@ static void im2userHandler() {
 	SEI();
 	
 	// AY DUMP
-	getAYdump();
+	ayDumpGet();
 	
 	// Сдвиг текста
 	CheckShiftText();
 	// Эквалайзер (подкрашиваем буковки цветами, полученными их дампа AY)
 	// Volume
-	winSetAtr(boxText[0].x, boxText[0].y, boxText[0].w, boxText[0].h, colorTable[ayRgDump[8]], 0x07 );
-	winSetAtr(boxText[1].x, boxText[1].y, boxText[1].w, boxText[1].h, colorTable[ayRgDump[9]], 0x07 );
-	winSetAtr(boxText[2].x, boxText[2].y, boxText[2].w, boxText[2].h, colorTable[ayRgDump[10]], 0x07 );
+	winSetAtr(boxText[0].x, boxText[0].y, boxText[0].w, boxText[0].h, colorTable[ayDump[8]], 0x07 );
+	winSetAtr(boxText[1].x, boxText[1].y, boxText[1].w, boxText[1].h, colorTable[ayDump[9]], 0x07 );
+	winSetAtr(boxText[2].x, boxText[2].y, boxText[2].w, boxText[2].h, colorTable[ayDump[10]], 0x07 );
 	// Freq
-	winSetAtr(boxText[3].x, boxText[3].y, boxText[3].w, boxText[3].h, colorTable[ayRgDump[1]], 0x07 );
-	winSetAtr(boxText[4].x, boxText[4].y, boxText[4].w, boxText[4].h, colorTable[ayRgDump[3]], 0x07 );
-	winSetAtr(boxText[5].x, boxText[5].y, boxText[5].w, boxText[5].h, colorTable[ayRgDump[5]], 0x07 );
-	winSetAtr(boxText[6].x, boxText[6].y, boxText[6].w, boxText[6].h, colorTable[ayRgDump[6]], 0x07 );
+	winSetAtr(boxText[3].x, boxText[3].y, boxText[3].w, boxText[3].h, colorTable[ayDump[1]], 0x07 );
+	winSetAtr(boxText[4].x, boxText[4].y, boxText[4].w, boxText[4].h, colorTable[ayDump[3]], 0x07 );
+	winSetAtr(boxText[5].x, boxText[5].y, boxText[5].w, boxText[5].h, colorTable[ayDump[5]], 0x07 );
+	winSetAtr(boxText[6].x, boxText[6].y, boxText[6].w, boxText[6].h, colorTable[ayDump[6]], 0x07 );
 		
 	// анимация пламени свечи
 	candle_flame_animate();
