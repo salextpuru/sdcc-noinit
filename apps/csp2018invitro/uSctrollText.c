@@ -1,5 +1,5 @@
-#include "winprocs.h"
-#include "winshifts.h"
+#include <winprocs.h>
+#include <winshifts.h>
 #include "printscale.h"
 
 #include "uSctrollText.h"

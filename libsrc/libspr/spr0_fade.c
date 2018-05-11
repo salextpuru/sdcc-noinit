@@ -1,4 +1,4 @@
-#include "psernd.h"
+#include <psernd.h>
 #include "spr0_fade.h"
 
 void	spr0_fade_step(const Sprite0* adr, uint8_t x, uint8_t y) __naked{

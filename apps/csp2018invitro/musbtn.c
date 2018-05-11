@@ -1,6 +1,6 @@
 /* Sprite musbtn[1] */
 #include <spr0.h>
-#include "winprocs.h"
+#include <winprocs.h>
 
 enum {btnN=6};
 

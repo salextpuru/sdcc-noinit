@@ -2,15 +2,15 @@
 #include <string.h>
 #include <stdint.h>
 #include <spr0.h>
+#include <spr0_fade.h>
 #include <im2.h>
 #include <zxkbd.h>
+#include <winprocs.h>
 
 #include "cspLogo.h"
-#include "winprocs.h"
 #include "spr2018.h"
 #include "uSctrollText.h"
 #include "logos.h"
-#include "spr0_fade.h"
 
 /**
  * -------------------------------- Эквалайзер ------------------------------------------
