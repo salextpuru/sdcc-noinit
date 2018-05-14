@@ -23,4 +23,14 @@ void winClearRnd(uint8_t x, uint8_t y, uint8_t w, uint8_t h );
 */
 void winSetAtr(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t attr, uint8_t mask );
 
+/**
+* @brief Получить атрибут знакоместа с координатами (x,y)
+*/
+uint8_t attrGet(uint8_t x, uint8_t y);
+
+/**
+* @brief Установить атрибут знакоместа с координатами (x,y)
+*/
+void	attrSet(uint8_t x, uint8_t y, uint8_t attr);
+
 #endif /* __WINPROCS_H__ */

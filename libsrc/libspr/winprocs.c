@@ -161,3 +161,34 @@ attrw:
 	ret
 __endasm;
 }
+
+uint8_t attrGet(uint8_t x, uint8_t y) __naked {
+	x;y;
+__asm;
+	push	ix
+	ld 	ix,#4
+	add	ix,sp
+	ld	l,00(ix)
+	ld	h,01(ix)
+	call	sprXYtoHLattr
+	ld	l,(hl)
+	pop	ix
+	ret
+__endasm;
+}
+
+void	attrSet(uint8_t x, uint8_t y, uint8_t attr) __naked {
+	x;y;attr;
+__asm;
+	push	ix
+	ld 	ix,#4
+	add	ix,sp
+	ld	l,00(ix)
+	ld	h,01(ix)
+	call	sprXYtoHLattr
+	ld	a,02(ix)
+	ld	(hl),a
+	pop	ix
+	ret
+__endasm;
+}

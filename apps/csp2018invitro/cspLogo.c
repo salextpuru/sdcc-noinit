@@ -149,10 +149,9 @@ static const unsigned char logoCSP[] = {
 	0x38, 0x38, 0x38, 0x38, 0x38, 0x38
 };
 
-void logoToScreen(uint8_t x, uint8_t y) {
-	spr0_out0_attr( (Sprite0*)logoCSP, x,y );
+void logoToScreen ( uint8_t x, uint8_t y ) {
+	spr0_out0_attr ( ( Sprite0* ) logoCSP, x,y );
 }
-
 static uint8_t 	pos=3;
 static uint8_t	enable=1;
 static uint8_t  delay=100;
@@ -160,25 +159,26 @@ static uint8_t  delaye;
 
 void logoAniStep() {
 	uint8_t i;
-	
-	if( !enable ) {
-		if( delay-- ){
+
+	if ( !enable ) {
+		if ( delay-- ) {
 			return;
 		}
+
 		enable=1;
 	}
-		
-	if(pos!=3) for(i=0; i<7; i++){
-		winSetAtr(pos+i, 6-i, 1, 1, 0100, 0100 );
-	}
-	
+
+	if ( pos!=3 ) for ( i=0; i<7; i++ ) {
+			winSetAtr ( pos+i, 6-i, 1, 1, 0100, 0100 );
+		}
+
 	pos++;
-	
-	if(pos!=21) for(i=0; i<7; i++){
-		winSetAtr(pos+i, 6-i, 1, 1, 0, 0100 );
-	}
-	
-	if( pos >=21 ){
+
+	if ( pos!=21 ) for ( i=0; i<7; i++ ) {
+			winSetAtr ( pos+i, 6-i, 1, 1, 0, 0100 );
+		}
+
+	if ( pos >=21 ) {
 		pos=3;
 		enable=0;
 		delay=250;
