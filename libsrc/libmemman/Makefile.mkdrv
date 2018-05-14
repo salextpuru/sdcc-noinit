@@ -23,6 +23,9 @@ $(DRV).drv: autoconfig.asm crt0.rel $(OBJ) $(LIBSMAKE)
 	mv -f $(DRV).bin $(DRV).drv
 	$(BINMAN) $(DRV).map $(DRV).drv
 	$(DZ80) -m=$(START) $(DRV).drv > $(DRV)_d.asm
+	#
+	# Ленточная версия
+	bin2tap -a `printf "%i" $(START)` -r `printf "%i" $(START)` -o $(DRV).tap $(DRV).drv
 
 autoconfig.asm:
 	$(AUTOCONFIG) config.mk $@

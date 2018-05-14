@@ -11,43 +11,43 @@
         
         ;// +00 void MMInit();
         .globl _MMInit
-        call _MMInit
+        jp _MMInit
 
 	;// +03 mm_win_d* __MMgetMemWinsD();
 	.globl ___MMgetMemWinsD
-	call ___MMgetMemWinsD
+	jp ___MMgetMemWinsD
 	
 	;// +06 uint16_t MMgetWinPage(uint8_t w);
 	.globl _MMgetWinPage
-	call _MMgetWinPage
+	jp _MMgetWinPage
 	
 	;// +09 uint8_t MMgetWinFlags(uint8_t w);
 	.globl _MMgetWinFlags
-	call _MMgetWinFlags
+	jp _MMgetWinFlags
 	
 	;// +12 mm_win_d* MMgetWinD(uint8_t w);
 	.globl _MMgetWinD
-	call _MMgetWinD
+	jp _MMgetWinD
 	
 	;// +15 uint16_t MMgetPagesCount();
 	.globl _MMgetPagesCount
-	call _MMgetPagesCount
+	jp _MMgetPagesCount
 	
 	;// +18 uint8_t MMGetPageFlags(uint16_t page);
 	.globl _MMGetPageFlags
-	call _MMGetPageFlags
+	jp _MMGetPageFlags
 	
 	;// +21 uint8_t MMSetPageWin(uint16_t page, uint8_t win);
 	.globl _MMSetPageWin
-	call _MMSetPageWin
+	jp _MMSetPageWin
 	
 	;// +24 uint16_t MMgetPagesCountROM();
 	.globl _MMgetPagesCountROM
-	call _MMgetPagesCountROM
+	jp _MMgetPagesCountROM
 
 	;// +27 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win);
 	.globl _MMSetPageWinROM
-	call _MMSetPageWinROM
+	jp _MMSetPageWinROM
 
         ; Library
         .area _HOME

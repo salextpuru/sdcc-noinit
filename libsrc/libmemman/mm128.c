@@ -40,7 +40,7 @@ uint8_t MMSetPageWin(uint16_t page, uint8_t win) {
 	}
 
 	__MMgetMemWinsD()[3].page = page;
-	copy_0x7FFD = (copy_0x7FFD & ~7) |  (page&7);
+	copy_0x7FFD = (copy_0x7FFD & 0xF8) |  (page&0x07);
 	conf_apply();
 	return MME_OK;
 }
@@ -68,7 +68,7 @@ uint8_t MMSetPageWinROM(uint16_t page, uint8_t win) {
 }
 
 static const mm_win_d	memwins[MEM_WINS] = {
-	{0, MWF_ROM | MWF_EROM, 0},	// ПЗУ, страница 0 (128) ROM может переключаться
+	{1, MWF_ROM | MWF_EROM, 0},	// ПЗУ, страница 1 (48) ROM может переключаться
 	{5, MWF_FIXED, 0},		// ОЗУ, страница 5, несменяема
 	{2, MWF_FIXED, 0},		// ОЗУ, страница 2, несменяема
 	{0, MWF_ERAM, 0}		// ОЗУ, страница 0 (Переключаема)
@@ -77,6 +77,6 @@ static const mm_win_d	memwins[MEM_WINS] = {
 void MMInit() {
 	// Копируем начальную конфигурацию
 	memcpy(__MMgetMemWinsD(),&memwins,sizeof(memwins));
-	// Применяем её
-	conf_apply();
+	MMSetPageWinROM(__MMgetMemWinsD()[0].page,0);
+	MMSetPageWin(__MMgetMemWinsD()[3].page,3);
 }

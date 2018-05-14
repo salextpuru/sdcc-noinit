@@ -39,3 +39,6 @@ APPLICATIONS+=demo17_1
 
 # Invitro for CSP2018
 APPLICATIONS+=csp2018invitro
+
+# Test of memory manager 128K
+APPLICATIONS+=test-mm128

@@ -7,7 +7,8 @@
 //call _MMInit
 void MMInit() __naked{
 __asm;
-	jp MMDRVSTART+00
+	call MMDRVSTART+00
+	ret
 __endasm;
 }
 
@@ -15,7 +16,8 @@ __endasm;
 //call ___MMgetMemWinsD
 mm_win_d* __MMgetMemWinsD() __naked{
 __asm;
-	jp MMDRVSTART+03
+	call MMDRVSTART+03
+	ret
 __endasm;
 }
 	
@@ -24,7 +26,8 @@ __endasm;
 uint16_t MMgetWinPage(uint8_t w) __naked{
 	w;
 __asm;
-	jp MMDRVSTART+06
+	call MMDRVSTART+06
+	ret
 __endasm;
 }
 	
@@ -33,7 +36,8 @@ __endasm;
 uint8_t MMgetWinFlags(uint8_t w) __naked{
 	w;
 __asm;
-	jp MMDRVSTART+09
+	call MMDRVSTART+09
+	ret
 __endasm;
 }
 	
@@ -42,7 +46,8 @@ __endasm;
 mm_win_d* MMgetWinD(uint8_t w) __naked{
 	w;
 __asm;
-	jp MMDRVSTART+12
+	call MMDRVSTART+12
+	ret
 __endasm;
 }
 	
@@ -50,7 +55,8 @@ __endasm;
 //call _MMgetPagesCount
 uint16_t MMgetPagesCount() __naked{
 __asm;
-	jp MMDRVSTART+15
+	call MMDRVSTART+15
+	ret
 __endasm;
 }
 
@@ -59,7 +65,8 @@ __endasm;
 uint8_t MMGetPageFlags(uint16_t page) __naked{
 	page;
 __asm;
-	jp MMDRVSTART+18
+	call MMDRVSTART+18
+	ret
 __endasm;
 }
 	
@@ -68,7 +75,8 @@ __endasm;
 uint8_t MMSetPageWin(uint16_t page, uint8_t win) __naked{
 	page;win;
 __asm;
-	jp MMDRVSTART+21
+	call MMDRVSTART+21
+	ret
 __endasm;
 }
 	
@@ -76,7 +84,8 @@ __endasm;
 //call _MMgetPagesCountROM
 uint16_t MMgetPagesCountROM() __naked{
 __asm;
-	jp MMDRVSTART+24
+	call MMDRVSTART+24
+	ret
 __endasm;
 }
 
@@ -85,6 +94,7 @@ __endasm;
 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win) __naked{
 	page;win;
 __asm;
-	jp MMDRVSTART+27
+	call MMDRVSTART+27
+	ret
 __endasm;
 }
