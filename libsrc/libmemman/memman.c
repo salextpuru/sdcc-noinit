@@ -1,78 +1,90 @@
 /**
- * @file memman.c - базовые типы управления памятью
+ * MMDRVSTART -  начальный адрес драйвера
  */
 #include "memman.h"
- 
-/**
-* @brief описатели окон памяти
-*	0 - 0x0000 ... 0x3FFF 
-* 	1 - 0x4000 ... 0x7FFF 
-* 	2 - 0x8000 ... 0xBFFF 
-* 	3 - 0xC000 ... 0xFFFF 
-*/
-static mm_win_d	memwins[MEM_WINS];
 
-// Вспомогачка на асмочке
-static void helper() __naked {
+// +00 void MMInit()
+//call _MMInit
+void MMInit() __naked{
 __asm;
-;// Снять байт со стека (номер страницы)
-;// Вызывается из С-функции
-get_mm_win_d_adr:
-	ld	hl,#4 ;// SP: retadr(2) retadr(2) w(1)
-	add	hl,sp
-	;// de=w
-	ld	e,(hl)
-	ld	d,#0
-	;// de=_memwins hl=w
-	ld	hl,#_memwins
-	ex	de,hl
-	;// hl=w*4+_memwins
-	add	hl,hl
-	add	hl,hl
-	add	hl,de
-	ret
+	jp MMDRVSTART+00
 __endasm;
 }
 
-//
-mm_win_d* __MMgetMemWinsD()__naked{
+// +03 mm_win_d* __MMgetMemWinsD()
+//call ___MMgetMemWinsD
+mm_win_d* __MMgetMemWinsD() __naked{
 __asm;
-	ld	hl,#_memwins
-	ret
+	jp MMDRVSTART+03
 __endasm;
 }
-
-//
-uint16_t MMgetWinPage(uint8_t w) __naked {
-__asm;
-	;// hl = _memwins+w*4
-	call	get_mm_win_d_adr
-	;// hl = memwins[w].page
-	ld	e,(hl)
-	inc	hl
-	ld	d,(hl)
-	ex	de,hl
 	
-	ret
+// +06 uint16_t MMgetWinPage(uint8_t w)
+//call _MMgetWinPage
+uint16_t MMgetWinPage(uint8_t w) __naked{
+	w;
+__asm;
+	jp MMDRVSTART+06
+__endasm;
+}
+	
+// +09 uint8_t MMgetWinFlags(uint8_t w)
+//call _MMgetWinFlags
+uint8_t MMgetWinFlags(uint8_t w) __naked{
+	w;
+__asm;
+	jp MMDRVSTART+09
+__endasm;
+}
+	
+// +12 mm_win_d* MMgetWinD(uint8_t w)
+//call _MMgetWinD
+mm_win_d* MMgetWinD(uint8_t w) __naked{
+	w;
+__asm;
+	jp MMDRVSTART+12
+__endasm;
+}
+	
+// +15 uint16_t MMgetPagesCount()
+//call _MMgetPagesCount
+uint16_t MMgetPagesCount() __naked{
+__asm;
+	jp MMDRVSTART+15
 __endasm;
 }
 
-uint8_t MMgetWinFlags(uint8_t w) {
+// +18 uint8_t MMGetPageFlags(uint16_t page)
+//call _MMGetPageFlags
+uint8_t MMGetPageFlags(uint16_t page) __naked{
+	page;
 __asm;
-	;// hl = _memwins+w*4
-	call	get_mm_win_d_adr
-	;// HL = memwins[w].flags
-	ld	de,#2
-	add	hl,de
-	ld	l,(hl)
-	ret
+	jp MMDRVSTART+18
+__endasm;
+}
+	
+// +21 uint8_t MMSetPageWin(uint16_t page, uint8_t win)
+//call _MMSetPageWin
+uint8_t MMSetPageWin(uint16_t page, uint8_t win) __naked{
+	page;win;
+__asm;
+	jp MMDRVSTART+21
+__endasm;
+}
+	
+// +24 uint16_t MMgetPagesCountROM()
+//call _MMgetPagesCountROM
+uint16_t MMgetPagesCountROM() __naked{
+__asm;
+	jp MMDRVSTART+24
 __endasm;
 }
 
-const mm_win_d* MMgetWinD(uint8_t w){
+// +27 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win)
+//call _MMSetPageWinROM
+uint8_t MMSetPageWinROM(uint16_t page, uint8_t win) __naked{
+	page;win;
 __asm;
-	;// hl = _memwins+w*4
-	call	get_mm_win_d_adr
-	ret
+	jp MMDRVSTART+27
 __endasm;
 }

@@ -1,0 +1,40 @@
+# Config filesOS
+include *.mk
+
+# Generate lib specificaton ( if LIBS variable defined in build.mk )
+ifdef LIBS
+LIBSMAKE:=$(addprefix $(LIBDIR)/, $(LIBS:=.lib) )
+LIBSLINK:=$(addprefix -l , $(LIBSMAKE) )
+endif
+
+# Обязательно есть такой файл!
+OBJ+=$(DRV).rel
+
+# Binary image
+$(DRV).drv: autoconfig.asm crt0.rel $(OBJ) $(LIBSMAKE)
+	$(LD) -imjwx -b _CODE=$(START) -o $(DRV) crt0.rel $(OBJ) $(LIBSLINK) > /dev/null
+	@if [[ -f $(DRV).ihx ]]; then \
+	echo "Hex generated: "$(DRV).ihx ; \
+	else \
+	"Hex generated FAIL! Exit 1: "$(DRV).ihx ; \
+	exit 1 ; \
+	fi
+	$(HEX2BIN) -s $(START) $(DRV).ihx 2>&1 >/dev/null
+	mv -f $(DRV).bin $(DRV).drv
+	$(BINMAN) $(DRV).map $(DRV).drv
+	$(DZ80) -m=$(START) $(DRV).drv > $(DRV)_d.asm
+
+autoconfig.asm:
+	$(AUTOCONFIG) config.mk $@
+
+crt0.rel: $(CRT0PATH)
+	$(AS) $(ASOPTS) -l -s -o $@ $<
+
+%.rel:%.c
+	$(CC) -c $(COPTS) $<
+
+%.rel:%.s
+	$(AS) $(ASOPTS) -l -s -o $@ $<
+
+clean:
+	rm -rf *.rel *.lst *.sym *.exp *.bin *.map *.mem *.lnk *.ihx *.rel *.rst *.asm *.bin *.rel *.hS *.\$$C *.lk *.noi *.tap *.drv

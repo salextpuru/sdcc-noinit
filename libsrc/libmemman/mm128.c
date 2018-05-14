@@ -2,7 +2,7 @@
  * mm128.с - менеджер памяти ZX128
  */
 #include <string.h>
-#include "mm128.h"
+#include "memman.h"
 
 #define RAMPAGES 8
 #define ROMPAGES 2
@@ -22,11 +22,11 @@ static void conf_apply()__naked {
 }
 
 // RAM
-static uint16_t MMgetPagesCount() {
+uint16_t MMgetPagesCount() {
 	return 8;
 }
 
-static uint8_t MMGetPageFlags(uint16_t page) {
+uint8_t MMGetPageFlags(uint16_t page) {
 	return pages128[page&7];
 }
 
@@ -42,6 +42,7 @@ uint8_t MMSetPageWin(uint16_t page, uint8_t win) {
 	__MMgetMemWinsD()[3].page = page;
 	copy_0x7FFD = (copy_0x7FFD & ~7) |  (page&7);
 	conf_apply();
+	return MME_OK;
 }
 
 // ROM
@@ -63,28 +64,19 @@ uint8_t MMSetPageWinROM(uint16_t page, uint8_t win) {
 	copy_0x7FFD = (page==0)? copy_0x7FFD&~0x10:copy_0x7FFD|0x10;
 
 	conf_apply();
+	return MME_OK;
 }
 
-static const memman_f mm128_funct= {
-	// RAM
-	.MMgetPagesCount = MMgetPagesCount,
-	.MMGetPageFlags = MMGetPageFlags,
-	.MMSetPageWin = MMSetPageWin,
-	// ROM
-	.MMgetPagesCountROM = MMgetPagesCountROM,
-	.MMSetPageWinROM = MMSetPageWinROM
-};
-
 static const mm_win_d	memwins[MEM_WINS] = {
-	{0, MWF_ROM, 0},	// ПЗУ, страница 0 (128)
-	{5, MWF_FIXED, 0},	// ОЗУ, страница 5, несменяема
-	{2, MWF_FIXED, 0},	// ОЗУ, страница 2, несменяема
-	{0, 0, 0}		// ОЗУ, страница 0 (Переключаема)
+	{0, MWF_ROM | MWF_EROM, 0},	// ПЗУ, страница 0 (128) ROM может переключаться
+	{5, MWF_FIXED, 0},		// ОЗУ, страница 5, несменяема
+	{2, MWF_FIXED, 0},		// ОЗУ, страница 2, несменяема
+	{0, MWF_ERAM, 0}		// ОЗУ, страница 0 (Переключаема)
 };
 
-void mm128_Init() {
-	mm_win_d* wins=__MMgetMemWinsD();
-	memcpy(wins,&memwins,sizeof(memwins));
-	mm_func = &mm128_funct;
+void MMInit() {
+	// Копируем начальную конфигурацию
+	memcpy(__MMgetMemWinsD(),&memwins,sizeof(memwins));
+	// Применяем её
 	conf_apply();
 }
