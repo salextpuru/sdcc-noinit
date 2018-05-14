@@ -1,5 +1,6 @@
 #include <window.h>
 #include <ps2.h>
+#include <koi8r-8x8.h>
 
 void at(uint8_t x, uint8_t y){
 	txt_screen_driver->cur_x=x;
@@ -23,6 +24,7 @@ void putc(const char c){
 
 void main(){
 	setScrDriverZX();
+	current_font = koi8r_8x8;
 	//
 	cls();
 	putsat(0,0,"PS2 keyboard driver test.");

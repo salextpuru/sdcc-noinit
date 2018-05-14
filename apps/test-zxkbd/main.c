@@ -2,6 +2,7 @@
 #include <im2.h>
 #include <zxkbd.h>
 #include <stdio.h>
+#include <koi8r-8x8.h>
 
 void at(uint8_t x, uint8_t y){
 	txt_screen_driver->cur_x=x;
@@ -27,6 +28,7 @@ char s[0x10];
 void main(){
 	CLI();
 	setScrDriverZX();
+	current_font = koi8r_8x8;
 	//
 	ncls();
 	putsat(0,0,"ZX keyboard driver test.");

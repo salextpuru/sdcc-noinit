@@ -51,9 +51,6 @@ $(APP)-code.tap: $(APP).bin
 $(APP)-basic.tap: $(APP).bin
 	bin2tap -a `printf "%i" $(START)` -r `printf "%i" $(START)` -o $@ -b $<
 
-tap: c$(APP).tap b$(APP).tap
-	@echo "Taps Ok"
-
 clean:
 	rm -rf *.rel *.lst *.sym *.exp *.bin *.map *.mem *.lnk *.ihx *.rel *.rst *.asm *.bin *.rel *.hS *.\$$C *.lk *.noi *.tap
 
