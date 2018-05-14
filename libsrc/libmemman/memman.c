@@ -76,6 +76,3 @@ __asm;
 	ret
 __endasm;
 }
-
-// Функции
-memman_f* mm_func;
