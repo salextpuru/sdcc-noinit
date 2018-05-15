@@ -48,19 +48,20 @@ hob: $(APP).\$$C
 $(APP)-code.tap: $(APP).bin
 	bin2tap -a `printf "%i" $(START)` -r `printf "%i" $(START)` -o $@ $<
 
+LOADER_BAS="loader.bas~"
 # Нам нужен нестандартный загрузчик. Так создадим ЕГО!
 # 20 строка грузит test-mm128 code
 # 30 строка грузит mm128.drv code
 $(APP)-basic.tap: $(APP).bin
-	echo "10 clear 24575" > loader.bas
-	echo "20 load \"\" code" >> loader.bas
-	echo "30 load \"\" code" >> loader.bas
-	echo "40 randomize usr "`printf "%i" $(START)` >> loader.bas
-	zmakebas -a 10 -o loader.tap  loader.bas
+	echo "10 clear 24575" > $(LOADER_BAS)
+	echo "20 load \"\" code" >> $(LOADER_BAS)
+	echo "30 load \"\" code" >> $(LOADER_BAS)
+	echo "40 randomize usr "`printf "%i" $(START)` >> $(LOADER_BAS)
+	zmakebas -a 10 -o loader.tap $(LOADER_BAS)
 	cat loader.tap $(APP)-code.tap $(EXTTAPS)  > $@
 
 clean:
-	rm -rf *.rel *.lst *.sym *.exp *.bin *.map *.mem *.lnk *.ihx *.rel *.rst *.asm *.bin *.rel *.hS *.\$$C *.lk *.noi *.tap loader.bas
+	rm -rf *.rel *.lst *.sym *.exp *.bin *.map *.mem *.lnk *.ihx *.rel *.rst *.asm *.bin *.rel *.hS *.\$$C *.lk *.noi *.tap *.bas~
 
 load:
 	stty -F $(LDEVICE) $(LSPEED) raw -crtscts

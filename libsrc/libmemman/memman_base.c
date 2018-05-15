@@ -20,6 +20,7 @@ __asm;
 get_mm_win_d_adr:
 	ld	hl,#4 ;// SP: retadr(2) retadr(2) w(1)
 	add	hl,sp
+	push	de
 	;// de=w
 	ld	e,(hl)
 	ld	d,#0
@@ -30,6 +31,7 @@ get_mm_win_d_adr:
 	add	hl,hl
 	add	hl,hl
 	add	hl,de
+	pop	de
 	ret
 __endasm;
 }

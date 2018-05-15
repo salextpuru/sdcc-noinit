@@ -69,7 +69,11 @@ typedef struct {
 #define MWF_ROM		0x20
 #define MWF_ERAM	0x40
 #define MWF_EROM	0x80
-
+// MWF_WMASK
+#define MWF_WIN0	0x00
+#define MWF_WIN1	0x01
+#define MWF_WIN2	0x02
+#define MWF_WIN3	0x03
 // -----------------------------------------------------------------------------------------------
 
 // Количество окон памяти по 16К

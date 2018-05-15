@@ -4,97 +4,87 @@
 #include "memman.h"
 
 // +00 void MMInit()
-//call _MMInit
+//jp _MMInit
 void MMInit() __naked{
 __asm;
-	call MMDRVSTART+00
-	ret
+	jp MMDRVSTART+00
 __endasm;
 }
 
 // +03 mm_win_d* __MMgetMemWinsD()
-//call ___MMgetMemWinsD
+//jp ___MMgetMemWinsD
 mm_win_d* __MMgetMemWinsD() __naked{
 __asm;
-	call MMDRVSTART+03
-	ret
+	jp MMDRVSTART+03
 __endasm;
 }
 	
 // +06 uint16_t MMgetWinPage(uint8_t w)
-//call _MMgetWinPage
+//jp _MMgetWinPage
 uint16_t MMgetWinPage(uint8_t w) __naked{
 	w;
 __asm;
-	call MMDRVSTART+06
-	ret
+	jp MMDRVSTART+06
 __endasm;
 }
 	
 // +09 uint8_t MMgetWinFlags(uint8_t w)
-//call _MMgetWinFlags
+//jp _MMgetWinFlags
 uint8_t MMgetWinFlags(uint8_t w) __naked{
 	w;
 __asm;
-	call MMDRVSTART+09
-	ret
+	jp MMDRVSTART+09
 __endasm;
 }
 	
 // +12 mm_win_d* MMgetWinD(uint8_t w)
-//call _MMgetWinD
+//jp _MMgetWinD
 mm_win_d* MMgetWinD(uint8_t w) __naked{
 	w;
 __asm;
-	call MMDRVSTART+12
-	ret
+	jp MMDRVSTART+12
 __endasm;
 }
 	
 // +15 uint16_t MMgetPagesCount()
-//call _MMgetPagesCount
+//jp _MMgetPagesCount
 uint16_t MMgetPagesCount() __naked{
 __asm;
-	call MMDRVSTART+15
-	ret
+	jp MMDRVSTART+15
 __endasm;
 }
 
 // +18 uint8_t MMGetPageFlags(uint16_t page)
-//call _MMGetPageFlags
+//jp _MMGetPageFlags
 uint8_t MMGetPageFlags(uint16_t page) __naked{
 	page;
 __asm;
-	call MMDRVSTART+18
-	ret
+	jp MMDRVSTART+18
 __endasm;
 }
 	
 // +21 uint8_t MMSetPageWin(uint16_t page, uint8_t win)
-//call _MMSetPageWin
+//jp _MMSetPageWin
 uint8_t MMSetPageWin(uint16_t page, uint8_t win) __naked{
 	page;win;
 __asm;
-	call MMDRVSTART+21
-	ret
+	jp MMDRVSTART+21
 __endasm;
 }
 	
 // +24 uint16_t MMgetPagesCountROM()
-//call _MMgetPagesCountROM
+//jp _MMgetPagesCountROM
 uint16_t MMgetPagesCountROM() __naked{
 __asm;
-	call MMDRVSTART+24
-	ret
+	jp MMDRVSTART+24
 __endasm;
 }
 
 // +27 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win)
-//call _MMSetPageWinROM
+//jp _MMSetPageWinROM
 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win) __naked{
 	page;win;
 __asm;
-	call MMDRVSTART+27
-	ret
+	jp MMDRVSTART+27
 __endasm;
 }
