@@ -1,5 +1,6 @@
 #include <spr0.h>
 #include <winprocs.h>
+#include "psernd.h"
 #include "cspLogo.h"
 
 static const unsigned char logoCSP[] = {
@@ -151,11 +152,11 @@ static const unsigned char logoCSP[] = {
 
 void logoToScreen ( uint8_t x, uint8_t y ) {
 	spr0_out0_attr ( ( Sprite0* ) logoCSP, x,y );
+	winSetAtr ( x, y, (( Sprite0* ) logoCSP)->w, (( Sprite0* ) logoCSP)->h, 0 , 0100 );
 }
 static uint8_t 	pos=3;
 static uint8_t	enable=1;
-static uint8_t  delay=100;
-static uint8_t  delaye;
+static uint8_t  delay;
 
 void logoAniStep() {
 	uint8_t i;
@@ -169,18 +170,18 @@ void logoAniStep() {
 	}
 
 	if ( pos!=3 ) for ( i=0; i<7; i++ ) {
-			winSetAtr ( pos+i, 6-i, 1, 1, 0100, 0100 );
+			winSetAtr ( pos+i, 6-i, 1, 1, 0000, 0100 );
 		}
 
 	pos++;
 
 	if ( pos!=21 ) for ( i=0; i<7; i++ ) {
-			winSetAtr ( pos+i, 6-i, 1, 1, 0, 0100 );
+			winSetAtr ( pos+i, 6-i, 1, 1, 0100, 0100 );
 		}
 
 	if ( pos >=21 ) {
 		pos=3;
 		enable=0;
-		delay=250;
+		delay= rnd16() & 0xFF ;
 	}
 }
