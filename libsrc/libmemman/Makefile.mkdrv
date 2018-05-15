@@ -27,9 +27,6 @@ $(DRV).drv: autoconfig.asm crt0.rel $(OBJ) $(LIBSMAKE)
 	# Ленточная версия
 	bin2tap -a `printf "%i" $(START)` -r `printf "%i" $(START)` -o $(DRV).tap $(DRV).drv
 
-autoconfig.asm:
-	$(AUTOCONFIG) config.mk $@
-
 crt0.rel: $(CRT0PATH)
 	$(AS) $(ASOPTS) -l -s -o $@ $<
 

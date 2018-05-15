@@ -16,6 +16,10 @@ $(LIBNAME): $(IFACEOBJS) $(LIBOBJS)
 %.rel:%.s
 	$(AS) -l -s -o $@ $<
 
+%.rel:%.asm
+	$(AS) -l -s -o $@ $<
+
+
 %.hS:%.h
 	$(S2HS) $< $@
 

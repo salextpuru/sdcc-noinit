@@ -1,0 +1,102 @@
+#!/bin/bash
+# -- Генератор интерфейса для подгружаемых библиотек --
+# Библиотеки лежат в НЕПЕРЕКЛЮЧАЕМЫХ страницах !
+
+# Создаёт два файла для экспорта символов:
+#
+#	crt0shared.asm - начальный файл библиотеки
+#	iface_shared.asm - интерфейс, включаемый в основную программу
+
+# Инициализация библиотеки (пример). Если нет статических переменных - можно без неё.
+# Библиотеки неперемещаемы!
+#
+#	load "library" CODE ADR
+#	randomize usr ADR
+
+INFILE="$1"
+
+EXPORTSYMS=`sdcpp "$INFILE" | grep "(" | tr -d '*' | sed s/\(.*// | sed 's/^.* //'`
+
+
+# Create CRT0shared.asm
+CRT0SHARED=crt0shared.asm
+
+echo ";// --- automatic generate: $CRT0SHARED ----" > $CRT0SHARED
+
+printf "\
+	;// Only for shared library
+	; Global config include
+	.include /autoconfig.asm/
+	;
+        .module crt0
+	;
+	.area _CABS (ABS)
+	.area _DABS (ABS)
+        ; Entry POINT
+        .area _CODE
+
+        ;// +00 Init library
+	jp	onLoadInit
+
+	;// Export Calls
+" >> $CRT0SHARED
+
+OFS=3
+for i in $EXPORTSYMS; do
+	SYM=_"$i"
+	printf "	;// +$OFS\n"
+	printf "	.globl $SYM\n"
+	printf "	jp $SYM\n"
+	OFS=$(( $OFS + 3 ))
+done >> $CRT0SHARED
+
+printf "onLoadInit:
+	call	gs_init
+	ret
+        ; Library
+        .area _HOME
+        .area _CONST
+        .area _DATA
+        ;
+	.area _INITIALIZED
+	;
+	.area _GSINIT
+gs_init:
+	; all run-time initializers
+	.area _GSFINAL
+	ret
+	;
+	.area _HEAP
+	.area _HEAP_END
+        ;
+        .area _BSEG
+        .area _BSS
+	;
+	.area _INITIALIZER
+" >> $CRT0SHARED
+
+# Create asm-interface file
+IFACE_SHARED=iface_shared.asm
+
+echo ";// --- automatic generate: $IFACE_SHARED ----" > $IFACE_SHARED
+printf "\
+	;// Only for shared library 
+	; Global config include
+	.include /autoconfig.asm/
+
+        .module iface_shared
+        .area _CODE
+
+	;// Export Calls
+" >> $IFACE_SHARED
+
+OFS=3
+for i in $EXPORTSYMS; do
+	SYM=_"$i"
+	printf "	;// +$OFS\n"
+	printf "	.globl $SYM\n"
+	printf "$SYM:\n"
+	printf "	jp __START+$OFS\n"
+	OFS=$(( $OFS + 3 ))
+done >> $IFACE_SHARED
+

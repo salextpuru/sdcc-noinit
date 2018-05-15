@@ -12,13 +12,17 @@
 LIBNAME=libmemman.lib
 
 # Общие объектные файлы
-LIBOBJS=memman.rel memman_base.rel far_ptr_s.rel
+LIBOBJS=memman_base.rel
+
+# На основе данного файла генерируется интерфейс
+# Из него вытаскиваются названия процедур
+IFACE_H=memman.h
 
 # Только интерфейс будет включен в libmemman.lib
-IFACEOBJS=memman.rel
+IFACEOBJS=iface_shared.rel
 
 # CRT0 (переходы на процедуры драйвера)
-CRT0PATH=$(TOP)/libsrc/crt0/$(CRT0MM)
+CRT0PATH=crt0shared.asm
 
 # ---------- Список драйверов -------------
 # Драйвера mmX..X.drv
