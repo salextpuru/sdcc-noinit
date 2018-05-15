@@ -12,7 +12,7 @@
 LIBNAME=libmemman.lib
 
 # Общие объектные файлы
-LIBOBJS=memman.rel memman_base.rel
+LIBOBJS=memman.rel memman_base.rel far_ptr_s.rel
 
 # Только интерфейс будет включен в libmemman.lib
 IFACEOBJS=memman.rel
