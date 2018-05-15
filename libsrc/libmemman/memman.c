@@ -62,29 +62,38 @@ __asm;
 	jp MMDRVSTART+18
 __endasm;
 }
-	
-// +21 uint8_t MMSetPageWin(uint16_t page, uint8_t win)
-//jp _MMSetPageWin
-uint8_t MMSetPageWin(uint16_t page, uint8_t win) __naked{
-	page;win;
+
+// +21 uint8_t MMSetPageFlags(uint16_t page)
+//jp _MMSetPageFlags
+uint8_t MMSetPageFlags(uint16_t page, uint8_t flags) __naked{
+	page;flags;
 __asm;
 	jp MMDRVSTART+21
 __endasm;
 }
 	
-// +24 uint16_t MMgetPagesCountROM()
-//jp _MMgetPagesCountROM
-uint16_t MMgetPagesCountROM() __naked{
+// +24 uint8_t MMSetPageWin(uint16_t page, uint8_t win)
+//jp _MMSetPageWin
+uint8_t MMSetPageWin(uint16_t page, uint8_t win) __naked{
+	page;win;
 __asm;
 	jp MMDRVSTART+24
 __endasm;
 }
+	
+// +27 uint16_t MMgetPagesCountROM()
+//jp _MMgetPagesCountROM
+uint16_t MMgetPagesCountROM() __naked{
+__asm;
+	jp MMDRVSTART+27
+__endasm;
+}
 
-// +27 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win)
+// +30 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win)
 //jp _MMSetPageWinROM
 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win) __naked{
 	page;win;
 __asm;
-	jp MMDRVSTART+27
+	jp MMDRVSTART+30
 __endasm;
 }

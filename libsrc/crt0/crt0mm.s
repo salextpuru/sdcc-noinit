@@ -37,15 +37,19 @@
 	.globl _MMGetPageFlags
 	jp _MMGetPageFlags
 	
-	;// +21 uint8_t MMSetPageWin(uint16_t page, uint8_t win);
+	;// +21 uint8_t MMSetPageFlags(uint16_t page, uint8_t flags);
+	.globl _MMSetPageFlags
+	jp _MMSetPageFlags
+	
+	;// +24 uint8_t MMSetPageWin(uint16_t page, uint8_t win);
 	.globl _MMSetPageWin
 	jp _MMSetPageWin
 	
-	;// +24 uint16_t MMgetPagesCountROM();
+	;// +27 uint16_t MMgetPagesCountROM();
 	.globl _MMgetPagesCountROM
 	jp _MMgetPagesCountROM
 
-	;// +27 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win);
+	;// +30 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win);
 	.globl _MMSetPageWinROM
 	jp _MMSetPageWinROM
 

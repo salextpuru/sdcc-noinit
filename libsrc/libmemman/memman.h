@@ -106,7 +106,7 @@ mm_win_d* __MMgetMemWinsD();
 uint16_t MMgetWinPage(uint8_t w);
 
 /**
-* @brief получить флаги страницы в окне w
+* @brief получить флаги окна w
 */
 uint8_t MMgetWinFlags(uint8_t w);
 
@@ -125,6 +125,11 @@ uint16_t MMgetPagesCount();
 * @brief Получить описатель страницы page RAM
 */
 uint8_t MMGetPageFlags(uint16_t page);
+
+/**
+* @brief Установить описатель страницы page RAM
+*/
+uint8_t MMSetPageFlags(uint16_t page, uint8_t flags);
 
 /**
 * @brief Впечатать страницу page в окно win RAM

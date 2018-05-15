@@ -27,7 +27,18 @@ uint16_t MMgetPagesCount() {
 }
 
 uint8_t MMGetPageFlags ( uint16_t page ) {
-	return pages128[page&7];
+	if ( page>7 ) {
+		return MME_ABSENT;
+	}
+	return pages128[page];
+}
+
+uint8_t MMSetPageFlags(uint16_t page, uint8_t flags) {
+	if ( page>7 ) {
+		return MME_ABSENT;
+	}
+	pages128[page] = flags;
+	return MME_OK;
 }
 
 uint8_t MMSetPageWin ( uint16_t page, uint8_t win ) {
