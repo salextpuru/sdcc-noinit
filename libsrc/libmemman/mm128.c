@@ -8,7 +8,13 @@
 #define ROMPAGES 2
 
 // Описатели всех страниц
-static uint8_t pages128[RAMPAGES];
+static uint8_t pages128[RAMPAGES]={
+	3,3,
+	3 | MPG_FIXED|MPG_BUSY, // Страница 2 (0x8000 - 0xBFFF)
+	3,3,
+	3 | MPG_FIXED|MPG_BUSY, // Страница 5 (0x4000 - 0x7FFF)
+	3,3
+};
 
 // Копия порта конфигурации спека 128
 static uint8_t copy_0x7FFD;
@@ -23,18 +29,18 @@ static void conf_apply() __naked {
 
 // RAM
 uint16_t MMgetPagesCount() {
-	return 8;
+	return RAMPAGES;
 }
 
 uint8_t MMGetPageFlags ( uint16_t page ) {
-	if ( page>7 ) {
+	if ( page>=RAMPAGES ) {
 		return MME_ABSENT;
 	}
 	return pages128[page];
 }
 
 uint8_t MMSetPageFlags(uint16_t page, uint8_t flags) {
-	if ( page>7 ) {
+	if ( page>=RAMPAGES ) {
 		return MME_ABSENT;
 	}
 	pages128[page] = flags;
@@ -46,7 +52,7 @@ uint8_t MMSetPageWin ( uint16_t page, uint8_t win ) {
 		return MME_WFIXED;
 	}
 
-	if ( page>7 ) {
+	if ( page>=RAMPAGES ) {
 		return MME_ABSENT;
 	}
 
@@ -58,7 +64,7 @@ uint8_t MMSetPageWin ( uint16_t page, uint8_t win ) {
 
 // ROM
 uint16_t MMgetPagesCountROM() {
-	return 2;
+	return ROMPAGES;
 }
 
 uint8_t MMSetPageWinROM ( uint16_t page, uint8_t win ) {
@@ -66,7 +72,7 @@ uint8_t MMSetPageWinROM ( uint16_t page, uint8_t win ) {
 		return MME_WFIXED;
 	}
 
-	if ( page>1 ) {
+	if ( page>=ROMPAGES ) {
 		return MME_ABSENT;
 	}
 
@@ -76,6 +82,47 @@ uint8_t MMSetPageWinROM ( uint16_t page, uint8_t win ) {
 
 	conf_apply();
 	return MME_OK;
+}
+
+uint8_t MMgetFreePage(uint16_t* page) {
+	uint8_t i;
+	if( !page ){
+		return MME_ABSENT;
+	}
+	for(i=0; i<RAMPAGES;i++){
+		if( pages128[i] & MPG_FIXED ){
+			continue;
+		}
+		if(( pages128[i] & MPG_BUSY ) == 0){
+			*page = i;
+			return MME_OK;
+		}
+	}
+	return MME_ABSENT;
+}
+
+uint8_t MMuseFreePage(uint16_t* page) {
+	if( MMgetFreePage( page ) == MME_OK ){
+		pages128[*page] |= MPG_BUSY;
+		return MME_OK;
+	}
+	return MME_ABSENT;
+}
+
+uint8_t MMfreePage(uint16_t page) {
+	if ( page>=RAMPAGES ) {
+		return MME_ABSENT;
+	}
+	
+	if( pages128[page] & MPG_FIXED ) {
+		return MME_PFIXED;
+	}
+	
+	if( pages128[page] & MPG_BUSY ) {
+		pages128[page] &=~MPG_BUSY;
+		return MME_OK;
+	}
+	return MME_FREE;
 }
 
 static const mm_win_d	memwins128[MEM_WINS] = {

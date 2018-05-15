@@ -82,6 +82,8 @@ typedef struct {
 // --- КОДЫ ОШИБОК ---
 #define MME_OK		0x00	/* Нет ошибок */
 #define MME_WFIXED	0x01	/* Страница не может быть впечатана в это окно */
+#define MME_FREE	0x02	/* Страница уже свободна */
+#define MME_PFIXED	0x04	/* страница фиксирована и не может быть освобождена или занята */
 #define MME_ABSENT	0x80	/* Страница с таким номером не существует */
 
 // -----------------------------------------------------------------------------------------------
@@ -123,18 +125,21 @@ uint16_t MMgetPagesCount();
 
 /**
 * @brief Получить описатель страницы page RAM
+* Если страница отсутствует - возвращает MME_ABSENT
 */
 uint8_t MMGetPageFlags(uint16_t page);
 
 /**
 * @brief Установить описатель страницы page RAM
+* Если страница отсутствует - возвращает MME_ABSENT
 */
 uint8_t MMSetPageFlags(uint16_t page, uint8_t flags);
 
 /**
 * @brief Впечатать страницу page в окно win RAM
 * 	Возвращает код ошибки.
-* 	0-всё получилось
+* 	MME_OK -всё получилось
+* Если страница отсутствует - возвращает MME_ABSENT
 */
 uint8_t MMSetPageWin(uint16_t page, uint8_t win);
 
@@ -148,8 +153,33 @@ uint16_t MMgetPagesCountROM();
 /**
 * @brief Впечатать страницу page в окно win ROM
 * 	Возвращает код ошибки.
-* 	0-всё получилось
+* 	MME_OK -всё получилось
+* Если страница отсутствует - возвращает MME_ABSENT
 */
 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win);
+
+// ------------------------ Выделение-освобождение страниц ОЗУ ------------------------
+/**
+* @brief Получить номер свободной страницы
+* 
+* @param page - (return) номер страницы
+* @return uint8_t - MME_OK или MME_ABSENT
+*/
+uint8_t MMgetFreePage(uint16_t* page);
+
+/**
+* @brief Получить номер свободной страницы и 
+* 	занять её
+* 
+* @param page - (return) номер страницы
+* @return uint8_t - MME_OK или MME_ABSENT
+*/
+uint8_t MMuseFreePage(uint16_t* page);
+
+/**
+* @brief Освободить страницу page
+* @return uint8_t
+*/
+uint8_t MMfreePage(uint16_t page);
 
 #endif /* __MEMMAN_H__ */

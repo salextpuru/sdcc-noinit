@@ -3,7 +3,7 @@
  */
 #include "memman.h"
 
-// +00 void MMInit()
+// +00
 //jp _MMInit
 void MMInit() __naked{
 __asm;
@@ -11,7 +11,7 @@ __asm;
 __endasm;
 }
 
-// +03 mm_win_d* __MMgetMemWinsD()
+// +03
 //jp ___MMgetMemWinsD
 mm_win_d* __MMgetMemWinsD() __naked{
 __asm;
@@ -19,7 +19,7 @@ __asm;
 __endasm;
 }
 	
-// +06 uint16_t MMgetWinPage(uint8_t w)
+// +06
 //jp _MMgetWinPage
 uint16_t MMgetWinPage(uint8_t w) __naked{
 	w;
@@ -28,7 +28,7 @@ __asm;
 __endasm;
 }
 	
-// +09 uint8_t MMgetWinFlags(uint8_t w)
+// +09
 //jp _MMgetWinFlags
 uint8_t MMgetWinFlags(uint8_t w) __naked{
 	w;
@@ -37,7 +37,7 @@ __asm;
 __endasm;
 }
 	
-// +12 mm_win_d* MMgetWinD(uint8_t w)
+// +12
 //jp _MMgetWinD
 mm_win_d* MMgetWinD(uint8_t w) __naked{
 	w;
@@ -46,7 +46,7 @@ __asm;
 __endasm;
 }
 	
-// +15 uint16_t MMgetPagesCount()
+// +15
 //jp _MMgetPagesCount
 uint16_t MMgetPagesCount() __naked{
 __asm;
@@ -54,7 +54,7 @@ __asm;
 __endasm;
 }
 
-// +18 uint8_t MMGetPageFlags(uint16_t page)
+// +18
 //jp _MMGetPageFlags
 uint8_t MMGetPageFlags(uint16_t page) __naked{
 	page;
@@ -63,7 +63,7 @@ __asm;
 __endasm;
 }
 
-// +21 uint8_t MMSetPageFlags(uint16_t page)
+// +21
 //jp _MMSetPageFlags
 uint8_t MMSetPageFlags(uint16_t page, uint8_t flags) __naked{
 	page;flags;
@@ -72,7 +72,7 @@ __asm;
 __endasm;
 }
 	
-// +24 uint8_t MMSetPageWin(uint16_t page, uint8_t win)
+// +24
 //jp _MMSetPageWin
 uint8_t MMSetPageWin(uint16_t page, uint8_t win) __naked{
 	page;win;
@@ -81,7 +81,7 @@ __asm;
 __endasm;
 }
 	
-// +27 uint16_t MMgetPagesCountROM()
+// +27
 //jp _MMgetPagesCountROM
 uint16_t MMgetPagesCountROM() __naked{
 __asm;
@@ -89,11 +89,39 @@ __asm;
 __endasm;
 }
 
-// +30 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win)
+// +30
 //jp _MMSetPageWinROM
 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win) __naked{
 	page;win;
 __asm;
 	jp MMDRVSTART+30
+__endasm;
+}
+
+
+// +33
+//jp _MMgetFreePage
+uint8_t MMgetFreePage(uint16_t* page) __naked{
+	page;
+__asm;
+	jp MMDRVSTART+33
+__endasm;
+}
+
+// +36
+//jp _MMuseFreePage
+uint8_t MMuseFreePage(uint16_t* page) __naked{
+	page;
+__asm;
+	jp MMDRVSTART+36
+__endasm;
+}
+
+// +39
+//jp _MMfreePage
+uint8_t MMfreePage(uint16_t page)  __naked{
+	page;
+__asm;
+	jp MMDRVSTART+39
 __endasm;
 }

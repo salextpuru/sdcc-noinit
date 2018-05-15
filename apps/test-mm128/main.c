@@ -5,6 +5,11 @@
 #include <im2.h>
 #include <zxkbd.h>
 
+void press_a_key(){
+	printf("\nPress a key\n");
+	while(!zxKbdInKey()){}
+}
+
 void fill_ram_pages(){
 	uint16_t pg;
 	printf("\nFill: ");
@@ -64,20 +69,48 @@ void mempage_info() {
 		);
 		printf("\n");
 		if((++pview)>=8){
-			press_a_key();cls();
+			break;
 		}
 	}
 	
 }
 
-void press_a_key(){
-	printf("\nPress a key\n");
-	while(!zxKbdInKey()){}
+void get_use_test(){
+	uint8_t i;
+	uint16_t page;
+	for(i=0;i<=MMgetPagesCount();i++){
+		if( MMgetFreePage(&page) == MME_OK ){
+			printf("get %u ",page);
+			if( MMuseFreePage(&page) == MME_OK ){
+				printf("use %u ",page);
+			}
+			else {
+				printf("no free pages",page);
+			}
+		}
+		else{
+			printf("no free pages",page);
+		}
+		printf("\n");
+	}
+}
+
+void free_test(){
+	uint8_t i;
+	for(i=0;i<=MMgetPagesCount();i++){
+		printf("free %u ",i);
+		if( MMfreePage(i) == MME_OK){
+			printf("ok");
+		}
+		else{
+			printf("skip");
+		}
+		printf("\n");
+	}
 }
 
 void main(){
 	CLI();
-	setScrDriverZX();
 	im2SetHandler(zxKbdScan);
 	im2Set();
 	SEI();
@@ -92,14 +125,19 @@ void main(){
 	printf("Pages RAM: %i\n",MMgetPagesCount());
 	printf("Pages ROM: %i\n\n",MMgetPagesCountROM());
 	memwin_info();
-	press_a_key();cls();
+	press_a_key(); cls();
 	
-	MMSetPageFlags(5,MPG_FIXED);
-	MMSetPageFlags(2,MPG_FIXED);
 	mempage_info();
+	press_a_key(); cls();
 	
 	fill_ram_pages();
 	check_ram_pages();
+	
+	press_a_key(); cls();
+	get_use_test();mempage_info();
+	
+	press_a_key(); cls();
+	free_test();mempage_info();
 	
 	while(1){
 	}

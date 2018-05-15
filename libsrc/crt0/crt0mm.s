@@ -52,7 +52,19 @@
 	;// +30 uint8_t MMSetPageWinROM(uint16_t page, uint8_t win);
 	.globl _MMSetPageWinROM
 	jp _MMSetPageWinROM
-
+	
+	;// +33 uint8_t MMgetFreePage(uint16_t* page);
+	.globl _MMgetFreePage
+	jp _MMgetFreePage
+	
+	;// +36 uint8_t MMuseFreePage(uint16_t* page);
+	.globl _MMuseFreePage
+	jp _MMuseFreePage
+	
+	;// +39 uint8_t MMfreePage(uint16_t page);
+	.globl _MMfreePage
+	jp _MMfreePage
+	
         ; Library
         .area _HOME
         .area _CONST
