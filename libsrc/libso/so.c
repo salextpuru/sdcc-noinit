@@ -1,3 +1,7 @@
+/**
+ * Обработка загруженных модулей (перемещение и проч.)
+ */
+#include <stdio.h>
 #include "so.h"
 
 void* soReloc(void* load_adr){
@@ -8,11 +12,12 @@ void* soReloc(void* load_adr){
 	void (*init)() = (void*) (code +sizeof(soHeader));
 
 	while( len-- ){
-		uint16_t* w= (uint16_t*)(code + *(reloc++));
-		*w = *w + (uint16_t)load_adr;
+		uint8_t* w= code + *(reloc++);
+		*w = *w + (((uint16_t)load_adr) >> 8);
 	}
 	
 	init();
 	
-	return code + ((soHeader*)(load_adr))->reloctbl_offset;
+	// Заголовок тоже привязывается к абсолютным адресам
+	return h->reloctbl_offset;
 }

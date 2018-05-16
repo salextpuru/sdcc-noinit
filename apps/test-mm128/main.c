@@ -117,6 +117,8 @@ void free_test(){
 
 const char* memman_SetLoadAdr(void *loadAdress);
 
+#define modAdr	0x6000
+
 void main(){
 	CLI();
 	im2SetHandler(zxKbdScan);
@@ -126,8 +128,9 @@ void main(){
 	
 	printf("Start Test mm128\n");
 	// Reloctable
-	soReloc(0x6000);
-	printf("mm128 loaded at: %s\n",memman_SetLoadAdr(0x6000));
+	printf("Start %.4X end %.4X\n", modAdr, soReloc(modAdr) );
+	
+	printf("mm128 loaded at: %s\n",memman_SetLoadAdr(modAdr));
 		
 	//
 	press_a_key();cls();

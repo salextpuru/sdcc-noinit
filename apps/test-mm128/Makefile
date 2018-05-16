@@ -8,7 +8,7 @@ LIBSLINK:=$(addprefix -l , $(LIBSMAKE) )
 endif
 
 # Generate all targets
-all: $(APPDIR)/$(APP).bin $(APPDIR)/$(APP).\$$C $(APPDIR)/$(APP)-code.tap $(APPDIR)/$(APP)-basic.tap $(EXTTAPS)
+all: $(APPDIR)/$(APP).bin $(APPDIR)/$(APP)-code.tap  $(EXTTAPS) exttaps $(APPDIR)/$(APP)-basic.tap
 	@echo "all ok"
 
 $(APPDIR)/$(APP)%:$(APP)%
@@ -39,14 +39,15 @@ crt0.rel: $(CRT0PATH)
 autoconfig.asm:
 	$(AUTOCONFIG) config.mk $@
 
-$(APP).\$$C: $(APP).bin
-	$(BIN2HOB) $(APP).\$$C $(START) $(APP).bin
-
-hob: $(APP).\$$C
-	@echo "Hobeta Ok"
-
 $(APP)-code.tap: $(APP).bin
 	bin2tap -a `printf "%i" $(START)` -r `printf "%i" $(START)` -o $@ $<
+
+exttaps:
+	@for i in $(EXTTAPS) ; do \
+	bin2tap -a `printf "%i" $(EXTTAPS_START)` -r `printf "%i" $(EXTTAPS_START)` -o $$i".tap"  $$i ; \
+	done
+#
+#	bin2tap -a `printf "%i" $(EXTTAPS_START)` -r `printf "%i" $(EXTTAPS_START)` -o 
 
 LOADER_BAS="loader.bas~"
 # Нам нужен нестандартный загрузчик. Так создадим ЕГО!
@@ -58,7 +59,10 @@ $(APP)-basic.tap: $(APP).bin
 	echo "30 load \"\" code" >> $(LOADER_BAS)
 	echo "40 randomize usr "`printf "%i" $(START)` >> $(LOADER_BAS)
 	zmakebas -a 10 -o loader.tap $(LOADER_BAS)
-	cat loader.tap $(APP)-code.tap $(EXTTAPS)  > $@
+	cat loader.tap $(APP)-code.tap > $@
+	@for i in $(EXTTAPS) ; do \
+	cat $$i".tap" >> $@ ; \
+	done
 
 clean:
 	rm -rf *.rel *.lst *.sym *.exp *.bin *.map *.mem *.lnk *.ihx *.rel *.rst *.asm *.bin *.rel *.hS *.\$$C *.lk *.noi *.tap *.bas~

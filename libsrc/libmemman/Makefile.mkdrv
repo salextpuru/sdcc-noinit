@@ -11,27 +11,26 @@ endif
 OBJ+=$(DRV).rel
 
 RELOCTBL="reloctbl"
-RELOC0=0
-RELOC1=1
+RELOC0=0x0000
+RELOC1=0x0100
 
 # Binary image
 $(DRV).drv: autoconfig.asm crt0.rel $(OBJ) $(LIBSMAKE) reloctbl
 	cat $(DRV)-0.bin $(RELOCTBL).bin > $(DRV).drv
-	$(DZ80) -m=$(START) $(DRV).drv > $(DRV)_d.asm
-	#
-	# Ленточная версия
-	bin2tap -a `printf "%i" $(START)` -r `printf "%i" $(START)` -o $(DRV).tap $(DRV).drv
+	$(DZ80) -m=0 $(DRV).drv > $(DRV)_d.asm
 
 reloctbl:
-	$(LD) -imjwxu -b _CODE=$(RELOC0) -o $(DRV)-0 crt0.rel $(OBJ) $(LIBSLINK) > /dev/null
-	$(HEX2BIN) -s 0 $(DRV)-0.ihx 2>&1 >/dev/null
+	$(LD) -imjwx -b _CODE=$(RELOC0) -o $(DRV)-0 crt0.rel $(OBJ) $(LIBSLINK) > /dev/null
+	$(HEX2BIN) -s $(RELOC0) $(DRV)-0.ihx 2>&1 >/dev/null
 	$(BINMAN) $(DRV)-0.map $(DRV)-0.bin
-	$(LD) -imjwxu -b _CODE=$(RELOC1) -o $(DRV)-1 crt0.rel $(OBJ) $(LIBSLINK) > /dev/null
-	$(HEX2BIN) -s 1 $(DRV)-1.ihx 2>&1 >/dev/null
+	#
+	$(LD) -imjwx -b _CODE=$(RELOC1) -o $(DRV)-1 crt0.rel $(OBJ) $(LIBSLINK) > /dev/null
+	$(HEX2BIN) -s $(RELOC1) $(DRV)-1.ihx 2>&1 >/dev/null
 	$(BINMAN) $(DRV)-1.map $(DRV)-1.bin
+	#
 	$(SCR)/make_reloc_tbl $(RELOCTBL).asm $(DRV)-0.bin $(DRV)-1.bin
 	$(AS) $(ASOPTS) -l -s -o $(RELOCTBL).rel $(RELOCTBL).asm
-	$(LD) -imjwxu -b _CODE=0 -o $(RELOCTBL) $(RELOCTBL).rel > /dev/null
+	$(LD) -imjwx -b _CODE=0 -o $(RELOCTBL) $(RELOCTBL).rel > /dev/null
 	$(HEX2BIN) -s 0 $(RELOCTBL).ihx 2>&1 >/dev/null
 
 crt0.rel: $(CRT0PATH)

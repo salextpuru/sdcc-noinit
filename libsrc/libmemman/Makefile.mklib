@@ -1,9 +1,6 @@
 # Config files
 include *.mk
 
-# Библиотеке надо знать - где драйвер начинается
-COPTS+=-D MMDRVSTART=$(START)
-
 $(LIBDIR)/$(LIBNAME): $(LIBNAME)
 	install -m 0666 -D $(LIBNAME) $(LIBDIR)/$(LIBNAME)
 
