@@ -50,7 +50,6 @@ printf "\
         ; Entry POINT
         .area _CODE
 
-.globl	crt0_header
 crt0_header:
 _"$LIBNAME"_header:
 	.dw	0x424C	;//+00 signature LB
