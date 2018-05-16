@@ -60,6 +60,7 @@ _"$LIBNAME"_header:
 
         ;// +$HEADERSIZE Init library
 ;// C-interface
+.globl	_"$LIBNAME"_onLoadInit
 _"$LIBNAME"_onLoadInit:
 	jp	onLoadInit
 
@@ -79,7 +80,12 @@ printf "
 libName:
 	.ascii \"$LIBNAME\"
 	.db 00
-	
+
+	;//
+onLoadInit:
+	call	gs_init
+	ret
+
         ; Library
         .area _HOME
         .area _CONST
@@ -90,8 +96,6 @@ libName:
 	.area _GSINIT
 gs_init:
 	; all run-time initializers
-onLoadInit:
-	call	gs_init
 	.area _GSFINAL
 	ret
 reloc_t:

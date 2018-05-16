@@ -4,6 +4,7 @@
 #include <string.h>
 #include <im2.h>
 #include <zxkbd.h>
+#include <so.h>
 
 void press_a_key(){
 	printf("\nPress a key\n");
@@ -44,6 +45,8 @@ void check_ram_pages(){
 void memwin_info() {
 	mm_win_d* win;
 	uint8_t i;
+	
+	printf("memwin_info\n");
 	for(i=0;i<4;i++){
 		win=MMgetWinD(i);
 		printf("%u: %s page %u.\n  Flags: ", i, (win->flags & MWF_ROM)?"ROM":"RAM", win->page );
@@ -60,6 +63,9 @@ void memwin_info() {
 void mempage_info() {
 	uint8_t i;
 	uint8_t pview=0;
+	
+	printf("mempage_info\n");
+	
 	for(i=0;i<MMgetPagesCount();i++){
 		uint8_t flags = MMGetPageFlags(i);
 		printf("%x:%i[%s%s%s]",i, MPG_GETWIN(flags),
@@ -117,7 +123,12 @@ void main(){
 	im2Set();
 	SEI();
 	ccls(0106);
-	printf("Start Test mm128: %s\n",memman_SetLoadAdr(0x6000));
+	
+	printf("Start Test mm128\n");
+	// Reloctable
+	soReloc(0x6000);
+	printf("mm128 loaded at: %s\n",memman_SetLoadAdr(0x6000));
+		
 	//
 	press_a_key();cls();
 	

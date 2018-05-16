@@ -47,3 +47,6 @@ LIBRARY+=librnd
 
 # Memory managers
 LIBRARY+=libmemman
+
+# Relotcable shared objects
+LIBRARY+=libso

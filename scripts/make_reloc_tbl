@@ -24,6 +24,11 @@ printf ";// Relocation table of files $IN0 and $IN1
 	;// Automatic genereted!
 	.area _RELOCTABLE
 
+	;// Size of reloc-table in WORDS
+__reloc_size_words:
+	.dw (__reloc_end - __reloc_begin) / 2
+
+__reloc_begin:
 " > "$OUTFILE"
 
 for i in $TBL; do
@@ -33,7 +38,7 @@ for i in $TBL; do
 		printf ","
 	fi
 
-	printf "0x%.4X" $i
+	printf "0x%.4X" $(( $i - 1 ))
 	
 	COUNTER=$(( $COUNTER + 1 ))
 	
@@ -43,4 +48,6 @@ for i in $TBL; do
 	fi
 done >> "$OUTFILE"
 
-printf "\n\n;// End of reloc table\n" >> "$OUTFILE"
+printf "\n\n
+__reloc_end:
+;// End of reloc table\n" >> "$OUTFILE"

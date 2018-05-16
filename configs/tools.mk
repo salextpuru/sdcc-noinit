@@ -2,7 +2,8 @@
 CPU_TYPE=z80
 
 # Development tools
-CC=sdcc -m$(CPU_TYPE) --opt-code-size --nostdinc
+#CC=sdcc -m$(CPU_TYPE) --opt-code-size --nostdinc
+CC=sdcc -m$(CPU_TYPE) --nostdinc
 LD=sdld$(CPU_TYPE)
 
 CCLIB=sdcclib

@@ -16,16 +16,7 @@ RELOC1=1
 
 # Binary image
 $(DRV).drv: autoconfig.asm crt0.rel $(OBJ) $(LIBSMAKE) reloctbl
-	$(LD) -imjwx -b _CODE=$(START) -o $(DRV) crt0.rel $(OBJ) $(LIBSLINK) > /dev/null
-	@if [[ -f $(DRV).ihx ]]; then \
-	echo "Hex generated: "$(DRV).ihx ; \
-	else \
-	"Hex generated FAIL! Exit 1: "$(DRV).ihx ; \
-	exit 1 ; \
-	fi
-	$(HEX2BIN) -s $(START) $(DRV).ihx 2>&1 >/dev/null
-	mv -f $(DRV).bin $(DRV).drv
-	$(BINMAN) $(DRV).map $(DRV).drv
+	cat $(DRV)-0.bin $(RELOCTBL).bin > $(DRV).drv
 	$(DZ80) -m=$(START) $(DRV).drv > $(DRV)_d.asm
 	#
 	# Ленточная версия
