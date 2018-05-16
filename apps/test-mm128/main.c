@@ -109,13 +109,15 @@ void free_test(){
 	}
 }
 
+const char* memman_SetLoadAdr(void *loadAdress);
+
 void main(){
 	CLI();
 	im2SetHandler(zxKbdScan);
 	im2Set();
 	SEI();
 	ccls(0106);
-	printf("Start Test mm128\n");
+	printf("Start Test mm128: %s\n",memman_SetLoadAdr(0x6000));
 	//
 	press_a_key();cls();
 	

@@ -8,6 +8,8 @@
 #  X..X - имя драйвера (mm128.drv mmEVO.drv mmEVOTSL.drv и т.д.)
 #
 
+INTLIBNAME="memman"
+
 # Включаемая в программу часть (интерфейсная)
 LIBNAME=libmemman.lib
 

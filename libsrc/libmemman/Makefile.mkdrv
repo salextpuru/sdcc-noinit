@@ -10,6 +10,7 @@ endif
 # Обязательно есть такой файл!
 OBJ+=$(DRV).rel
 
+RELOCTBL="reloctbl"
 RELOC0=0
 RELOC1=1
 
@@ -33,8 +34,14 @@ $(DRV).drv: autoconfig.asm crt0.rel $(OBJ) $(LIBSMAKE) reloctbl
 reloctbl:
 	$(LD) -imjwx -b _CODE=$(RELOC0) -o $(DRV)-0 crt0.rel $(OBJ) $(LIBSLINK) > /dev/null
 	$(HEX2BIN) -s 0 $(DRV)-0.ihx 2>&1 >/dev/null
+	$(BINMAN) $(DRV)-0.map $(DRV)-0.bin
 	$(LD) -imjwx -b _CODE=$(RELOC1) -o $(DRV)-1 crt0.rel $(OBJ) $(LIBSLINK) > /dev/null
 	$(HEX2BIN) -s 1 $(DRV)-1.ihx 2>&1 >/dev/null
+	$(BINMAN) $(DRV)-1.map $(DRV)-1.bin
+	$(SCR)/make_reloc_tbl $(RELOCTBL).asm $(DRV)-0.bin $(DRV)-1.bin
+	$(AS) $(ASOPTS) -l -s -o $(RELOCTBL).rel $(RELOCTBL).asm
+	$(LD) -imjwx -b _CODE=0 -o $(RELOCTBL) $(RELOCTBL).rel > /dev/null
+	$(HEX2BIN) -s 0 $(RELOCTBL).ihx 2>&1 >/dev/null
 
 crt0.rel: $(CRT0PATH)
 	$(AS) $(ASOPTS) -l -s -o $@ $<

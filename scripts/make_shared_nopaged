@@ -7,41 +7,66 @@
 #	crt0shared.asm - начальный файл библиотеки
 #	iface_shared.asm - интерфейс, включаемый в основную программу
 
-# Инициализация библиотеки (пример). Если нет статических переменных - можно без неё.
+# Инициализация библиотеки (пример).
 # Библиотеки неперемещаемы!
 #
 #	load "library" CODE ADR
-#	randomize usr ADR
+#	"LIBNAME"_onLoadInit( ADR); - настройка внутреннего интерфейса
 
-INFILE="$1"
+# $1 - *.h-файл с интерфейсом библиотеки
+# $2 - внутреннее имя библиотеки
+
+INFILE="$1" 
+LIBNAME="$2"
+
+if [[ $# -lt 2 ]]; then 
+	printf \
+"Usage:
+	Generate reloctation table.
+	$0 <interface.h> <libname>
+"
+	exit 1
+fi
+
 
 EXPORTSYMS=`sdcpp "$INFILE" | grep "(" | tr -d '*' | sed s/\(.*// | sed 's/^.* //'`
 
+# Размер заголовка
+HEADERSIZE=8
 
 # Create CRT0shared.asm
 CRT0SHARED=crt0shared.asm
-
-echo ";// --- automatic generate: $CRT0SHARED ----" > $CRT0SHARED
+echo ";// --- automatic generate: $CRT0SHARED----" > $CRT0SHARED
 
 printf "\
 	;// Only for shared library
 	; Global config include
 	.include /autoconfig.asm/
 	;
-        .module crt0
+        .module crt0_$LIBNAME
 	;
 	.area _CABS (ABS)
 	.area _DABS (ABS)
         ; Entry POINT
         .area _CODE
 
-        ;// +00 Init library
+.globl	crt0_header
+crt0_header:
+_"$LIBNAME"_header:
+	.dw	0x424C	;//+00 signature LB
+	.dw	0x0001	;//+02 Version
+	.dw	libName	;//+04 Name of module
+	.dw	reloc_t	;//+06 Relocation table
+
+        ;// +$HEADERSIZE Init library
+;// C-interface
+_"$LIBNAME"_onLoadInit:
 	jp	onLoadInit
 
 	;// Export Calls
 " >> $CRT0SHARED
 
-OFS=3
+OFS=$(( $HEADERSIZE + 3 ))
 for i in $EXPORTSYMS; do
 	SYM=_"$i"
 	printf "	;// +$OFS\n"
@@ -50,9 +75,11 @@ for i in $EXPORTSYMS; do
 	OFS=$(( $OFS + 3 ))
 done >> $CRT0SHARED
 
-printf "onLoadInit:
-	call	gs_init
-	ret
+printf "
+libName:
+	.ascii \"$LIBNAME\"
+	.db 00
+	
         ; Library
         .area _HOME
         .area _CONST
@@ -63,8 +90,11 @@ printf "onLoadInit:
 	.area _GSINIT
 gs_init:
 	; all run-time initializers
+onLoadInit:
+	call	gs_init
 	.area _GSFINAL
 	ret
+reloc_t:
 	;
 	.area _HEAP
 	.area _HEAP_END
@@ -73,6 +103,7 @@ gs_init:
         .area _BSS
 	;
 	.area _INITIALIZER
+
 " >> $CRT0SHARED
 
 # Create asm-interface file
@@ -84,19 +115,40 @@ printf "\
 	; Global config include
 	.include /autoconfig.asm/
 
-        .module iface_shared
+        .module iface_shared_$LIBNAME
         .area _CODE
+
+	;// C-Interface const char* $LIBNAME__SetLoadAdr(void *loadAdress);
+
+	.globl _""$LIBNAME""_SetLoadAdr
+_""$LIBNAME""_SetLoadAdr:
+	pop	bc
+	pop	hl
+	ld	(libLoadAdr),hl
+	push	hl
+	push	bc
+	ld	hl,#libName
+	ret
+libName:
+	.ascii \"$LIBNAME\"
+	.db 00
+libLoadAdr:
+	.dw 0000
+hl_jumper:
+	ld	bc,(libLoadAdr)
+	add	hl,bc
+	jp	(hl)
 
 	;// Export Calls
 " >> $IFACE_SHARED
 
-OFS=3
+OFS=$(( $HEADERSIZE + 3 ))
 for i in $EXPORTSYMS; do
 	SYM=_"$i"
 	printf "	;// +$OFS\n"
 	printf "	.globl $SYM\n"
 	printf "$SYM:\n"
-	printf "	jp __START+$OFS\n"
+	printf "	ld 	hl,#$OFS\n"
+	printf "	jp	hl_jumper\n"
 	OFS=$(( $OFS + 3 ))
 done >> $IFACE_SHARED
-

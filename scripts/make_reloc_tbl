@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# $1 - tbl asm code
+# $2 - binary addr 0
+# $3 - binary addr 1
+
+if [[ $# -lt 3 ]]; then 
+	printf \
+"Usage:
+	Generate reloctation table.
+	$0 <tbl.asm> <bin-adr0.bin>  <bin-adr1.bin> 
+"
+	exit 1
+fi
+
+OUTFILE="$1"
+IN0="$2"
+IN1="$3"
+
+TBL=`cmp -l mm128-0.bin mm128-1.bin | awk '{print $1}'`
+COUNTER=0
+
+printf ";// Relocation table of files $IN0 and $IN1 
+	;// Automatic genereted!
+	.area _RELOCTABLE
+
+" > "$OUTFILE"
+
+for i in $TBL; do
+	if [[ $COUNTER -eq 0 ]]; then
+		printf "\t.dw "
+	else
+		printf ","
+	fi
+
+	printf "0x%.4X" $i
+	
+	COUNTER=$(( $COUNTER + 1 ))
+	
+	if [[ $COUNTER -ge 8 ]]; then
+		printf "\n"
+		COUNTER=0
+	fi
+done >> "$OUTFILE"
+
+printf "\n\n;// End of reloc table\n" >> "$OUTFILE"
