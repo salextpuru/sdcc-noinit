@@ -16,6 +16,11 @@ typedef struct {
 	uint16_t	version;	// Версия
 	uint16_t	name_offset;	// смещение от начала файла имени
 	uint16_t	reloctbl_offset;// смещение от начала файла таблцы перемещения
+	uint16_t	link_counter;	// счетчик ссылок на библиотеку
+	//
+	uint16_t	reserv0;	// резерв
+	uint16_t	reserv1;	// резерв
+	uint16_t	reserv2;	// резерв
 }soHeader;
 
 /**

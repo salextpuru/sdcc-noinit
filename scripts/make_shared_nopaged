@@ -32,7 +32,7 @@ fi
 EXPORTSYMS=`sdcpp "$INFILE" | grep "(" | tr -d '*' | sed s/\(.*// | sed 's/^.* //'`
 
 # Размер заголовка
-HEADERSIZE=8
+HEADERSIZE=16
 
 # Create CRT0shared.asm
 CRT0SHARED=crt0shared.asm
@@ -56,6 +56,10 @@ _"$LIBNAME"_header:
 	.dw	0x0001	;//+02 Version
 	.dw	libName	;//+04 Name of module
 	.dw	reloc_t	;//+06 Relocation table
+	.dw	0x0000	;//+08 Link couner
+	.dw	0x0000	;//+0A reserv0
+	.dw	0x0000	;//+0C reserv1
+	.dw	0x0000	;//+0E reserv2
 
         ;// +$HEADERSIZE Init library
 ;// C-interface
