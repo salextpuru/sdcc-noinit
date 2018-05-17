@@ -10,9 +10,9 @@
 // Описатели всех страниц
 static uint8_t pages128[RAMPAGES]={
 	3,3,
-	3 | MPG_FIXED|MPG_BUSY, // Страница 2 (0x8000 - 0xBFFF)
+	2 | MPG_FIXED|MPG_BUSY, // Страница 2 (0x8000 - 0xBFFF)
 	3,3,
-	3 | MPG_FIXED|MPG_BUSY, // Страница 5 (0x4000 - 0x7FFF)
+	1 | MPG_FIXED|MPG_BUSY, // Страница 5 (0x4000 - 0x7FFF)
 	3,3
 };
 

@@ -115,11 +115,12 @@ void free_test(){
 	}
 }
 
-const char* memman_SetLoadAdr(void *loadAdress);
+//const char* memman_SetLoadAdr(void *loadAdress);
 
 #define modAdr	0x6000
 
 void main(){
+	shared_link* p=get_shared_links_area();
 	CLI();
 	im2SetHandler(zxKbdScan);
 	im2Set();
@@ -127,10 +128,23 @@ void main(){
 	ccls(0106);
 	
 	printf("Start Test mm128\n");
+	
+	// Настройка резидентной части
+	p->load_adr=modAdr;
+	p->page=5;
+	
 	// Reloctable
+	printf("area %.4X\n",p);
+	printf("nextlink %.4X\n",p->next_link);
+	printf("loadadr %.4X\n",p->load_adr);
+	printf("page %.4X\n",p->page);
+	printf("flags %.4X\n",p->flags);
+	printf("name %s\n",p->name);
+	
+	// Настройка подгружаемой части
 	printf("Start %.4X end %.4X\n", modAdr, soReloc(modAdr) );
 	
-	printf("mm128 loaded at: %s\n",memman_SetLoadAdr(modAdr));
+	printf("mm128 loaded\n");
 		
 	//
 	press_a_key();cls();
@@ -155,6 +169,5 @@ void main(){
 	press_a_key(); cls();
 	free_test();mempage_info();
 	
-	while(1){
-	}
+	while(1){}
 }

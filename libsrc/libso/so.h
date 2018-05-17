@@ -41,5 +41,26 @@ typedef struct {
 */
 void* soReloc(void* load_adr);
 
+/**
+* @brief Описатель секции _SHARED_LINKS,
+* 	включающей описания подключенных библиотек.
+*/
+typedef struct {
+	void*		next_link;
+	void*		load_adr;
+	uint16_t	page;
+	uint16_t	flags;
+	const char	name[];
+} shared_link;
+
+/**
+* @brief Получить начало области описаний перемещаемых библиотек
+*/
+void* get_shared_links_area();
+
+/**
+* @brief Получить адрес окончания области описаний перемещаемых библиотек + 1
+*/
+void* get_shared_links_area_end();
 
 #endif /* __SO_H__ */

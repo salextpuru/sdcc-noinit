@@ -35,7 +35,16 @@
         ei
         .endif
 	ret
-        ; Library
+
+        ; Shared Library Descriptors
+	.globl __shared_links_begin
+	.globl __shared_links_end
+
+        .area _SHARED_LINKS
+__shared_links_begin:
+        .area _SHARED_LINKS_END
+__shared_links_end:
+        ;
         .area _HOME
         .area _CONST
         .area _DATA

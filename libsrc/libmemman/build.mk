@@ -21,7 +21,7 @@ LIBOBJS=memman_base.rel
 IFACE_H=memman.h
 
 # Только интерфейс будет включен в libmemman.lib
-IFACEOBJS=iface_shared.rel
+IFACEOBJS=
 
 # CRT0 (переходы на процедуры драйвера)
 CRT0PATH=crt0shared.asm

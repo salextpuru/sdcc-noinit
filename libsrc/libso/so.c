@@ -21,3 +21,14 @@ void* soReloc(void* load_adr){
 	// Заголовок тоже привязывается к абсолютным адресам
 	return h->reloctbl_offset;
 }
+
+extern const uint8_t _shared_links_begin[];
+extern const uint8_t _shared_links_end[];
+
+void* get_shared_links_area(){
+	return _shared_links_begin;
+}
+
+void* get_shared_links_area_end(){
+	return _shared_links_end;
+}

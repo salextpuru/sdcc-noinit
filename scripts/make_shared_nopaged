@@ -114,48 +114,61 @@ reloc_t:
 " >> $CRT0SHARED
 
 # Create asm-interface file
-IFACE_SHARED=iface_shared.asm
+IFACE_SHARED=iface_shared
 
-echo ";// --- automatic generate: $IFACE_SHARED ----" > $IFACE_SHARED
+IFACE_SHAREDLIST="$IFACE_SHARED.rel"
+
+echo ";// --- automatic generate: $IFACE_SHARED"".asm ----" > $IFACE_SHARED.asm
 printf "\
 	;// Only for shared library 
 	; Global config include
 	.include /autoconfig.asm/
 
         .module iface_shared_$LIBNAME
-        .area _CODE
+        .area _SHARED_LINKS
 
-	;// C-Interface const char* $LIBNAME__SetLoadAdr(void *loadAdress);
-
-	.globl _""$LIBNAME""_SetLoadAdr
-_""$LIBNAME""_SetLoadAdr:
-	pop	bc
-	pop	hl
-	ld	(libLoadAdr),hl
-	push	hl
-	push	bc
-	ld	hl,#libName
-	ret
+libNextAdrP:
+	.dw libNextAdr
+libLoadAdr:
+	;// Start adress
+	.dw 0000
+libPage:
+	;// Start Page
+	.dw 0000
+libFlags:
+	;// FLAGS
+	;// bit 0 - 0:fixed in RAM 1:paged
+	;// bit 1..15 - reserved
+	.dw 0000
 libName:
 	.ascii \"$LIBNAME\"
 	.db 00
-libLoadAdr:
-	.dw 0000
-hl_jumper:
+libNextAdr:
+
+	.area _CODE
+	;// Jumper
+.globl _$LIBNAME""_hl_jumper
+_""$LIBNAME""_hl_jumper:
 	ld	bc,(libLoadAdr)
 	add	hl,bc
 	jp	(hl)
 
 	;// Export Calls
-" >> $IFACE_SHARED
+" >> "$IFACE_SHARED.asm"
 
 OFS=$(( $HEADERSIZE + 3 ))
 for i in $EXPORTSYMS; do
+	{
 	SYM=_"$i"
 	printf "	;// +$OFS\n"
+	printf "	.globl _$LIBNAME""_hl_jumper\n"
 	printf "	.globl $SYM\n"
 	printf "$SYM:\n"
 	printf "	ld 	hl,#$OFS\n"
-	printf "	jp	hl_jumper\n"
+	printf "	jp	_$LIBNAME""_hl_jumper\n"
 	OFS=$(( $OFS + 3 ))
-done >> $IFACE_SHARED
+	}> "$IFACE_SHARED-$i.asm"
+
+	IFACE_SHAREDLIST="$IFACE_SHAREDLIST $IFACE_SHARED-$i.rel"
+done
+echo "$IFACE_SHAREDLIST"
