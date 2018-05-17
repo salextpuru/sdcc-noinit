@@ -14,7 +14,7 @@ void (*music_im2h)();
  */
 extern unsigned char jungle_pt3[];
 extern unsigned char mus010_pt3[];
-extern unsigned char love_stc[];
+extern unsigned char a_incom_pt3[];
 
 extern unsigned char taiga_pt2[];
 extern unsigned char opium_pt2[];
@@ -37,7 +37,8 @@ typedef struct {
 const sMusic musics[]={
 	{&jungle_pt3, PT3_UNLOOP, MUSFMT_PTX },
 	{&mus010_pt3, PT3_UNLOOP, MUSFMT_PTX },
-	{&love_stc,   STC_UNLOOP, MUSFMT_STC },
+	{&a_incom_pt3, PT3_UNLOOP, MUSFMT_PTX },
+
 	{&opium_pt2, PT3_PT2 | PT3_UNLOOP, MUSFMT_PTX },
 	{&mozart_stc,   STC_UNLOOP, MUSFMT_STC },
 	{&kosmos_pt3, PT3_UNLOOP, MUSFMT_PTX },

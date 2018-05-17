@@ -117,6 +117,7 @@ static void im2userHandler() {
 	// Разблокируем вход в этот участок кода
 	CLI();
 	lock=0;
+	SEI();
 }
 
 // Просто BORDER 0
