@@ -32,3 +32,11 @@ void* get_shared_links_area(){
 void* get_shared_links_area_end(){
 	return _shared_links_end;
 }
+
+static void soPageJumper() __naked {
+__asm;
+	.globl soPagedJumper
+soPagedJumper:
+	jp	(hl)
+__endasm;
+}

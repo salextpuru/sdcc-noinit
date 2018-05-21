@@ -147,11 +147,24 @@ libNextAdr:
 
 	.area _CODE
 	;// Jumper
+.globl soPagedJumper
 .globl _$LIBNAME""_hl_jumper
 _""$LIBNAME""_hl_jumper:
+	;// Calculate call adress
 	ld	bc,(libLoadAdr)
 	add	hl,bc
+	;// Check: paged or fixed
+	ld	a,(libFlags)
+	and	#0x01
+	jr	nz,libPagedJump
+	;// Fixed lib jump
 	jp	(hl)
+	;//
+libPagedJump:
+	ld	de,(libLoadAdr)
+	ld	bc,(libPage)
+	;// HL=call adress
+	jp	soPagedJumper
 
 	;// Export Calls
 " >> "$IFACE_SHARED.asm"
