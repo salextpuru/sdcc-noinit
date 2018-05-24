@@ -1,13 +1,14 @@
 #ifndef __LOGOS__H__
 #define __LOGOS__H__
 
-#include <spr0.h>
+// Увеличение счетчика времени
+void logos_int50();
 
-// Базовая картинка
-extern const Sprite0	logos_base;
-// сменяемые картинки
-extern const Sprite0*	logos[];
-// Возвращает количество сменяемых картинок
-uint8_t	logos_count();
+// Проверка счетчика времени и 
+// плавная смена лого в середине экрана
+void logos_check();
+
+// Вывод статического изображения в середине экрана
+void logos_put();
 
 #endif /* __LOGOS__H__ */

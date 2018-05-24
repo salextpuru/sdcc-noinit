@@ -2,60 +2,20 @@
 #include <string.h>
 #include <stdint.h>
 #include <spr0.h>
-#include <spr0_fade.h>
 #include <im2.h>
 #include <zxkbd.h>
 #include <winprocs.h>
-#include <aydump.h>
 
+#include "equalizer.h"
 #include "cspLogo.h"
 #include "spr2018.h"
 #include "uSctrollText.h"
 #include "logos.h"
+#include "music.h"
 
 /**
  * -------------------------------- Эквалайзер ------------------------------------------
  */
-
-/*
- * Количество буковок в эквалайзере
- */
-enum {boxSize=7};
-
-/*
- * Координаты и размеры буковок в эквалайзере
- */
-static const struct {
-	uint8_t x;
-	uint8_t y;
-	uint8_t w;
-	uint8_t h;
-} boxText[boxSize] = {
-	{0,16,6,6},
-	{6,16,4,6},
-	{10,16,4,6},
-
-	{16,16,4,6},
-	{20,16,4,6},
-	{24,16,4,6},
-	{28,16,4,6},
-};
-
-// Defines for music.c
-extern void (*music_im2h)();
-uint8_t checkMusic();
-void keyMusic(uint16_t k);
-
-/*
- * Таблица цветов для эквалайзера
- */
-static const uint8_t colorTable[0x10]= {1,1,2,3,4,5,6,7,0101,0101,0102,0103,0104,0105,0106,0107};
-
-/*
- * Смена картинок
- */
-static uint16_t logos_timer;
-static uint8_t logos_counter;
 
 /*
  * Процедура анимации пламени свечи
@@ -69,51 +29,42 @@ void candle_flame_animate();
 static void im2userHandler() {
 	// Переменная, блокирующая повторный запуск фоновых процедур
 	static volatile uint8_t lock;
-	
+
 	// Играем следующий кусочек музыки
-	if (music_im2h) {
+	if ( music_im2h ) {
 		music_im2h();
 	}
 
 	// Увеличиваем
-	logos_timer++;
+	logos_int50();
 
 	// Проверка повторного вызова (это ж прерывания!)
 	if ( lock ) {
 		return;
 	}
+
 	// Блокируем повторный вход в этот участок кода
 	lock=1;
 	// Разрешаем прерывания.
 	SEI();
-	
-	// AY DUMP
-	ayDumpGet();
-	
+
 	// Сдвиг текста
 	CheckShiftText();
-	// Эквалайзер (подкрашиваем буковки цветами, полученными их дампа AY)
-	// Volume
-	winSetAtr(boxText[0].x, boxText[0].y, boxText[0].w, boxText[0].h, colorTable[ayDump[8]], 0x07 );
-	winSetAtr(boxText[1].x, boxText[1].y, boxText[1].w, boxText[1].h, colorTable[ayDump[9]], 0x07 );
-	winSetAtr(boxText[2].x, boxText[2].y, boxText[2].w, boxText[2].h, colorTable[ayDump[10]], 0x07 );
-	// Freq
-	winSetAtr(boxText[3].x, boxText[3].y, boxText[3].w, boxText[3].h, colorTable[ayDump[1]], 0x07 );
-	winSetAtr(boxText[4].x, boxText[4].y, boxText[4].w, boxText[4].h, colorTable[ayDump[3]], 0x07 );
-	winSetAtr(boxText[5].x, boxText[5].y, boxText[5].w, boxText[5].h, colorTable[ayDump[5]], 0x07 );
-	winSetAtr(boxText[6].x, boxText[6].y, boxText[6].w, boxText[6].h, colorTable[ayDump[6]], 0x07 );
-		
+
+	// Отрисовка эквалайзера
+	equalizer_draw();
+
 	// анимация пламени свечи
 	candle_flame_animate();
-	
+
 	// Шаг анимации ЛОГО
 	logoAniStep();
-	
+
 	// Опрос клавиатуры (в фоне, т.к. только кнопочки 1-6 важны)
 	zxKbdScan();
 	// Проверка - а может надо сменить мелодию?
-	keyMusic(zxKbdInKey());
-	
+	keyMusic ( zxKbdInKey() );
+
 	// Разблокируем вход в этот участок кода
 	CLI();
 	lock=0;
@@ -124,7 +75,7 @@ static void im2userHandler() {
 void border0() __naked {
 	__asm;
 	xor a
-	out (0xFE),a
+	out ( 0xFE ),a
 	ret
 	__endasm;
 }
@@ -132,44 +83,44 @@ void border0() __naked {
 int main() {
 	// Установки и настройки
 	CLI();
+	
 	// Свой обработчик прерываний
 	im2Set();
-	im2SetHandler( im2userHandler );
+	im2SetHandler ( im2userHandler );
+	
 	// Очистка экрана
 	border0();
-	winSetAtr(0, 0, 32, 24, 0x00, 0xFF );
-	winClear(0,0,32,8);
+	winSetAtr ( 0, 0, 32, 24, 0x00, 0xFF );
+	winClear ( 0,0,32,8 );
 	// Вывод картинок
-	logoToScreen(3,0);
-	spr0_out0_attr(&spr2018,0,16);
-	spr0_out0_attr(&logos_base,0,8);
-	winSetAtr(5, 8, 12, 8, 0x01, 0xFF );
+	
+	// CSP (цветное вверху экрана)
+	logoToScreen ( 3,0 );
+	
+	// CSP2018 (Эквалайзер внизу экрана)
+	spr2018_put();
+	
+	// Середина экрана
+	logos_put();
+	// Начальные атрибуты для сменяющегося лого в середине экрана
+	winSetAtr ( 5, 8, 12, 8, 0x01, 0xFF );
+	
 	// Инициализация бегщей строки
 	InitShiftText();
-	
+
 	// Разрешаем прерывания
 	SEI();
 
 	// Основной цикл
-	while (1) {
-		uint8_t i;
+	while ( 1 ) {
 		// Проверка - доиграла ли до конца музыка
 		// и надо ли переходить к следующей мелодии
 		checkMusic();
-		if( logos_timer >= 500 ){
-			Sprite0* spr=logos[logos_counter];
-			logos_timer=0;
-			for(i=0; i<8; i++){
-				spr0_fade_step(spr,5,8);
-				HALT();
-			}
-			spr0_out0_attr(spr,5,8);
-			
-			if( (++logos_counter) >=  logos_count() ){
-				logos_counter=0;
-			}
-		}
+		
+		// Проверка и смена картинки справа от свечи
+		logos_check();
 	}
+
 	//
 	return 0;
 }

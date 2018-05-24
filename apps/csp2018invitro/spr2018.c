@@ -7,9 +7,10 @@
 	Color: 0101
 
 */
+#include <spr0.h>
 #include "spr2018.h"
 
-const Sprite0 spr2018 = {
+static const Sprite0 spr2018 = {
 	.sz =  2304  + sizeof(Sprite0),
 	.w = 32,
 	.h = 8,
@@ -304,3 +305,7 @@ const Sprite0 spr2018 = {
 		0101,0101,0101,0101,0101,0101,0101,0101,
 		}
 };
+
+void spr2018_put(){
+	spr0_out0_attr ( &spr2018,0,16 );
+}

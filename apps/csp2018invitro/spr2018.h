@@ -9,9 +9,8 @@
 */
 #ifndef spr2018_H_DEFINED
 #define spr2018_H_DEFINED
-#include <stdint.h>
-#include <spr0.h>
 
-extern const Sprite0 spr2018;
+// Вывод надписи CSP2018 (Эквалайзер внизу экрана)
+void spr2018_put();
 
 #endif /* spr2018_H_DEFINED */
