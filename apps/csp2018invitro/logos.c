@@ -1,6 +1,7 @@
 #include <spr0.h>
 #include <spr0_fade.h>
 #include <im2.h>
+#include <winprocs.h>
 
 const unsigned char logos_base[] = {
 	0x04, 0x09, 0x20, 0x08, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
@@ -503,4 +504,6 @@ void logos_int50() {
 
 void logos_put() {
 	spr0_out0_attr ( (Sprite0*)logos_base,0,8 );
+	// Начальные атрибуты для сменяющегося лого в середине экрана
+	winSetAtr ( 5, 8, 12, 8, 0x01, 0xFF );
 }

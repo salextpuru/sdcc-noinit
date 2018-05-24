@@ -11,4 +11,7 @@ void logos_check();
 // Вывод статического изображения в середине экрана
 void logos_put();
 
+// Анимация пламени свечи
+void candle_flame_animate();
+
 #endif /* __LOGOS__H__ */

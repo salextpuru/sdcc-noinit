@@ -13,6 +13,7 @@
 *.wmf
 *.o
 *~
+~*
 *.drv
 .kdev_include_paths
 authlocal.mk
