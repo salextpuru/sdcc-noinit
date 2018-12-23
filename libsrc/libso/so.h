@@ -14,8 +14,8 @@
 typedef struct {
 	uint16_t	signature;	// Сигнатура 0x424С (LB)
 	uint16_t	version;	// Версия
-	uint16_t	name_offset;	// смещение от начала файла имени
-	uint16_t	reloctbl_offset;// смещение от начала файла таблцы перемещения
+	const char*	name;		// смещение от начала файла имени / адрес имени библиотеки
+	uint16_t	reloctbl_offset;// смещение от начала файла таблцы перемещения / адрес таблцы перемещения
 	uint16_t	link_counter;	// счетчик ссылок на библиотеку
 	//
 	uint16_t	reserv0;	// резерв
@@ -62,5 +62,10 @@ void* get_shared_links_area();
 * @brief Получить адрес окончания области описаний перемещаемых библиотек + 1
 */
 void* get_shared_links_area_end();
+
+/**
+ * @brief Ищет внутреннюю структуру загруженной библиотеки и настраивает её.
+ */
+void* tune_shared_obj(soHeader* lib);
 
 #endif /* __SO_H__ */

@@ -17,7 +17,7 @@ OUTFILE="$1"
 IN0="$2"
 IN1="$3"
 
-TBL=`cmp -l mm128-0.bin mm128-1.bin | awk '{print $1}'`
+TBL=`cmp -l "$IN0" "$IN1"  | awk '{print $1}'`
 COUNTER=0
 
 printf ";// Relocation table of files $IN0 and $IN1 

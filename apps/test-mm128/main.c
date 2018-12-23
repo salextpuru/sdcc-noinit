@@ -117,7 +117,7 @@ void free_test(){
 
 //const char* memman_SetLoadAdr(void *loadAdress);
 
-#define modAdr	0x6000
+#define so_v1_load_addr	0x6000
 
 void main(){
 	shared_link* p=get_shared_links_area();
@@ -130,7 +130,7 @@ void main(){
 	printf("Start Test mm128\n");
 	
 	// Настройка резидентной части
-	p->load_adr=modAdr;
+	p->load_adr=so_v1_load_addr;
 	p->page=5;
 	
 	// Reloctable
@@ -142,7 +142,7 @@ void main(){
 	printf("name %s\n",p->name);
 	
 	// Настройка подгружаемой части
-	printf("Start %.4X end %.4X\n", modAdr, soReloc(modAdr) );
+	printf("Start %.4X end %.4X\n", so_v1_load_addr, soReloc( so_v1_load_addr ) );
 	
 	printf("mm128 loaded\n");
 		

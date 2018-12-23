@@ -42,3 +42,6 @@ APPLICATIONS+=csp2018invitro
 
 # Test of memory manager 128K
 APPLICATIONS+=test-mm128
+
+# Test reloctable module
+APPLICATIONS+=test-so

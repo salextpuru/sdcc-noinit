@@ -50,3 +50,6 @@ LIBRARY+=libmemman
 
 # Relotcable shared objects
 LIBRARY+=libso
+
+# Тестовая библиотека для перемещаемых модулей
+LIBRARY+=libtestso

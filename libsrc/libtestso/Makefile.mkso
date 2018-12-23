@@ -1,0 +1,46 @@
+# Config filesOS
+include *.mk
+
+# Generate lib specificaton ( if LIBS variable defined in build.mk )
+ifdef LIBS
+LIBSMAKE:=$(addprefix $(LIBDIR)/, $(LIBS:=.lib) )
+LIBSLINK:=$(addprefix -l , $(LIBSMAKE) )
+endif
+
+# Обязательно есть такой файл!
+OBJ+=$(SOLIB).rel
+
+RELOCTBL="reloctbl"
+RELOC0=0x0000
+RELOC1=0x0100
+
+# Binary image
+$(SOLIB).so: autoconfig.asm crt0.rel $(OBJ) $(LIBSMAKE) reloctbl
+	cat $(SOLIB)-0.bin $(RELOCTBL).bin > $(SOLIB).so
+	$(DZ80) -m=0 $(SOLIB).so > $(SOLIB)_d.asm
+
+reloctbl:
+	$(LD) -imjwx -b _CODE=$(RELOC0) -o $(SOLIB)-0 crt0.rel $(OBJ) $(LIBSLINK) > /dev/null
+	$(HEX2BIN) -s $(RELOC0) $(SOLIB)-0.ihx 2>&1 >/dev/null
+	$(BINMAN) $(SOLIB)-0.map $(SOLIB)-0.bin
+	#
+	$(LD) -imjwx -b _CODE=$(RELOC1) -o $(SOLIB)-1 crt0.rel $(OBJ) $(LIBSLINK) > /dev/null
+	$(HEX2BIN) -s $(RELOC1) $(SOLIB)-1.ihx 2>&1 >/dev/null
+	$(BINMAN) $(SOLIB)-1.map $(SOLIB)-1.bin
+	#
+	$(SCR)/make_reloc_tbl $(RELOCTBL).asm $(SOLIB)-0.bin $(SOLIB)-1.bin
+	$(AS) $(ASOPTS) -l -s -o $(RELOCTBL).rel $(RELOCTBL).asm
+	$(LD) -imjwx -b _CODE=0 -o $(RELOCTBL) $(RELOCTBL).rel > /dev/null
+	$(HEX2BIN) -s 0 $(RELOCTBL).ihx 2>&1 >/dev/null
+
+crt0.rel: $(CRT0PATH)
+	$(AS) $(ASOPTS) -l -s -o $@ $<
+
+%.rel:%.c
+	$(CC) -c $(COPTS) $<
+
+%.rel:%.s
+	$(AS) $(ASOPTS) -l -s -o $@ $<
+
+clean:
+	rm -rf *.rel *.lst *.sym *.exp *.bin *.map *.mem *.lnk *.ihx *.rel *.rst *.asm *.bin *.rel *.hS *.\$$C *.lk *.noi *.tap *.so

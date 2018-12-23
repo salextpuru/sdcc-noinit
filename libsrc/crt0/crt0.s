@@ -44,6 +44,8 @@
 __shared_links_begin:
         .area _SHARED_LINKS_END
 __shared_links_end:
+	;// End of shared
+	.dw	0x0000
         ;
         .area _HOME
         .area _CONST
