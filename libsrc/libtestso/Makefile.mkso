@@ -10,7 +10,7 @@ endif
 # Обязательно есть такой файл!
 OBJ+=$(SOLIB).rel
 
-RELOCTBL="reloctbl"
+RELOCTBL="reloctbl-"$(SOLIB)
 RELOC0=0x0000
 RELOC1=0x0100
 

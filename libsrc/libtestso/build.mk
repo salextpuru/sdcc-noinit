@@ -16,9 +16,6 @@ LIBNAME=libtestso.lib
 # Из него вытаскиваются названия процедур
 IFACE_H=testso.h
 
-# Только интерфейс будет включен в libmemman.lib
-IFACEOBJS=
-
 # CRT0 (переходы на процедуры библиотеки)
 CRT0PATH=crt0shared.asm
 
