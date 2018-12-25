@@ -5,6 +5,8 @@
 #include <string.h>
 #include "so.h"
 
+#define onloadFuncSize	0x03
+
 void* soReloc ( void* load_adr ) {
 	uint8_t* code = ( uint8_t* ) load_adr;
 	soHeader* h = ( soHeader* ) load_adr;
@@ -62,6 +64,15 @@ void* tune_shared_obj ( soHeader* lib ) {
 	}
 	
 	return(NULL);
+}
+
+soFuncDsc* getSoFuncDsc (soHeader* h, uint16_t n) {
+	soFuncDsc* r=NULL;
+	if( n >= h->nfunc ){
+		return r;
+	}
+	
+	return (( soFuncDsc*)(((uint8_t*)h) + sizeof(soHeader) + onloadFuncSize)) + n;
 }
 
 static void soPageJumper() __naked {

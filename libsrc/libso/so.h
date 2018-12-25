@@ -18,10 +18,29 @@ typedef struct {
 	uint16_t	reloctbl_offset;// смещение от начала файла таблцы перемещения / адрес таблцы перемещения
 	uint16_t	link_counter;	// счетчик ссылок на библиотеку
 	//
-	uint16_t	reserv0;	// резерв
+	uint16_t	nfunc;		// количество функций (без функции инициализации)
 	uint16_t	reserv1;	// резерв
 	uint16_t	reserv2;	// резерв
 }soHeader;
+
+/**
+* @brief Описатель функции
+*/
+typedef struct {
+	// переход на функцию (команда)
+	uint8_t		jump;
+	// переход на функцию (адрес)
+	uint16_t	jumadr;
+	// название функции
+	const char* name;
+} soFuncDsc;
+ 
+
+/**
+ * @brief Возвращает Описатель функции номер n=[0..N-1]
+ * 	Если такой функции нет, то возвращает NULL
+ */
+soFuncDsc* getSoFuncDsc (soHeader* h, uint16_t n);
 
 /**
  * Таблица перемещения.

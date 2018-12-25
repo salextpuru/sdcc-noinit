@@ -37,8 +37,14 @@ fi
 # Удаляеи все слова кроме последнего - имени функции
 EXPORTSYMS=`sdcpp "$INFILE" | grep "(" | tr -d '*' | sed s/\(.*// | sed 's/[ \t]*$//' | sed 's/^.* //'`
 
+# Вычисляем сколько функций (кроме onLoadInit)
+NUMFUNCS=`echo "$EXPORTSYMS" | wc -w`
+
 # Размер заголовка
 HEADERSIZE=16
+
+# Размер описателя функции
+FUNCDSCSIZE=5
 
 # Create CRT0shared.asm
 CRT0SHARED=crt0shared.asm
@@ -63,7 +69,7 @@ _"$LIBNAME"_header:
 	.dw	libName	;//+04 Name of module
 	.dw	reloc_t	;//+06 Relocation table
 	.dw	0x0000	;//+08 Link couner
-	.dw	0x0000	;//+0A reserv0
+	.dw	"$NUMFUNCS"	;//+0A Number of user functions (exclude onLoadInit)
 	.dw	0x0000	;//+0C reserv1
 	.dw	0x0000	;//+0E reserv2
 
@@ -82,7 +88,15 @@ for i in $EXPORTSYMS; do
 	printf "	;// +$OFS\n"
 	printf "	.globl $SYM\n"
 	printf "	jp $SYM\n"
-	OFS=$(( $OFS + 3 ))
+	printf "	.dw ""$i""_strname\n"
+	OFS=$(( $OFS + $FUNCDSCSIZE ))
+done >> $CRT0SHARED
+
+printf ";// String names of functions\n" >> $CRT0SHARED
+
+for i in $EXPORTSYMS; do
+	printf "$i""_strname:\n"
+	printf "		.asciz \"$i\"\n"
 done >> $CRT0SHARED
 
 printf "
@@ -185,7 +199,7 @@ for i in $EXPORTSYMS; do
 	printf "$SYM:\n"
 	printf "	ld 	hl,#$OFS\n"
 	printf "	jp	_$LIBNAME""_hl_jumper\n"
-	OFS=$(( $OFS + 3 ))
+	OFS=$(( $OFS + $FUNCDSCSIZE ))
 	}> "$IFACE_SHARED-$i.asm"
 
 	IFACE_SHAREDLIST="$IFACE_SHAREDLIST $IFACE_SHARED-$i.rel"

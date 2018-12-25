@@ -19,7 +19,10 @@ void loadLib(soHeader* soH) {
 	// Перемещение по заданному адресу
 	// pend - первый свободный адрес за библиотекой
 	void* pend = soReloc( soH );
+	uint16_t	n=0;
 	shared_link* respart;
+	soFuncDsc*	sofunc;
+	
 	
 	printf("Load [%s]: %.4X - %4X\n", soH->name, soH, pend );
 	
@@ -29,6 +32,12 @@ void loadLib(soHeader* soH) {
 	}
 	else {
 		printf("[%s] not find res\n",soH->name);
+	}
+	
+	printf("functions: %u\n",soH->nfunc);
+	
+	while( sofunc=getSoFuncDsc(soH, n++) ){
+		printf("f[%i]: %s at 0x%.4X\n", n, sofunc->name, sofunc->jumadr);
 	}
 	
 }
