@@ -1,5 +1,6 @@
 // Библиотека управления перемещаемыми объектами
 #include <so.h>
+#include <testso.h>
 
 // Это вспомогательная часть
 #include <stdio.h>
@@ -14,6 +15,17 @@
 
 // Вторая
 #define so_v2_load_addr		((void*)0x9000)
+
+void findFunc(soHeader* soH, const char* name) {
+	soFuncDsc*	sofunc = getSoFuncName(soH,name);
+	
+	printf("Func %s %s %.4X->%4X\n",
+		name,
+		sofunc?"y":"n",
+		sofunc,
+		sofunc?sofunc->jumadr:0
+	);
+}
 
 void loadLib(soHeader* soH) {
 	// Перемещение по заданному адресу
@@ -34,12 +46,17 @@ void loadLib(soHeader* soH) {
 		printf("[%s] not find res\n",soH->name);
 	}
 	
-	printf("functions: %u\n",soH->nfunc);
+	printf("functions: %u\n\n",soH->nfunc);
 	
 	while( sofunc=getSoFuncDsc(soH, n++) ){
 		printf("f[%i]: %s at 0x%.4X\n", n, sofunc->name, sofunc->jumadr);
 	}
 	
+	printf("\n\n");
+	
+	findFunc(soH, "aaa");
+	findFunc(soH, "tsInit");
+	findFunc(soH, "tsShowInfo");
 }
 
 void press_a_key(){

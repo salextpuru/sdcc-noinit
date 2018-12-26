@@ -1,7 +1,6 @@
 /**
  * Обработка загруженных модулей (перемещение и проч.)
  */
-#include <stdio.h>
 #include <string.h>
 #include "so.h"
 
@@ -41,15 +40,12 @@ void* tune_shared_obj ( soHeader* lib ) {
 	shared_link*	l=get_shared_links_area();
 	
 	// Emty library space
-	//if(!( ((uint16_t)(_shared_links_end)) - ((uint16_t)(_shared_links_begin)) )) {
-	//	return NULL;
-	//}
-	
-	printf("l=%.4X\n",l);
+	if(!( ((uint16_t)(_shared_links_end)) - ((uint16_t)(_shared_links_begin)) )) {
+		return NULL;
+	}
 	
 	// Find
 	while( l ){
-		printf("l->name=%s\n",l->name);
 		if( !strcmp(name, l->name) ){
 			// Find!
 			l->flags = 0; // @TODO@ - дорботка при переключении страниц
@@ -74,6 +70,25 @@ soFuncDsc* getSoFuncDsc (soHeader* h, uint16_t n) {
 	
 	return (( soFuncDsc*)(((uint8_t*)h) + sizeof(soHeader) + onloadFuncSize)) + n;
 }
+
+soFuncDsc* getSoFuncName(soHeader* h, const char* fname) {
+	uint16_t n=h->nfunc;	// Количество функций
+	soFuncDsc* sofunc=getSoFuncDsc(h, 0); // Адрес первой функции
+	
+	while( n ){
+		
+		if( !strcmp(fname, sofunc->name) ){
+			// Имя совпало с искомым
+			break;
+		}
+		// Следующая функция или выход
+		n--;
+		sofunc++;
+	}
+	
+	return n?sofunc:NULL;
+}
+
 
 static void soPageJumper() __naked {
 	__asm;
