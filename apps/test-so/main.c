@@ -73,7 +73,10 @@ void main(){
 	ccls(006);
 	
 	// Инициализируем первую библиотеку
+	// жесткое динамическое связывание
+	// прозрачный вызов функций tsInit(); и tsShowInfo();
 	loadLib(so_v1_load_addr);
+	printf("Follow screen: v1 function hard linked\n");
 	press_a_key();
 	
 	// Запускаем её
@@ -83,16 +86,37 @@ void main(){
 	press_a_key();
 	
 	// Инициализируем вторую библиотеку
+	// жесткое динамическое связывание
+	// прозрачный вызов функций tsInit(); и tsShowInfo();
 	ccls(006);
 	loadLib(so_v2_load_addr);
+	printf("Follow screen: v2 function hard linked\n");
 	press_a_key();
 	
 	// Запускаем её
 	// Работаем как с обычными функциями
 	tsInit();
 	tsShowInfo();
+	press_a_key();
+	
+	ccls(006);
+	printf("Follow screen: v1 function soft linked\n");
+	press_a_key();
 	
 	
+	// мягкое динамическое связывание
+	// Функции tsInit(); и tsShowInfo(); привязаны к модулю v2
+	// а мы вызовем функции tsInit(); и tsShowInfo(); модуля v1
+	{
+		void (*tsInitV1)() =(void*)(getSoFuncName(so_v1_load_addr, "tsInit")->jumadr);
+		void (*tsShowInfoV1)() =(void*)(getSoFuncName(so_v1_load_addr, "tsShowInfo")->jumadr);
+		tsInitV1();
+		tsShowInfoV1();
+	}
+	press_a_key();
+	
+	ccls(006);
+	printf("End of shared object demo\n");
 	
 	while(1){}
 }

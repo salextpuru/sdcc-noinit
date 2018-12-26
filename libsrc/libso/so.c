@@ -39,7 +39,7 @@ void* tune_shared_obj ( soHeader* lib ) {
 	const char*	name = lib->name;
 	shared_link*	l=get_shared_links_area();
 	
-	// Emty library space
+	// Empty library space
 	if(!( ((uint16_t)(_shared_links_end)) - ((uint16_t)(_shared_links_begin)) )) {
 		return NULL;
 	}
