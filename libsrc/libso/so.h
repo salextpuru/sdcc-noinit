@@ -30,9 +30,9 @@ typedef struct {
 	// переход на функцию (команда)
 	uint8_t		jump;
 	// переход на функцию (адрес)
-	uint16_t	jumadr;
+	void*		jumadr;
 	// название функции
-	const char* name;
+	const char*	name;
 } soFuncDsc;
  
 

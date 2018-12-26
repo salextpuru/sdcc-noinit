@@ -108,10 +108,20 @@ void main(){
 	// Функции tsInit(); и tsShowInfo(); привязаны к модулю v2
 	// а мы вызовем функции tsInit(); и tsShowInfo(); модуля v1
 	{
-		void (*tsInitV1)() =(void*)(getSoFuncName(so_v1_load_addr, "tsInit")->jumadr);
-		void (*tsShowInfoV1)() =(void*)(getSoFuncName(so_v1_load_addr, "tsShowInfo")->jumadr);
+		void (*tsInitV1)() = getSoFuncName(so_v1_load_addr, "tsInit")->jumadr;
+		
+		void (*tsShowInfoV1)() = getSoFuncName(so_v1_load_addr, "tsShowInfo")->jumadr;
+		
+		uint16_t (*tsAbsv1)(int16_t)  = getSoFuncName(so_v1_load_addr, "tsAbs")->jumadr;
+		
+		uint16_t (*tsAbsv2)(int16_t)  = getSoFuncName(so_v2_load_addr, "tsAbs")->jumadr;
+		
 		tsInitV1();
 		tsShowInfoV1();
+		
+		printf("tsAbsv1(%i) = %u\n",123,tsAbsv1(123));
+		
+		printf("tsAbsv2(%i) = %u\n",-76,tsAbsv2(-76));
 	}
 	press_a_key();
 	
