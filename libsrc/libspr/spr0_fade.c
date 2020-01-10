@@ -50,6 +50,7 @@ spr0_fade_step_line:
 	exx
 	call	_rnd16
 	ld	a,l
+	and	h
 	pop	bc
 	pop	de
 	pop	hl
