@@ -41,7 +41,7 @@ APPLICATIONS+=demo17_1
 APPLICATIONS+=csp2018invitro
 
 # Test of memory manager 128K Excluded (not work!)
-#APPLICATIONS+=test-mm128
+APPLICATIONS+=test-mm128
 
 # Test reloctable module
 APPLICATIONS+=test-so
