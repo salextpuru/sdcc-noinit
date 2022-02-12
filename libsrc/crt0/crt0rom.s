@@ -26,7 +26,28 @@
 	;; // INT (1/50 sec)
 	.globl	_irq38
 	.org	0x38
+	push	af
+	push	bc
+	push	de
+	push	hl
+	exx
+	ex	af,af' ; '
+	push	af
+	push	bc
+	push	de
+	push	hl
 	call	_irq38
+	
+	pop	hl
+	pop	de
+	pop	bc
+	pop	af
+	exx
+	ex	af,af' ; '
+	pop	hl
+	pop	de
+	pop	bc
+	pop	af
 	ei
 	reti
 	

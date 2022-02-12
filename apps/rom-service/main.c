@@ -23,16 +23,9 @@ void main(){
 	while(1){
 		uint16_t k=0;
 		//
-		__asm;
-		di
-		__endasm;
 		k = zxKbdInKey() & 0xFF;
-		__asm;
-		ei
-		__endasm;
-		
 		if(k) {
-			//conio_at(0,3);
+			conio_at(0,3);
 			putchar(k);
 		}
 	}
