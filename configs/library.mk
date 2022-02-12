@@ -46,7 +46,7 @@ LIBRARY+=libfonts
 LIBRARY+=librnd
 
 # Memory managers
-LIBRARY+=libmemman
+# LIBRARY+=libmemman
 
 # Relotcable shared objects
 LIBRARY+=libso
