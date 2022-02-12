@@ -22,7 +22,12 @@
 	reti
 	.org	0x30
 	reti
+
+	;; // INT (1/50 sec)
+	.globl	_irq38
 	.org	0x38
+	call	_irq38
+	ei
 	reti
 	
 	;// Maye be placed entry points
