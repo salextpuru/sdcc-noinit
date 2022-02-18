@@ -37,7 +37,6 @@
 	push	de
 	push	hl
 	call	_irq38
-	
 	pop	hl
 	pop	de
 	pop	bc
@@ -66,10 +65,57 @@
 	;//
 	.area	_CODE
 init:
+
+    ;// ---------------------------------------------------
+    ;// PREINIT_CODE FOR KAY/PHOENIX/SCORPION
+    ;// SET page 8 to 0xC000
+    ld  bc,#0x7FFD
+    ld  a,#0x00
+    out (c),a
+    ld  bc,#0x1FFD
+    ld  a,#0x12
+    out (c),a
+    ;// ---------------------------------------------------
+    ;// Now:    ROM - service ROM PAGE
+    ;//         RAM - from 0xC000 PAGE 8 (service monitor page)
+
+    ;// Check signature
+    ld  hl,#sign_d
+    ld  de,#sign_c
+sign_check_1:
+    ld  a,(de)
+    cp  (hl)
+    jr  nz, sing_fail ;// signature fail
+    inc hl
+    inc de
+    or  a
+    jr  nz,sign_check_1 ;// continue checking
+    ;; Signature Ok
+    ;; Hot start
+    ld a,#1 ;// 1 - hot start from 0x0000
+    ld  (_start_type),a
+    ld  sp,(sp_store)
+    jr  goto_main
+
+sing_fail: ;// Full init memory and start
 	;; Set stack pointer directly above top of memory.
 	ld	sp,#stack_top
+    ld  (sp_store),sp
+
+    ;; Copy Signature to RAM
+    ld  hl,#sign_d
+    ld  de,#sign_c
+sign_copy_1:
+    ld  a,(de)
+    ld  (hl),a
+    inc hl
+    inc de
+    or  a
+    jr  nz, sign_copy_1
+
 	;; Initialise global variables
 	call	gsinit
+goto_main:
 	call	_main
 	;//
 _loop:
@@ -108,6 +154,31 @@ gsinit_next:
 	.area   _BSS
 	.area   _HEAP
 ;; //
+
+;; // Constant for checking signature
+.area	_CODE
+sign_c:
+    .ascii   "SINIT"
+    .db 0
+
+;; // Signature in data memory
+.area	_DATA
+sign_d:
+    .ascii   "SINIT"
+    .db 0
+
+sp_store:
+    .dw 0000
+
+;// 0 - hard start from 0x0000
+;// 1 - hot start from 0x0000
+;// 2 - hard start from NMI
+;// 3 - hot start from NMI
+.globl _start_type
+_start_type:
+    .db 00
+
+.area   _BSS
 stack:
 	.ds	__SSIZE
 stack_top:
